@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materials - MATHwzShima</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>MATHwzShima</h1>
+    <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materials.html" class="active">Materials</a></li>
+      <li><a href="quizzes.html">Quizzes</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="puzzles.html">Puzzles</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <h2>Study Materials</h2>
+      <p>Download and print these resources to practice at home</p>
+    </div>
+
+    <div class="material-list" id="materialList">
+      <!-- Materials will be loaded by JavaScript -->
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
+  </footer>
+
+  <script>
+    const materials = [
+      { title: "Multiplication Tables 1-12", desc: "Complete multiplication table for quick reference", file: "multiplication_tables.pdf" },
+      { title: "Fractions Cheat Sheet", desc: "How to add, subtract, multiply, and divide fractions", file: "fractions_cheat_sheet.pdf" },
+      { title: "Geometry Shapes Guide", desc: "All the shapes you need to know with properties", file: "geometry_guide.pdf" },
+      { title: "Decimal Practice Sheet", desc: "Practice problems for decimals", file: "decimal_practice.pdf" },
+      { title: "Word Problems Workbook", desc: "Fun real-world math problems", file: "word_problems.pdf" },
+      { title: "Long Division Steps", desc: "Step-by-step guide to long division", file: "long_division.pdf" },
+    ];
+
+    const list = document.getElementById('materialList');
+    materials.forEach(m => {
+      const item = document.createElement('div');
+      item.className = 'material-item';
+      item.innerHTML = `
+        <div class="info">
+          <h4>${m.title}</h4>
+          <p>${m.desc}</p>
+        </div>
+        <a href="assets/${m.file}" class="download-btn" download>Download</a>
+      `;
+      list.appendChild(item);
+    });
+  </script>
+</body>
+</html>

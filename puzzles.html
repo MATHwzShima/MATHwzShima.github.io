@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzles - MATHwzShima</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>MATHwzShima</h1>
+    <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="quizzes.html">Quizzes</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="puzzles.html" class="active">Puzzles</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <h2>Math Puzzles & Riddles</h2>
+      <p>Stretch your brain with these tricky puzzles!</p>
+    </div>
+
+    <div class="puzzle-container" id="puzzleContainer">
+      <h3 id="puzzleTitle">Riddle</h3>
+      <div class="puzzle-riddle" id="puzzleRiddle">Loading...</div>
+      <div class="puzzle-input" id="puzzleInputArea">
+        <input type="text" id="puzzleAnswer" placeholder="Your answer...">
+        <button onclick="checkPuzzleAnswer()">Check</button>
+      </div>
+      <div class="game-message" id="puzzleMessage"></div>
+      <div class="puzzle-reveal">
+        <button onclick="revealPuzzleAnswer()">Show Answer</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
+  </footer>
+
+  <script>
+    const puzzles = [
+      { riddle: "I am an odd number. Take away one letter and I become even. What number am I?", answer: "seven" },
+      { riddle: "What has a head and a tail but no body?", answer: "coin" },
+      { riddle: "If you multiply me by any number, the answer is always me. What number am I?", answer: "zero" },
+      { riddle: "What goes up and down but never moves?", answer: "stairs" },
+      { riddle: "I am a number. Add me to myself and you get 10. What number am I?", answer: "5" },
+      { riddle: "What has many teeth but cannot bite?", answer: "comb" },
+      { riddle: "I am a three-digit number. My tens digit is five more than my ones digit. My hundreds digit is eight less than my tens digit. What number am I?", answer: "194" },
+      { riddle: "What is full of holes but still holds water?", answer: "sponge" },
+      { riddle: "What can you break even if you never pick it up?", answer: "promise" },
+      { riddle: "I am a number. Double me and add 4, you get 14. What number am I?", answer: "5" },
+      { riddle: "I add 5 to 9 and get 2. How is this possible?", answer: "clock" },
+      { riddle: "I have keys but no locks. I have space but no room. You can enter but can't go inside. What am I?", answer: "keyboard" },
+    ];
+
+    let currentPuzzle = 0;
+    let puzzleRevealed = false;
+
+    function loadPuzzle() {
+      const p = puzzles[currentPuzzle];
+      document.getElementById('puzzleRiddle').textContent = p.riddle;
+      document.getElementById('puzzleAnswer').value = '';
+      document.getElementById('puzzleMessage').textContent = '';
+      document.getElementById('puzzleMessage').className = 'game-message';
+      puzzleRevealed = false;
+    }
+
+    function checkPuzzleAnswer() {
+      const input = document.getElementById('puzzleAnswer');
+      const userAnswer = input.value.trim().toLowerCase();
+      const msg = document.getElementById('puzzleMessage');
+      const correct = puzzles[currentPuzzle].answer;
+
+      if (!userAnswer) {
+        msg.textContent = 'Type your answer first!';
+        msg.className = 'game-message wrong';
+        return;
+      }
+
+      if (userAnswer === correct.toLowerCase()) {
+        msg.textContent = 'Correct! You solved it!';
+        msg.className = 'game-message correct';
+      } else {
+        msg.textContent = 'Not quite! Try again or click "Show Answer".';
+        msg.className = 'game-message wrong';
+      }
+    }
+
+    document.getElementById('puzzleAnswer').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPuzzleAnswer();
+    });
+
+    function revealPuzzleAnswer() {
+      if (puzzleRevealed) {
+        // go to next puzzle
+        currentPuzzle = (currentPuzzle + 1) % puzzles.length;
+        loadPuzzle();
+      } else {
+        const msg = document.getElementById('puzzleMessage');
+        msg.textContent = `Answer: ${puzzles[currentPuzzle].answer}`;
+        msg.className = 'game-message correct';
+        puzzleRevealed = true;
+      }
+    }
+
+    // Shuffle puzzles
+    for (let i = puzzles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [puzzles[i], puzzles[j]] = [puzzles[j], puzzles[i]];
+    }
+
+    loadPuzzle();
+  </script>
+</body>
+</html>
