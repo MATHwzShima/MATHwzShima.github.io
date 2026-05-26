@@ -267,29 +267,33 @@
       return localStorage.getItem(PASSWORD_KEY) || '';
     }
 
-    async function fetchSubmissions() {
+    function fetchSubmissions() {
       const btn = document.getElementById('refreshBtn');
       btn.disabled = true; btn.textContent = '⏳ Loading...';
+      document.getElementById('submissionsList').innerHTML = '<div class="empty-state" style="text-align:center;padding:40px;color:#999;"><div style="font-size:3em;">&#128260;</div><p>Loading submissions...</p></div>';
 
-      try {
-        const pw = getPassword();
-        const url = WEBHOOK_URL + '?key=' + encodeURIComponent(pw);
-        const res = await fetch(url);
-        const json = await res.json();
-
+      const pw = getPassword();
+      const cbName = 'mb_jsonp_' + Date.now();
+      window[cbName] = function(json) {
+        delete window[cbName];
+        btn.disabled = false; btn.textContent = '🔄 Refresh';
         if (json.error === 'unauthorized' || !json.success) {
           document.getElementById('submissionsList').innerHTML =
             '<div class="empty-state"><div class="big-icon">&#128274;</div><h3>Wrong password</h3><p>Check the SECRET_KEY in your Apps Script code.</p></div>';
           return;
         }
-
         renderSubmissions(json.data || []);
-      } catch (err) {
+      };
+
+      const script = document.createElement('script');
+      script.src = WEBHOOK_URL + '?key=' + encodeURIComponent(pw) + '&callback=' + cbName;
+      script.onerror = function() {
+        delete window[cbName];
+        btn.disabled = false; btn.textContent = '🔄 Refresh';
         document.getElementById('submissionsList').innerHTML =
           '<div class="empty-state"><div class="big-icon">&#128260;</div><h3>Could not connect</h3><p>Make sure your Apps Script webhook is deployed and WEBHOOK_URL is correct.</p></div>';
-      } finally {
-        btn.disabled = false; btn.textContent = '🔄 Refresh';
-      }
+      };
+      document.body.appendChild(script);
     }
 
     function renderSubmissions(data) {

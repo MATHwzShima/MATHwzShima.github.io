@@ -31,11 +31,33 @@ function getOrCreateSheet() {
 
 function doGet(e) {
   const key = e.parameter.key || e.parameter.p;
+  const callback = e.parameter.callback || e.parameter.cb;
+
   if (key !== SECRET_KEY) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ error: 'unauthorized' }))
-      .setMimeType(ContentService.MimeType.JSON);
+    const err = JSON.stringify({ error: 'unauthorized' });
+    if (callback) return ContentService.createTextOutput(callback + '(' + err + ')').setMimeType(ContentService.MimeType.JAVASCRIPT);
+    return ContentService.createTextOutput(err).setMimeType(ContentService.MimeType.JSON);
   }
+
+  const sheet = getOrCreateSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = {};
+    headers.forEach((h, j) => { row[h] = data[i][j]; });
+    if (row['Answers JSON'] && typeof row['Answers JSON'] === 'string') {
+      try { row['Answers JSON'] = JSON.parse(row['Answers JSON']); } catch(e) {}
+    }
+    rows.push(row);
+  }
+
+  const response = JSON.stringify({ success: true, data: rows });
+  if (callback) {
+    return ContentService.createTextOutput(callback + '(' + response + ')').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(response).setMimeType(ContentService.MimeType.JSON);
+}
 
   const sheet = getOrCreateSheet();
   const data = sheet.getDataRange().getValues();
