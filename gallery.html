@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .gallery-section {
+      margin-bottom: 3rem;
+    }
+    .gallery-section h3 {
+      font-size: 1.6rem;
+      color: #6c5ce7;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .gallery-section .section-line {
+      height: 3px;
+      background: linear-gradient(90deg, #6c5ce7, transparent);
+      border: none;
+      margin-bottom: 1.2rem;
+      border-radius: 2px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -31,7 +51,17 @@
       <p>Our 2025/2026 class memories</p>
     </div>
 
-    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="gallery-section">
+      <h3>Future Leaders</h3>
+      <hr class="section-line">
+      <div class="gallery-grid" id="gridFutureLeaders"></div>
+    </div>
+
+    <div class="gallery-section">
+      <h3>In Class</h3>
+      <hr class="section-line">
+      <div class="gallery-grid" id="gridInClass"></div>
+    </div>
 
     <div class="lightbox" id="lightbox">
       <button class="lightbox-close" id="lightboxClose">&times;</button>
@@ -47,7 +77,7 @@
   </footer>
 
   <script>
-    const images = [
+    const futureLeaders = [
       'assets/gallery/1000008366.jpg',
       'assets/gallery/1000008369.jpg',
       'assets/gallery/1000008370.jpg',
@@ -118,11 +148,30 @@
       'assets/gallery/Screenshot%202025-11-02%20at%2012.05.59%E2%80%AFPM.png',
     ];
 
-    const grid = document.getElementById('galleryGrid');
+    const inClass = [
+      'assets/gallery/in-class/20251118_073246.jpg',
+      'assets/gallery/in-class/20251118_073438.jpg',
+      'assets/gallery/in-class/20251118_074404.jpg',
+      'assets/gallery/in-class/20251118_082915.jpg',
+      'assets/gallery/in-class/20251120_162849.jpg',
+      'assets/gallery/in-class/20251120_171329.jpg',
+      'assets/gallery/in-class/20251120_171341.jpg',
+      'assets/gallery/in-class/20251120_171426.jpg',
+      'assets/gallery/in-class/20251120_171438.jpg',
+      'assets/gallery/in-class/20251120_171538.jpg',
+      'assets/gallery/in-class/20251120_171610.jpg',
+      'assets/gallery/in-class/20260112_114810.jpg',
+      'assets/gallery/in-class/20260112_122801.jpg',
+      'assets/gallery/in-class/20260112_132208.jpg',
+      'assets/gallery/in-class/20260115_123632.jpg',
+      'assets/gallery/in-class/20260115_132046.jpg',
+      'assets/gallery/in-class/20260213_153009.jpg',
+    ];
+
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCounter = document.getElementById('lightboxCounter');
-    let shuffledImages = [];
+    let activeImages = [];
     let currentIndex = 0;
 
     function shuffleArray(arr) {
@@ -133,26 +182,27 @@
       return arr;
     }
 
-    function renderGallery() {
-      shuffledImages = shuffleArray([...images]);
-      grid.innerHTML = '';
-      shuffledImages.forEach((src, idx) => {
+    function renderGrid(containerId, images, label) {
+      const grid = document.getElementById(containerId);
+      const shuffled = shuffleArray([...images]);
+      shuffled.forEach((src, idx) => {
         const item = document.createElement('div');
         item.className = 'gallery-item';
         const img = document.createElement('img');
         img.src = src;
         img.loading = 'lazy';
-        img.alt = 'Class photo';
+        img.alt = label;
         item.appendChild(img);
-        item.addEventListener('click', () => openLightbox(idx));
+        item.addEventListener('click', () => openLightbox(shuffled, idx));
         grid.appendChild(item);
       });
     }
 
-    function openLightbox(index) {
+    function openLightbox(images, index) {
+      activeImages = images;
       currentIndex = index;
-      lightboxImg.src = shuffledImages[index];
-      lightboxCounter.textContent = `${index + 1} / ${shuffledImages.length}`;
+      lightboxImg.src = images[index];
+      lightboxCounter.textContent = `${index + 1} / ${images.length}`;
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -163,15 +213,15 @@
     }
 
     function prevImage() {
-      currentIndex = (currentIndex - 1 + shuffledImages.length) % shuffledImages.length;
-      lightboxImg.src = shuffledImages[currentIndex];
-      lightboxCounter.textContent = `${currentIndex + 1} / ${shuffledImages.length}`;
+      currentIndex = (currentIndex - 1 + activeImages.length) % activeImages.length;
+      lightboxImg.src = activeImages[currentIndex];
+      lightboxCounter.textContent = `${currentIndex + 1} / ${activeImages.length}`;
     }
 
     function nextImage() {
-      currentIndex = (currentIndex + 1) % shuffledImages.length;
-      lightboxImg.src = shuffledImages[currentIndex];
-      lightboxCounter.textContent = `${currentIndex + 1} / ${shuffledImages.length}`;
+      currentIndex = (currentIndex + 1) % activeImages.length;
+      lightboxImg.src = activeImages[currentIndex];
+      lightboxCounter.textContent = `${currentIndex + 1} / ${activeImages.length}`;
     }
 
     document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
@@ -189,7 +239,8 @@
       if (e.key === 'ArrowRight') nextImage();
     });
 
-    renderGallery();
+    renderGrid('gridFutureLeaders', futureLeaders, 'Future Leaders');
+    renderGrid('gridInClass', inClass, 'In Class');
   </script>
 </body>
 </html>
