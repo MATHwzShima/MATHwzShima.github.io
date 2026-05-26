@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fill in your 5th grade memory book online with Mrs. Shimaa. Memories, favorites, awards, and fun activities.">
+  <meta name="theme-color" content="#6c5ce7">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Memory Book 2025/2026 - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -522,9 +525,93 @@
       .mb-container .print-btn-container { display: none; }
       .mb-container .save-btn { display: none; }
     }
+
+    /* View mode styles */
+    .view-banner {
+      background: linear-gradient(135deg, #6bcb77, #4d96ff);
+      color: #fff;
+      padding: 28px;
+      border-radius: 24px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 30px rgba(77,150,255,0.25);
+    }
+    .view-banner h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2em;
+      margin-bottom: 6px;
+    }
+    .view-banner p {
+      font-size: 1.1em;
+      opacity: 0.9;
+      margin-bottom: 14px;
+    }
+    .view-banner button {
+      font-family: 'Comic Neue', cursive;
+      background: rgba(255,255,255,0.25);
+      border: 2px solid rgba(255,255,255,0.5);
+      color: #fff;
+      padding: 10px 28px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .view-banner button:hover {
+      background: rgba(255,255,255,0.4);
+    }
+    .view-summary { padding-bottom: 40px; }
+    .view-section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .view-section h3 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3em;
+      color: #4d96ff;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px dashed #eee;
+    }
+    .view-item { margin-bottom: 14px; }
+    .view-item strong {
+      color: #555;
+      font-weight: 700;
+      font-size: 0.95em;
+    }
+    .view-item p {
+      color: #666;
+      margin-top: 4px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .view-tag {
+      display: inline-block;
+      background: #dbeafe;
+      color: #2563eb;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9em;
+      margin-top: 4px;
+    }
+    .view-stars {
+      color: #fbbf24;
+      font-size: 1.2em;
+      letter-spacing: 2px;
+    }
+    .view-check {
+      color: #059669;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body class="memory-book-page">
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <header>
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
@@ -540,10 +627,11 @@
       <li><a href="puzzles.html">Puzzles</a></li>
       <li><a href="gallery.html">Gallery</a></li>
       <li><a href="memory-book.html" class="active">Memory Book 2025/2026</a></li>
+      <li><a href="teacher.html" class="teacher-link">&#128274; Teacher</a></li>
     </ul>
   </nav>
 
-  <main style="max-width:100%;padding:0;margin:0;background:#fff9e6;">
+  <main id="main-content" style="max-width:100%;padding:0;margin:0;background:#fff9e6;">
     <div class="mb-container">
 
       <div class="tab-bar" id="tabBar">
@@ -1001,51 +1089,39 @@
       </div>
 
       <!-- SUBMIT TO TEACHER -->
-      <div class="section" style="border-color:#4d96ff;background:#f0f7ff;">
+      <div class="section" style="border-color:#6bcb77;background:linear-gradient(135deg,#f0fdf4,#f0f7ff);">
         <div class="section-header">
           <div class="icon">&#128228;</div>
           <h2>Submit to Your Teacher</h2>
-          <span class="badge" style="background:#4d96ff;color:#fff;">Submit!</span>
+          <span class="badge" style="background:#6bcb77;color:#fff;">Send!</span>
         </div>
 
-        <div style="text-align:center;padding:10px;">
-          <p style="color:#666;margin-bottom:16px;">Click the button to submit your Memory Book to Mrs. Shimaa!</p>
-          <button onclick="submitToTeacher()" style="font-family:'Fredoka One',cursive;font-size:1.6em;background:linear-gradient(135deg,#4d96ff,#a855f7);color:#fff;border:none;padding:18px 50px;border-radius:24px;cursor:pointer;box-shadow:0 8px 30px rgba(77,150,255,0.4);">Submit to Teacher!</button>
-          <div id="submitStatus" style="margin-top:14px;font-weight:700;font-size:1.1em;min-height:30px;"></div>
+        <div style="text-align:center;padding:20px 10px;">
+          <p style="color:#555;font-size:1.05em;margin-bottom:24px;">When you're done, click the big button to send your Memory Book to Mrs. Shimaa! &#127881;</p>
+          <button id="submitBtn" onclick="submitToTeacher()" style="font-family:'Fredoka One',cursive;font-size:1.8em;background:linear-gradient(135deg,#6bcb77,#4d96ff);color:#fff;border:none;padding:20px 52px;border-radius:28px;cursor:pointer;box-shadow:0 8px 30px rgba(77,150,255,0.35);transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 12px 36px rgba(77,150,255,0.45)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 30px rgba(77,150,255,0.35)'">
+            &#128228; Submit to Teacher!
+          </button>
+          <div id="submitStatus" style="margin-top:18px;font-weight:700;font-size:1.1em;min-height:36px;"></div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
-          <hr style="flex:1;border:none;border-top:2px dashed #e0e0e0;">
-          <span style="font-size:0.9em;color:#bbb;">OR use one of these</span>
-          <hr style="flex:1;border:none;border-top:2px dashed #e0e0e0;">
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div style="background:#fff;border-radius:16px;padding:20px;text-align:center;border:3px solid #93c5fd;">
-            <div style="font-size:2em;">&#128230;</div>
-            <h4 style="font-family:'Fredoka One',cursive;font-size:1.1em;color:#4d96ff;margin:6px 0;">Download as File</h4>
-            <p style="font-size:0.85em;color:#666;margin-bottom:10px;">Save your answers as a .txt file</p>
-            <button onclick="downloadAnswers()" style="font-family:'Fredoka One',cursive;font-size:1.1em;background:#4d96ff;color:#fff;border:none;padding:12px 24px;border-radius:14px;cursor:pointer;">Download</button>
+        <!-- Backup options -->
+        <div style="margin-top:12px;border-top:2px dashed #d1fae5;padding-top:16px;">
+          <p style="text-align:center;font-size:0.88em;color:#aaa;margin-bottom:12px;">Having trouble submitting? Use a backup option:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:2px solid #dbeafe;">
+              <div style="font-size:1.8em;">&#128230;</div>
+              <h4 style="font-family:'Fredoka One',cursive;font-size:1em;color:#4d96ff;margin:4px 0;">Download File</h4>
+              <p style="font-size:0.8em;color:#888;margin-bottom:8px;">Save as .txt and hand it in</p>
+              <button onclick="downloadAnswers()" style="font-family:'Fredoka One',cursive;font-size:0.95em;background:#4d96ff;color:#fff;border:none;padding:8px 18px;border-radius:10px;cursor:pointer;">&#128230; Download</button>
+            </div>
+            <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:2px solid #a7f3d0;">
+              <div style="font-size:1.8em;">&#128203;</div>
+              <h4 style="font-family:'Fredoka One',cursive;font-size:1em;color:#6bcb77;margin:4px 0;">Copy Text</h4>
+              <p style="font-size:0.8em;color:#888;margin-bottom:8px;">Copy and paste into an email</p>
+              <button onclick="copyAnswers()" style="font-family:'Fredoka One',cursive;font-size:0.95em;background:#6bcb77;color:#fff;border:none;padding:8px 18px;border-radius:10px;cursor:pointer;">&#128203; Copy</button>
+            </div>
           </div>
-          <div style="background:#fff;border-radius:16px;padding:20px;text-align:center;border:3px solid #a7f3d0;">
-            <div style="font-size:2em;">&#128203;</div>
-            <h4 style="font-family:'Fredoka One',cursive;font-size:1.1em;color:#6bcb77;margin:6px 0;">Copy & Paste</h4>
-            <p style="font-size:0.85em;color:#666;margin-bottom:10px;">Copy to clipboard and email your teacher</p>
-            <button onclick="copyAnswers()" style="font-family:'Fredoka One',cursive;font-size:1.1em;background:#6bcb77;color:#fff;border:none;padding:12px 24px;border-radius:14px;cursor:pointer;">Copy</button>
-          </div>
-        </div>
-
-        <div id="exportStatus" style="text-align:center;font-weight:700;font-size:1em;min-height:24px;margin-top:12px;"></div>
-
-        <div style="background:#fff;border-radius:14px;padding:16px;margin-top:16px;border:2px solid #e0e0e0;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="font-weight:700;">Preview of your answers</span>
-          </div>
-          <textarea id="answerPreview" readonly style="width:100%;min-height:150px;border:2px dashed #e0e0e0;border-radius:10px;padding:12px;font-family:monospace;font-size:0.85em;line-height:1.5;background:#fafafa;color:#333;outline:none;resize:vertical;" placeholder="Your answers will appear here..."></textarea>
-        </div>
-
-        <div style="margin-top:12px;background:#fff3cd;border-radius:10px;padding:10px 14px;font-size:0.9em;color:#856404;text-align:center;">
-          Your answers stay on YOUR device until you submit. Nothing is sent automatically!
+          <div id="exportStatus" style="text-align:center;font-weight:700;font-size:0.95em;min-height:20px;margin-top:10px;"></div>
         </div>
       </div>
 
@@ -1061,15 +1137,11 @@
   </footer>
 
   <script>
-    const GOOGLE_FORM_URL = '';
-    const SUBMIT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbz4fJ2O7taTMrGY6jzmCZlorLJWZSg6tyScofMUC8JinqctirT_ae3s1bx126p1LGOh/exec';
-
-    setTimeout(() => {
-      const status = document.getElementById('submitStatus');
-      if (!SUBMIT_WEBHOOK_URL && !GOOGLE_FORM_URL) {
-        if (status) status.innerHTML = '&#128295; Teacher: set <code>SUBMIT_WEBHOOK_URL</code> (Google Sheet) or <code>GOOGLE_FORM_URL</code> in the script to enable one-click submit. Students can still download or copy below.';
-      }
-    }, 500);
+    // ─── TEACHER SETUP ──────────────────────────────────────────────────────────
+    const FORMSPREE_URL   = 'https://formspree.io/f/meedrpyk';  // email notifications
+    const FIREBASE_DB_URL = 'https://mathwzshima-32042-default-rtdb.firebaseio.com';
+    // Example: 'https://mathwzshima-default-rtdb.firebaseio.com'
+    // ────────────────────────────────────────────────────────────────────────────
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -1291,7 +1363,7 @@
       document.querySelectorAll('.mb-container input[type="checkbox"]').forEach((cb, idx) => { data['cb_' + idx] = cb.checked; });
       document.querySelectorAll('.mb-container .rating-stars').forEach((container, idx) => { data['rating_' + idx] = container.querySelectorAll('.on').length; });
       document.querySelectorAll('.mb-container .choice-grid').forEach((grid, idx) => { const picked = grid.querySelector('.picked'); data['choice_' + idx] = picked ? picked.textContent.trim() : ''; });
-      localStorage.setItem('grade5_memory_book_2016', JSON.stringify(data));
+      localStorage.setItem('mathwzshima_memory_book', JSON.stringify(data));
       refreshPreview();
     }
 
@@ -1383,58 +1455,79 @@
       };
     }
 
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function submitToTeacher() {
-      const payload = collectSubmitPayload();
+      const { name, sections } = collectAnswers();
+      const pct = document.getElementById('progressText')?.textContent?.replace('% complete', '') || '0';
+      const text = formatAnswersText(sections, '=== My 5th Grade Memory Book (' + name + ') ===');
+
       const status = document.getElementById('submitStatus');
-      status.innerHTML = '&#128260; Sending...';
+      const btn    = document.getElementById('submitBtn');
 
-      localStorage.removeItem('grade5_memory_book_2016');
-
-      function fallbackClipboard() {
-        const text = formatAnswersText(payload.sections, '=== My 5th Grade Memory Book (' + payload.studentName + ') ===');
-        navigator.clipboard.writeText(text).then(() => {
-          if (GOOGLE_FORM_URL) {
-            status.innerHTML = '&#9989; Copied! Opening form... paste your answers there!';
-            setTimeout(() => window.open(GOOGLE_FORM_URL, '_blank'), 800);
-          } else {
-            status.innerHTML = '&#9989; Answers copied! Send them to your teacher.';
-          }
-        }).catch(() => {
-          status.innerHTML = '&#128196; Could not send. Use Download instead.';
-        });
+      // Require a name
+      if (!name || name === 'Anonymous') {
+        status.style.color = '#f59e0b';
+        status.innerHTML = '&#9888;&#65039; Please type your name first (at the top of the Memory Book)!';
+        return;
       }
 
-      if (SUBMIT_WEBHOOK_URL) {
-        const iframe = document.createElement('iframe');
-        iframe.name = 'submitFrame';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = SUBMIT_WEBHOOK_URL;
-        form.target = 'submitFrame';
-        const addField = (name, val) => {
-          const inp = document.createElement('input');
-          inp.type = 'hidden';
-          inp.name = name;
-          inp.value = typeof val === 'string' ? val : JSON.stringify(val);
-          form.appendChild(inp);
-        };
-        addField('studentName', payload.studentName);
-        addField('completion', payload.completion);
-        addField('sections', payload.sections);
-        document.body.appendChild(form);
-        form.submit();
-        form.remove();
-        status.innerHTML = '&#9989; Submitted successfully!';
-        downloadAnswers();
-        clearMemoryBook();
-        if (iframe.parentNode) iframe.remove();
-      } else if (GOOGLE_FORM_URL) {
-        fallbackClipboard();
-      } else {
-        fallbackClipboard();
+      // Check Firebase is configured
+      if (!FIREBASE_DB_URL || FIREBASE_DB_URL.includes('PASTE_YOUR_FIREBASE')) {
+        status.style.color = '#e17055';
+        status.innerHTML = '&#9888;&#65039; Submission is not set up yet. Please use the Download or Copy options below.';
+        return;
       }
+
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      btn.textContent = '&#9203; Sending…';
+      status.style.color = '#888';
+      status.innerHTML = '&#9203; Sending your Memory Book to Mrs. Shimaa…';
+
+      const payload = {
+        studentName:  name,
+        completion:   parseInt(pct) || 0,
+        answers:      text,
+        sections:     sections,
+        submittedAt:  new Date().toISOString()
+      };
+
+      // Primary: Firebase → shows up live in Teacher tab
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/submissions.json', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('Firebase ' + res.status);
+        status.style.color = '#059669';
+        status.innerHTML   = '&#9989; Sent! Mrs. Shimaa has received your Memory Book! &#127881;';
+        btn.textContent    = '✅ Submitted!';
+        btn.style.background = 'linear-gradient(135deg,#6bcb77,#059669)';
+        btn.style.opacity  = '1';
+        // Bonus: email notification via Formspree (fire-and-forget)
+        if (FORMSPREE_URL && !FORMSPREE_URL.includes('YOUR_FORM_ID')) {
+          fetch(FORMSPREE_URL, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body:    JSON.stringify({ _subject: 'Memory Book - ' + name, student_name: name, completion_percent: parseInt(pct) || 0 })
+          }).catch(function() {});
+        }
+      })
+      .catch(function(err) {
+        status.style.color = '#e17055';
+        status.innerHTML   = '&#10060; Couldn\'t send right now. Please use <strong>Download</strong> or <strong>Copy</strong> below.';
+        btn.disabled       = false;
+        btn.style.opacity  = '1';
+        btn.innerHTML      = '&#128228; Submit to Teacher!';
+        console.error('Submit error:', err);
+      });
     }
 
     function downloadAnswers() {
@@ -1477,7 +1570,7 @@
       document.querySelectorAll('#madLibResult').forEach(el => el.textContent = 'Your story will appear here...');
       document.querySelectorAll('.word-search-container input').forEach(el => el.value = '');
       document.getElementById('wordSearchStatus').textContent = 'Still looking...';
-      localStorage.removeItem('grade5_memory_book_2016');
+      localStorage.removeItem('mathwzshima_memory_book');
       updateProgress();
       refreshPreview();
     }
@@ -1502,9 +1595,14 @@
       setTimeout(() => container.remove(), 4000);
     }
 
-    (function loadSavedData() {
-      const raw = localStorage.getItem('grade5_memory_book_2016');
-      if (!raw) return;
+    (function init() {
+      // Load saved data from localStorage
+      const raw = localStorage.getItem('mathwzshima_memory_book');
+      if (!raw) {
+        setTimeout(updateProgress, 100);
+        setTimeout(refreshPreview, 200);
+        return;
+      }
       try {
         const data = JSON.parse(raw);
         document.querySelectorAll('.mb-container input:not([type="hidden"]):not([type="checkbox"]), .mb-container textarea').forEach(el => {
@@ -1534,5 +1632,6 @@
       el.addEventListener('click', function() { setTimeout(refreshPreview, 50); });
     });
   </script>
+  <script src="js/main.js"></script>
 </body>
 </html>

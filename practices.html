@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Practice 5th grade math by topic: place value, fractions, decimals, multiplication, division, geometry, and more.">
+  <meta name="theme-color" content="#6c5ce7">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Practices - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <header>
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
@@ -22,11 +26,11 @@
       <li><a href="puzzles.html">Puzzles</a></li>
       <li><a href="gallery.html">Gallery</a></li>
       <li><a href="memory-book.html">Memory Book 2025/2026</a></li>
-      <li><a href="teacher.html" style="color:#a855f7;">🔑 Teacher</a></li>
+      <li><a href="teacher.html" class="teacher-link">&#128274; Teacher</a></li>
     </ul>
   </nav>
 
-  <main>
+  <main id="main-content">
     <div id="lessonSelector">
       <div class="page-header">
         <h2>Practice by Lesson</h2>
@@ -44,11 +48,11 @@
       <div class="practice-question" id="practiceQuestion">Loading...</div>
       <div id="practiceInputArea">
         <div class="practice-input-area">
-          <input type="text" id="practiceAnswer" placeholder="Your answer...">
+          <input type="text" placeholder="Your answer...">
           <button onclick="checkPracticeAnswer()">Check</button>
         </div>
       </div>
-      <div class="game-message" id="practiceMessage"></div>
+      <div class="game-message" id="practiceMessage" aria-live="polite"></div>
       <button class="game-btn" onclick="nextPracticeProblem()">Next Problem</button>
       <div class="practice-score" id="practiceScore">Score: 0 / 0</div>
     </div>
@@ -232,12 +236,12 @@
       {
         id: "coordinate-plane", title: "Coordinate Plane", icon: "(x,y)",
         generate: function() {
-          const x = Math.floor(Math.random() * 9) + 1;
-          const y = Math.floor(Math.random() * 9) + 1;
+          const x = (Math.floor(Math.random() * 5) + 1) * (Math.random() < 0.5 ? 1 : -1);
+          const y = (Math.floor(Math.random() * 5) + 1) * (Math.random() < 0.5 ? 1 : -1);
           const tasks = [
             { q: `What is the x-coordinate of point (${x}, ${y})?`, a: x.toString() },
             { q: `What is the y-coordinate of point (${x}, ${y})?`, a: y.toString() },
-            { q: `In which quadrant is (${x > 0 ? "" : "-"}${x}, ${y > 0 ? "" : "-"}${y})? (1, 2, 3, or 4)`, a: (x > 0 && y > 0 ? "1" : x < 0 && y > 0 ? "2" : x < 0 && y < 0 ? "3" : "4") },
+            { q: `In which quadrant is (${x}, ${y})? (1, 2, 3, or 4)`, a: (x > 0 && y > 0 ? "1" : x < 0 && y > 0 ? "2" : x < 0 && y < 0 ? "3" : "4") },
           ];
           const t = tasks[Math.floor(Math.random() * tasks.length)];
           return { question: t.q, answer: t.a };
@@ -423,7 +427,7 @@
       lessons.forEach((lesson, i) => {
         const card = document.createElement('div');
         card.className = 'lesson-card';
-        card.innerHTML = `<div class="lesson-icon">${lesson.icon}</div><h4>${lesson.title}</h4>`;
+        card.innerHTML = `<div class="lesson-icon" aria-hidden="true">${lesson.icon}</div><h4>${lesson.title}</h4>`;
         card.onclick = () => startLesson(i);
         grid.appendChild(card);
       });
@@ -550,5 +554,6 @@
 
     renderLessonGrid();
   </script>
+  <script src="js/main.js"></script>
 </body>
 </html>

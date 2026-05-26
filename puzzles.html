@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Solve math riddles and brain teasers designed for 5th graders at MATHwzShima.">
+  <meta name="theme-color" content="#6c5ce7">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Puzzles - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <header>
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
@@ -22,11 +26,11 @@
       <li><a href="puzzles.html" class="active">Puzzles</a></li>
       <li><a href="gallery.html">Gallery</a></li>
       <li><a href="memory-book.html">Memory Book 2025/2026</a></li>
-      <li><a href="teacher.html" style="color:#a855f7;">🔑 Teacher</a></li>
+      <li><a href="teacher.html" class="teacher-link">&#128274; Teacher</a></li>
     </ul>
   </nav>
 
-  <main>
+  <main id="main-content">
     <div class="page-header">
       <h2>Math Puzzles & Riddles</h2>
       <p>Stretch your brain with these tricky puzzles!</p>
@@ -39,7 +43,7 @@
         <input type="text" id="puzzleAnswer" placeholder="Your answer...">
         <button onclick="checkPuzzleAnswer()">Check</button>
       </div>
-      <div class="game-message" id="puzzleMessage"></div>
+      <div class="game-message" id="puzzleMessage" aria-live="polite"></div>
       <div class="puzzle-reveal">
         <button onclick="revealPuzzleAnswer()">Show Answer</button>
       </div>
@@ -124,5 +128,6 @@
 
     loadPuzzle();
   </script>
+  <script src="js/main.js"></script>
 </body>
 </html>

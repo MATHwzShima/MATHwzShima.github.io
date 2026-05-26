@@ -1,15 +1,27 @@
 const SECRET_KEY = 'shimaa2026';
 const SHEET_NAME = 'Submissions';
 
+// IMPORTANT: Create this script from INSIDE a Google Spreadsheet (Extensions > Apps Script)
+// so that SpreadsheetApp.getActiveSpreadsheet() works. If you created a standalone script,
+// replace getActiveSpreadsheet() with SpreadsheetApp.openById('YOUR_SPREADSHEET_ID').
+
 function getOrCreateSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(['Timestamp', 'Student Name', 'Completion %', 'Answers JSON']);
-    sheet.setFrozenRows(1);
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (!ss) {
+      throw new Error('No active spreadsheet found. Make sure this script is bound to a Google Sheet, or use openById().');
+    }
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow(['Timestamp', 'Student Name', 'Completion %', 'Answers JSON']);
+      sheet.setFrozenRows(1);
+    }
+    return sheet;
+  } catch (err) {
+    console.error('Sheet error:', err);
+    throw err;
   }
-  return sheet;
 }
 
 function doGet(e) {
@@ -238,25 +250,36 @@ function doPost(e) {
   try {
     const sheet = getOrCreateSheet();
     let body;
-    try {
-      body = JSON.parse(e.postData.contents);
-    } catch (jsonErr) {
+
+    // Support both fetch() with JSON body and traditional form posts
+    if (e.postData && e.postData.contents) {
+      try {
+        body = JSON.parse(e.postData.contents);
+      } catch (jsonErr) {
+        // If postData is not valid JSON, fall back to parameters
+      }
+    }
+
+    if (!body) {
       body = {
         studentName: e.parameter.studentName,
         completion: e.parameter.completion,
         sections: JSON.parse(e.parameter.sections || '{}')
       };
     }
+
     sheet.appendRow([
       new Date(),
       body.studentName || 'Anonymous',
       body.completion || 0,
       JSON.stringify(body.sections || {})
     ]);
+
     return ContentService
       .createTextOutput(JSON.stringify({ success: true }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
+    console.error('doPost error:', err);
     return ContentService
       .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);

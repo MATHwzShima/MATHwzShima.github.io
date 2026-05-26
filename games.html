@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play cool math games and challenge yourself with speed challenges and pattern finders at MATHwzShima.">
+  <meta name="theme-color" content="#6c5ce7">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Games - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <header>
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
@@ -22,11 +26,11 @@
       <li><a href="puzzles.html">Puzzles</a></li>
       <li><a href="gallery.html">Gallery</a></li>
       <li><a href="memory-book.html">Memory Book 2025/2026</a></li>
-      <li><a href="teacher.html" style="color:#a855f7;">🔑 Teacher</a></li>
+      <li><a href="teacher.html" class="teacher-link">&#128274; Teacher</a></li>
     </ul>
   </nav>
 
-  <main>
+  <main id="main-content">
     <div class="page-header">
       <h2>Math Games</h2>
       <p>Play and learn at the same time!</p>
@@ -41,7 +45,7 @@
         <input type="number" id="gameAnswer" placeholder="?" autofocus>
         <button onclick="checkGameAnswer()">Check</button>
       </div>
-      <div class="game-message" id="gameMessage"></div>
+      <div class="game-message" id="gameMessage" aria-live="polite"></div>
       <button class="game-btn" onclick="resetGame()">New Game</button>
     </div>
 
@@ -56,7 +60,7 @@
         <input type="number" id="patternAnswer" placeholder="?">
         <button onclick="checkPatternAnswer()">Check</button>
       </div>
-      <div class="game-message" id="patternMessage"></div>
+      <div class="game-message" id="patternMessage" aria-live="polite"></div>
       <button class="game-btn" onclick="resetPatternGame()">New Pattern</button>
     </div>
   </main>
@@ -179,5 +183,6 @@
 
     newPattern();
   </script>
+  <script src="js/main.js"></script>
 </body>
 </html>

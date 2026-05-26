@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f0f4ff;
@@ -12,6 +16,29 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+:focus-visible {
+  outline: 3px solid #6c5ce7;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #6c5ce7;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: 700;
+  z-index: 200;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+  top: 0;
 }
 
 header {
@@ -43,6 +70,20 @@ nav {
   z-index: 100;
 }
 
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+}
+
+.nav-toggle:hover {
+  background: #f0edff;
+}
+
 nav ul {
   list-style: none;
   display: flex;
@@ -66,6 +107,48 @@ nav ul li a:hover,
 nav ul li a.active {
   background: #6c5ce7;
   color: white;
+}
+
+nav ul li a.teacher-link {
+  color: #a855f7;
+}
+
+nav ul li a.teacher-link:hover,
+nav ul li a.teacher-link.active {
+  background: #a855f7;
+  color: white;
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #6c5ce7;
+  color: #fff;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top:hover {
+  transform: translateY(-3px);
+  background: #5a4bd1;
 }
 
 main {
@@ -786,10 +869,39 @@ footer {
 @media (max-width: 700px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } .gallery-item img { height: 100px; } }
 @media (max-width: 450px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } .gallery-item img { height: 90px; } .lightbox { padding: 20px; } .lightbox-nav { font-size: 2rem; } }
 
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+    margin: 0 auto;
+  }
+  nav ul {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+  nav ul.open {
+    display: flex;
+  }
+  nav ul li a {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    width: 200px;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .card, .lesson-card, .material-item, .game-input input, .practice-input-area input, .puzzle-input input {
+    transition: none;
+  }
+  .scroll-top { transition: none; }
+}
+
 @media (max-width: 600px) {
   header h1 { font-size: 1.8rem; }
-  nav ul { gap: 0.3rem; }
-  nav ul li a { padding: 0.4rem 1rem; font-size: 0.85rem; }
   .hero h2 { font-size: 1.6rem; }
   .cards { grid-template-columns: 1fr; }
   .game-numbers { font-size: 2.2rem; }
