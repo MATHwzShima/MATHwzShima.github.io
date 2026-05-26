@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practices - MATHwzShima</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>MATHwzShima</h1>
+    <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="practices.html" class="active">Practices</a></li>
+      <li><a href="quizzes.html">Quizzes</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="puzzles.html">Puzzles</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div id="lessonSelector">
+      <div class="page-header">
+        <h2>Practice by Lesson</h2>
+        <p>Choose a topic and practice until you master it!</p>
+      </div>
+      <div class="practice-lessons" id="lessonGrid"></div>
+    </div>
+
+    <div id="practiceArea" class="practice-area" style="display:none;">
+      <div class="practice-header-area">
+        <button class="back-btn" onclick="backToLessons()">&larr; All Lessons</button>
+        <h3 id="practiceTitle">Place Value</h3>
+      </div>
+      <div class="practice-question" id="practiceQuestion">Loading...</div>
+      <div id="practiceInputArea">
+        <div class="practice-input-area">
+          <input type="text" id="practiceAnswer" placeholder="Your answer...">
+          <button onclick="checkPracticeAnswer()">Check</button>
+        </div>
+      </div>
+      <div class="game-message" id="practiceMessage"></div>
+      <button class="game-btn" onclick="nextPracticeProblem()">Next Problem</button>
+      <div class="practice-score" id="practiceScore">Score: 0 / 0</div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
+  </footer>
+
+  <script>
+    const lessons = [
+      {
+        id: "place-value", title: "Place Value", icon: "123",
+        generate: function() {
+          const digits = [4,5,6,7][Math.floor(Math.random()*4)];
+          let num = 0;
+          for (let i = 0; i < digits; i++) {
+            num = num * 10 + Math.floor(Math.random()*9) + 1;
+            if (i === 0) num = Math.floor(Math.random()*9) + 1;
+          }
+          const positions = ["ones","tens","hundreds","thousands","ten-thousands","hundred-thousands","millions"];
+          const pos = Math.floor(Math.random() * Math.min(digits, 5)) + 1;
+          const digitVal = Math.floor(num / Math.pow(10, pos-1)) % 10;
+          const placeValue = digitVal * Math.pow(10, pos-1);
+          return {
+            question: `What is the value of the digit ${digitVal} in ${num.toLocaleString()}?`,
+            answer: placeValue.toString(),
+            label: positions[pos-1]
+          };
+        }
+      },
+      {
+        id: "add-sub-decimals", title: "Add & Subtract Decimals", icon: "0.0",
+        generate: function() {
+          const op = Math.random() < 0.5 ? "+" : "-";
+          let a = (Math.random() * 90 + 10).toFixed(1);
+          let b = (Math.random() * 90 + 10).toFixed(1);
+          if (op === "+") {
+            return { question: `${a} + ${b} = ?`, answer: (parseFloat(a) + parseFloat(b)).toFixed(1) };
+          } else {
+            if (parseFloat(a) < parseFloat(b)) [a,b] = [b,a];
+            return { question: `${a} - ${b} = ?`, answer: (parseFloat(a) - parseFloat(b)).toFixed(1) };
+          }
+        }
+      },
+      {
+        id: "multiplication", title: "Multiplication", icon: "x",
+        generate: function() {
+          const a = Math.floor(Math.random() * 90) + 10;
+          const b = Math.floor(Math.random() * 90) + 10;
+          return { question: `${a} x ${b} = ?`, answer: (a * b).toString() };
+        }
+      },
+      {
+        id: "decimal-multiplication", title: "Decimal Multiplication", icon: "1.5x",
+        generate: function() {
+          const a = (Math.random() * 9 + 1).toFixed(1);
+          const b = (Math.random() * 90 + 10).toFixed(1);
+          const ans = (parseFloat(a) * parseFloat(b));
+          return { question: `${a} x ${b} = ?`, answer: ans.toFixed(2) };
+        }
+      },
+      {
+        id: "long-division", title: "Long Division", icon: "/",
+        generate: function() {
+          const divisor = Math.floor(Math.random() * 9) + 2;
+          const quotient = Math.floor(Math.random() * 90) + 10;
+          const dividend = divisor * quotient;
+          return { question: `${dividend} / ${divisor} = ?`, answer: quotient.toString() };
+        }
+      },
+      {
+        id: "decimal-division", title: "Decimal Division", icon: "./.",
+        generate: function() {
+          const divisor = Math.floor(Math.random() * 9) + 2;
+          const quotient = (Math.random() * 9 + 1).toFixed(1);
+          const dividend = (divisor * parseFloat(quotient));
+          return { question: `${dividend.toFixed(1)} / ${divisor} = ?`, answer: quotient };
+        }
+      },
+      {
+        id: "add-sub-fractions", title: "Add & Subtract Fractions", icon: "1/2",
+        generate: function() {
+          const op = Math.random() < 0.5 ? "+" : "-";
+          const d = Math.floor(Math.random() * 5) + 4;
+          let n1 = Math.floor(Math.random() * (d-1)) + 1;
+          let n2 = Math.floor(Math.random() * (d-1)) + 1;
+          if (op === "-" && n1 < n2) [n1,n2] = [n2,n1];
+          const num = op === "+" ? n1 + n2 : n1 - n2;
+          const gcd = (a,b) => b ? gcd(b, a%b) : a;
+          const g = gcd(Math.abs(num), d);
+          const sn = num / g, sd = d / g;
+          const ans = sd === 1 ? sn.toString() : `${sn}/${sd}`;
+          return { question: `${n1}/${d} ${op} ${n2}/${d} = ?`, answer: ans };
+        }
+      },
+      {
+        id: "multiply-fractions", title: "Multiply Fractions", icon: "1/2x",
+        generate: function() {
+          const n1 = Math.floor(Math.random() * 5) + 1;
+          const d1 = Math.floor(Math.random() * 5) + 2;
+          const n2 = Math.floor(Math.random() * 5) + 1;
+          const d2 = Math.floor(Math.random() * 5) + 2;
+          const num = n1 * n2;
+          const den = d1 * d2;
+          const gcd = (a,b) => b ? gcd(b, a%b) : a;
+          const g = gcd(num, den);
+          const sn = num/g, sd = den/g;
+          const ans = sd === 1 ? sn.toString() : `${sn}/${sd}`;
+          return { question: `${n1}/${d1} x ${n2}/${d2} = ?`, answer: ans };
+        }
+      },
+      {
+        id: "divide-fractions", title: "Divide Fractions", icon: "1/2/",
+        generate: function() {
+          const n1 = Math.floor(Math.random() * 5) + 1;
+          const d1 = Math.floor(Math.random() * 5) + 2;
+          const n2 = Math.floor(Math.random() * 5) + 1;
+          const d2 = Math.floor(Math.random() * 5) + 2;
+          const num = n1 * d2;
+          const den = d1 * n2;
+          const gcd = (a,b) => b ? gcd(b, a%b) : a;
+          const g = gcd(num, den);
+          const sn = num/g, sd = den/g;
+          const ans = sd === 1 ? sn.toString() : `${sn}/${sd}`;
+          return { question: `${n1}/${d1} / ${n2}/${d2} = ?`, answer: ans };
+        }
+      },
+      {
+        id: "volume", title: "Volume", icon: "3D",
+        generate: function() {
+          const l = Math.floor(Math.random() * 5) + 2;
+          const w = Math.floor(Math.random() * 5) + 2;
+          const h = Math.floor(Math.random() * 5) + 2;
+          return { question: `Find the volume: ${l} x ${w} x ${h} = ?`, answer: (l*w*h).toString() };
+        }
+      },
+      {
+        id: "order-of-operations", title: "Order of Operations", icon: "PEMDAS",
+        generate: function() {
+          const type = Math.floor(Math.random() * 3);
+          if (type === 0) {
+            const a = Math.floor(Math.random() * 9) + 1;
+            const b = Math.floor(Math.random() * 9) + 1;
+            const c = Math.floor(Math.random() * 9) + 1;
+            return { question: `${a} + ${b} x ${c} = ?`, answer: (a + b * c).toString() };
+          } else if (type === 1) {
+            const a = Math.floor(Math.random() * 9) + 2;
+            const b = Math.floor(Math.random() * 9) + 2;
+            const c = Math.floor(Math.random() * 9) + 2;
+            return { question: `(${a} + ${b}) x ${c} = ?`, answer: ((a+b)*c).toString() };
+          } else {
+            const a = Math.floor(Math.random() * 20) + 5;
+            const b = Math.floor(Math.random() * 9) + 2;
+            const c = Math.floor(Math.random() * 5) + 2;
+            return { question: `${a} - ${b} x ${c} = ?`, answer: (a - b * c).toString() };
+          }
+        }
+      },
+      {
+        id: "metric-customary", title: "Metric & Customary", icon: "cm",
+        generate: function() {
+          const conversions = [
+            { q: "How many centimeters in 1 meter?", a: "100" },
+            { q: "How many millimeters in 1 centimeter?", a: "10" },
+            { q: "How many meters in 1 kilometer?", a: "1000" },
+            { q: "How many grams in 1 kilogram?", a: "1000" },
+            { q: "How many milliliters in 1 liter?", a: "1000" },
+            { q: "How many inches in 1 foot?", a: "12" },
+            { q: "How many feet in 1 yard?", a: "3" },
+            { q: "How many yards in 1 mile?", a: "1760" },
+            { q: "How many pints in 1 quart?", a: "2" },
+            { q: "How many quarts in 1 gallon?", a: "4" },
+            { q: "How many ounces in 1 pound?", a: "16" },
+            { q: "How many pounds in 1 ton?", a: "2000" },
+          ];
+          const c = conversions[Math.floor(Math.random() * conversions.length)];
+          return { question: c.q, answer: c.a };
+        }
+      },
+      {
+        id: "coordinate-plane", title: "Coordinate Plane", icon: "(x,y)",
+        generate: function() {
+          const x = Math.floor(Math.random() * 9) + 1;
+          const y = Math.floor(Math.random() * 9) + 1;
+          const tasks = [
+            { q: `What is the x-coordinate of point (${x}, ${y})?`, a: x.toString() },
+            { q: `What is the y-coordinate of point (${x}, ${y})?`, a: y.toString() },
+            { q: `In which quadrant is (${x > 0 ? "" : "-"}${x}, ${y > 0 ? "" : "-"}${y})? (1, 2, 3, or 4)`, a: (x > 0 && y > 0 ? "1" : x < 0 && y > 0 ? "2" : x < 0 && y < 0 ? "3" : "4") },
+          ];
+          const t = tasks[Math.floor(Math.random() * tasks.length)];
+          return { question: t.q, answer: t.a };
+        }
+      },
+      {
+        id: "line-plot", title: "Line Plot", icon: "_/\\_",
+        generate: function() {
+          const data = [
+            { q: "In a line plot with 3 xs at 2, 5 xs at 3, and 2 xs at 4, what is the total number of xs?", a: "10" },
+            { q: "In a line plot with 4 xs at 1, 6 xs at 2, and 3 xs at 3, what value has the most xs?", a: "2" },
+            { q: "In a line plot with xs at 1,1,2,2,2,3,4,4, how many xs are at 2?", a: "3" },
+            { q: "In a line plot with xs at 1,2,2,3,3,3,4, how many different values are shown?", a: "4" },
+          ];
+          return data[Math.floor(Math.random() * data.length)];
+        }
+      },
+      {
+        id: "numerical-patterns", title: "Numerical Patterns", icon: "1,2,3",
+        generate: function() {
+          const patterns = [
+            { seq: [2, 4, 6, 8], ans: "10" },
+            { seq: [5, 10, 15, 20], ans: "25" },
+            { seq: [3, 6, 9, 12], ans: "15" },
+            { seq: [10, 20, 30, 40], ans: "50" },
+            { seq: [100, 90, 80, 70], ans: "60" },
+            { seq: [1, 4, 9, 16], ans: "25" },
+            { seq: [2, 4, 8, 16], ans: "32" },
+            { seq: [1, 3, 6, 10], ans: "15" },
+            { seq: [50, 45, 40, 35], ans: "30" },
+            { seq: [12, 24, 36, 48], ans: "60" },
+          ];
+          const p = patterns[Math.floor(Math.random() * patterns.length)];
+          return { question: `What comes next? ${p.seq.join(", ")}, ?`, answer: p.ans };
+        }
+      },
+      {
+        id: "quadrilaterals", title: "Quadrilateral Classification", icon: "quad",
+        generate: function() {
+          const qs = [
+            { q: "Which quadrilateral has 4 equal sides and 4 right angles?", opts: ["Square","Rectangle","Rhombus","Trapezoid"], a: 0 },
+            { q: "Which quadrilateral has opposite sides parallel and 4 right angles?", opts: ["Square","Rectangle","Parallelogram","Trapezoid"], a: 1 },
+            { q: "Which quadrilateral has 4 equal sides but not necessarily right angles?", opts: ["Square","Rectangle","Rhombus","Trapezoid"], a: 2 },
+            { q: "Which quadrilateral has exactly one pair of parallel sides?", opts: ["Square","Rectangle","Parallelogram","Trapezoid"], a: 3 },
+            { q: "Which quadrilateral has opposite sides parallel and equal?", opts: ["Trapezoid","Rhombus","Parallelogram","Square"], a: 2 },
+            { q: "How many sides does a quadrilateral have?", opts: ["3","4","5","6"], a: 1 },
+          ];
+          return qs[Math.floor(Math.random() * qs.length)];
+        }
+      },
+      {
+        id: "triangles", title: "Triangle Classification", icon: "tri",
+        generate: function() {
+          const qs = [
+            { q: "A triangle with all sides equal is called?", opts: ["Equilateral","Isosceles","Scalene","Right"], a: 0 },
+            { q: "A triangle with two equal sides is called?", opts: ["Equilateral","Isosceles","Scalene","Right"], a: 1 },
+            { q: "A triangle with no equal sides is called?", opts: ["Equilateral","Isosceles","Scalene","Right"], a: 2 },
+            { q: "A triangle with one right angle is called?", opts: ["Equilateral","Isosceles","Scalene","Right"], a: 3 },
+            { q: "How many sides does a triangle have?", opts: ["2","3","4","5"], a: 1 },
+            { q: "An equilateral triangle has how many equal angles?", opts: ["0","1","2","3"], a: 3 },
+            { q: "What is the sum of all angles in a triangle?", opts: ["90","180","270","360"], a: 1 },
+          ];
+          return qs[Math.floor(Math.random() * qs.length)];
+        }
+      },
+    ];
+
+    let currentLesson = null;
+    let currentProblem = null;
+    let score = 0;
+    let total = 0;
+    let answered = false;
+    let isMultipleChoice = false;
+
+    function renderLessonGrid() {
+      const grid = document.getElementById('lessonGrid');
+      grid.innerHTML = '';
+      lessons.forEach((lesson, i) => {
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+        card.innerHTML = `<div class="lesson-icon">${lesson.icon}</div><h4>${lesson.title}</h4>`;
+        card.onclick = () => startLesson(i);
+        grid.appendChild(card);
+      });
+    }
+
+    function startLesson(index) {
+      currentLesson = index;
+      score = 0;
+      total = 0;
+      document.getElementById('lessonSelector').style.display = 'none';
+      document.getElementById('practiceArea').style.display = 'block';
+      document.getElementById('practiceTitle').textContent = lessons[index].title;
+      nextPracticeProblem();
+    }
+
+    function backToLessons() {
+      document.getElementById('lessonSelector').style.display = 'block';
+      document.getElementById('practiceArea').style.display = 'none';
+      currentLesson = null;
+    }
+
+    function nextPracticeProblem() {
+      const lesson = lessons[currentLesson];
+      currentProblem = lesson.generate();
+      answered = false;
+      document.getElementById('practiceMessage').textContent = '';
+      document.getElementById('practiceMessage').className = 'game-message';
+
+      if (currentProblem.opts) {
+        isMultipleChoice = true;
+        document.getElementById('practiceInputArea').innerHTML = `
+          <div class="practice-options" id="mcOptions"></div>
+        `;
+        const container = document.getElementById('mcOptions');
+        currentProblem.opts.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'practice-option-btn';
+          btn.textContent = opt;
+          btn.onclick = () => checkMCAnswer(i);
+          btn.id = 'mc' + i;
+          container.appendChild(btn);
+        });
+      } else {
+        isMultipleChoice = false;
+        document.getElementById('practiceInputArea').innerHTML = `
+          <div class="practice-input-area">
+            <input type="text" id="practiceAnswer" placeholder="Your answer...">
+            <button onclick="checkPracticeAnswer()">Check</button>
+          </div>
+        `;
+        const input = document.getElementById('practiceAnswer');
+        if (input) {
+          input.focus();
+          input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkPracticeAnswer();
+          });
+        }
+      }
+
+      document.getElementById('practiceQuestion').textContent = currentProblem.question;
+      updateScore();
+    }
+
+    function checkPracticeAnswer() {
+      if (answered) return;
+      const input = document.getElementById('practiceAnswer');
+      if (!input) return;
+      const userAnswer = input.value.trim().toLowerCase();
+      const msg = document.getElementById('practiceMessage');
+      const correct = currentProblem.answer.toLowerCase();
+
+      if (!userAnswer) {
+        msg.textContent = 'Please enter an answer!';
+        msg.className = 'game-message wrong';
+        return;
+      }
+
+      answered = true;
+      total++;
+
+      if (userAnswer === correct) {
+        score++;
+        msg.textContent = 'Correct! Great work!';
+        msg.className = 'game-message correct';
+      } else {
+        msg.textContent = `Not quite! The answer is: ${currentProblem.answer}`;
+        msg.className = 'game-message wrong';
+      }
+      updateScore();
+    }
+
+    function checkMCAnswer(selected) {
+      if (answered) return;
+      answered = true;
+      total++;
+
+      const opts = document.querySelectorAll('.practice-option-btn');
+      opts.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === currentProblem.a) btn.classList.add('correct');
+        if (i === selected && i !== currentProblem.a) btn.classList.add('wrong');
+      });
+
+      const msg = document.getElementById('practiceMessage');
+      if (selected === currentProblem.a) {
+        score++;
+        msg.textContent = 'Correct! Great job!';
+        msg.className = 'game-message correct';
+      } else {
+        msg.textContent = `Not quite! The answer is: ${currentProblem.opts[currentProblem.a]}`;
+        msg.className = 'game-message wrong';
+      }
+      updateScore();
+    }
+
+    function updateScore() {
+      document.getElementById('practiceScore').textContent = `Score: ${score} / ${total}`;
+    }
+
+    renderLessonGrid();
+  </script>
+</body>
+</html>
