@@ -1388,6 +1388,8 @@
       const status = document.getElementById('submitStatus');
       status.innerHTML = '&#128260; Sending...';
 
+      localStorage.removeItem('grade5_memory_book_2016');
+
       function fallbackClipboard() {
         const text = formatAnswersText(payload.sections, '=== My 5th Grade Memory Book (' + payload.studentName + ') ===');
         navigator.clipboard.writeText(text).then(() => {
@@ -1426,7 +1428,8 @@
         form.remove();
         status.innerHTML = '&#9989; Submitted successfully!';
         downloadAnswers();
-        setTimeout(() => { iframe.remove(); clearMemoryBook(); }, 2000);
+        clearMemoryBook();
+        if (iframe.parentNode) iframe.remove();
       } else if (GOOGLE_FORM_URL) {
         fallbackClipboard();
       } else {
