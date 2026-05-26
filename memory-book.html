@@ -1403,22 +1403,25 @@
       }
 
       if (SUBMIT_WEBHOOK_URL) {
-        fetch(SUBMIT_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).then(r => r.json()).then(d => {
-          if (d.success) {
-            status.innerHTML = '&#9989; Submitted to your teacher successfully!';
-            downloadAnswers();
-          } else {
-            status.innerHTML = '&#9888;&#65039; Server error. Using clipboard instead.';
-            fallbackClipboard();
-          }
-        }).catch(() => {
-          status.innerHTML = '&#9888;&#65039; Could not reach server. Using clipboard instead.';
-          fallbackClipboard();
-        });
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = SUBMIT_WEBHOOK_URL;
+        form.target = '_blank';
+        const addField = (name, val) => {
+          const inp = document.createElement('input');
+          inp.type = 'hidden';
+          inp.name = name;
+          inp.value = typeof val === 'string' ? val : JSON.stringify(val);
+          form.appendChild(inp);
+        };
+        addField('studentName', payload.studentName);
+        addField('completion', payload.completion);
+        addField('sections', payload.sections);
+        document.body.appendChild(form);
+        form.submit();
+        form.remove();
+        status.innerHTML = '&#9989; Submitted! A backup file was also downloaded.';
+        downloadAnswers();
       } else if (GOOGLE_FORM_URL) {
         fallbackClipboard();
       } else {

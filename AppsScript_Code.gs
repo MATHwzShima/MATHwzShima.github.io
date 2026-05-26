@@ -61,7 +61,17 @@ function doGet(e) {
 function doPost(e) {
   try {
     const sheet = getOrCreateSheet();
-    const body = JSON.parse(e.postData.contents);
+    let body;
+
+    try {
+      body = JSON.parse(e.postData.contents);
+    } catch (jsonErr) {
+      body = {
+        studentName: e.parameter.studentName,
+        completion: e.parameter.completion,
+        sections: JSON.parse(e.parameter.sections || '{}')
+      };
+    }
 
     sheet.appendRow([
       new Date(),
