@@ -999,6 +999,55 @@
         <p style="color:#888;">Your work is saved automatically in your browser. Come back anytime!</p>
       </div>
 
+      <!-- SUBMIT TO TEACHER -->
+      <div class="section" style="border-color:#4d96ff;background:#f0f7ff;">
+        <div class="section-header">
+          <div class="icon">&#128228;</div>
+          <h2>Submit to Your Teacher</h2>
+          <span class="badge" style="background:#4d96ff;color:#fff;">Submit!</span>
+        </div>
+
+        <div style="text-align:center;padding:10px;">
+          <p style="color:#666;margin-bottom:16px;">Click the button to submit your Memory Book to Mrs. Shimaa!</p>
+          <button onclick="submitToTeacher()" style="font-family:'Fredoka One',cursive;font-size:1.6em;background:linear-gradient(135deg,#4d96ff,#a855f7);color:#fff;border:none;padding:18px 50px;border-radius:24px;cursor:pointer;box-shadow:0 8px 30px rgba(77,150,255,0.4);">Submit to Teacher!</button>
+          <div id="submitStatus" style="margin-top:14px;font-weight:700;font-size:1.1em;min-height:30px;"></div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
+          <hr style="flex:1;border:none;border-top:2px dashed #e0e0e0;">
+          <span style="font-size:0.9em;color:#bbb;">OR use one of these</span>
+          <hr style="flex:1;border:none;border-top:2px dashed #e0e0e0;">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div style="background:#fff;border-radius:16px;padding:20px;text-align:center;border:3px solid #93c5fd;">
+            <div style="font-size:2em;">&#128230;</div>
+            <h4 style="font-family:'Fredoka One',cursive;font-size:1.1em;color:#4d96ff;margin:6px 0;">Download as File</h4>
+            <p style="font-size:0.85em;color:#666;margin-bottom:10px;">Save your answers as a .txt file</p>
+            <button onclick="downloadAnswers()" style="font-family:'Fredoka One',cursive;font-size:1.1em;background:#4d96ff;color:#fff;border:none;padding:12px 24px;border-radius:14px;cursor:pointer;">Download</button>
+          </div>
+          <div style="background:#fff;border-radius:16px;padding:20px;text-align:center;border:3px solid #a7f3d0;">
+            <div style="font-size:2em;">&#128203;</div>
+            <h4 style="font-family:'Fredoka One',cursive;font-size:1.1em;color:#6bcb77;margin:6px 0;">Copy & Paste</h4>
+            <p style="font-size:0.85em;color:#666;margin-bottom:10px;">Copy to clipboard and email your teacher</p>
+            <button onclick="copyAnswers()" style="font-family:'Fredoka One',cursive;font-size:1.1em;background:#6bcb77;color:#fff;border:none;padding:12px 24px;border-radius:14px;cursor:pointer;">Copy</button>
+          </div>
+        </div>
+
+        <div id="exportStatus" style="text-align:center;font-weight:700;font-size:1em;min-height:24px;margin-top:12px;"></div>
+
+        <div style="background:#fff;border-radius:14px;padding:16px;margin-top:16px;border:2px solid #e0e0e0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-weight:700;">Preview of your answers</span>
+          </div>
+          <textarea id="answerPreview" readonly style="width:100%;min-height:150px;border:2px dashed #e0e0e0;border-radius:10px;padding:12px;font-family:monospace;font-size:0.85em;line-height:1.5;background:#fafafa;color:#333;outline:none;resize:vertical;" placeholder="Your answers will appear here..."></textarea>
+        </div>
+
+        <div style="margin-top:12px;background:#fff3cd;border-radius:10px;padding:10px 14px;font-size:0.9em;color:#856404;text-align:center;">
+          Your answers stay on YOUR device until you submit. Nothing is sent automatically!
+        </div>
+      </div>
+
       <div class="print-btn-container">
         <button onclick="window.print()">Print My Book!</button>
       </div>
@@ -1012,6 +1061,13 @@
 
   <script>
     const GOOGLE_FORM_URL = '';
+    
+    setTimeout(() => {
+      if (!GOOGLE_FORM_URL) {
+        const status = document.getElementById('submitStatus');
+        if (status) status.innerHTML = '&#128295; Teacher: set <code>GOOGLE_FORM_URL</code> in the script to enable one-click submit. Students can still download or copy their answers below.';
+      }
+    }, 500);
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -1234,7 +1290,157 @@
       document.querySelectorAll('.mb-container .rating-stars').forEach((container, idx) => { data['rating_' + idx] = container.querySelectorAll('.on').length; });
       document.querySelectorAll('.mb-container .choice-grid').forEach((grid, idx) => { const picked = grid.querySelector('.picked'); data['choice_' + idx] = picked ? picked.textContent.trim() : ''; });
       localStorage.setItem('grade5_memory_book_2016', JSON.stringify(data));
-      alert('Saved! Your memory book is stored in your browser.');
+      refreshPreview();
+    }
+
+    function collectAnswers() {
+      const sections = {};
+      document.querySelectorAll('.tab-section').forEach(section => {
+        const title = section.querySelector('h2')?.textContent || 'Section';
+        const qs = [];
+        section.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], textarea').forEach(el => {
+          if (el.closest('.sig-area')) return;
+          if (el.value && el.value.trim()) {
+            const label = el.closest('div')?.querySelector('label, strong, b')?.textContent?.trim() || el.placeholder || 'Answer';
+            qs.push({ q: label, a: el.value.trim() });
+          }
+        });
+        section.querySelectorAll('.rating-stars').forEach(container => {
+          const val = container.querySelectorAll('.on').length;
+          if (val > 0) {
+            const label = container.closest('div')?.querySelector('strong, b, label')?.textContent?.trim() || 'Rating';
+            qs.push({ q: label, a: '⭐'.repeat(val) });
+          }
+        });
+        section.querySelectorAll('.choice-grid .picked').forEach(el => {
+          const label = el.closest('div')?.previousElementSibling?.textContent?.trim() || 'Choice';
+          qs.push({ q: label, a: el.textContent.trim() });
+        });
+        section.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+          const label = cb.closest('label')?.textContent?.trim() || 'Checked';
+          qs.push({ q: '✓', a: label });
+        });
+        section.querySelectorAll('.found-word').forEach(w => {
+          if (!sections['Word Search']) sections['Word Search'] = [];
+          sections['Word Search'].push(w.textContent.trim());
+        });
+        const madLib = document.getElementById('madLibResult');
+        if (madLib && madLib.textContent && madLib.textContent !== 'Your story will appear here...') {
+          sections['Mad Lib'] = [madLib.textContent.trim()];
+        }
+        if (qs.length > 0) sections[title] = qs;
+      });
+      return sections;
+    }
+
+    function refreshPreview() {
+      const preview = document.getElementById('answerPreview');
+      if (!preview) return;
+      const sections = collectAnswers();
+      let text = '=== My 5th Grade Memory Book ===\n\n';
+      let anyContent = false;
+      Object.entries(sections).forEach(([title, items]) => {
+        if (Array.isArray(items)) {
+          text += '--- ' + title + ' ---\n';
+          items.forEach(item => {
+            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
+            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
+            anyContent = true;
+          });
+          text += '\n';
+        } else {
+          text += '--- ' + title + ' ---\n';
+          text += '  ' + items.join(', ') + '\n\n';
+          anyContent = true;
+        }
+      });
+      if (!anyContent) text += 'Fill in your answers above, and they will appear here!\n';
+      preview.value = text;
+    }
+
+    function submitToTeacher() {
+      const sections = collectAnswers();
+      let text = '=== My 5th Grade Memory Book ===\n\n';
+      Object.entries(sections).forEach(([title, items]) => {
+        if (Array.isArray(items)) {
+          text += '--- ' + title + ' ---\n';
+          items.forEach(item => {
+            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
+            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
+          });
+          text += '\n';
+        } else {
+          text += '--- ' + title + ' ---\n';
+          text += '  ' + items.join(', ') + '\n\n';
+        }
+      });
+
+      const status = document.getElementById('submitStatus');
+
+      if (GOOGLE_FORM_URL) {
+        navigator.clipboard.writeText(text).then(() => {
+          status.innerHTML = '&#9989; Copied! Opening form... paste your answers there!';
+          setTimeout(() => window.open(GOOGLE_FORM_URL, '_blank'), 800);
+        }).catch(() => {
+          status.innerHTML = '&#128196; Unable to copy. Please copy your answers manually from the preview below.';
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          status.innerHTML = '&#9989; Answers copied to clipboard! Send them to your teacher.';
+        }).catch(() => {
+          status.innerHTML = '&#128196; Could not copy. Use Download or manually select text below.';
+        });
+      }
+    }
+
+    function downloadAnswers() {
+      const sections = collectAnswers();
+      let text = '=== My 5th Grade Memory Book ===\n';
+      Object.entries(sections).forEach(([title, items]) => {
+        if (Array.isArray(items)) {
+          text += '\n--- ' + title + ' ---\n';
+          items.forEach(item => {
+            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
+            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
+          });
+        } else {
+          text += '\n--- ' + title + ' ---\n';
+          text += '  ' + items.join(', ') + '\n';
+        }
+      });
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'My_5th_Grade_Memory_Book.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      const status = document.getElementById('exportStatus');
+      if (status) { status.textContent = '✅ File downloaded! Send it to your teacher.'; setTimeout(() => status.textContent = '', 4000); }
+    }
+
+    function copyAnswers() {
+      const sections = collectAnswers();
+      let text = '=== My 5th Grade Memory Book ===\n';
+      Object.entries(sections).forEach(([title, items]) => {
+        if (Array.isArray(items)) {
+          text += '\n--- ' + title + ' ---\n';
+          items.forEach(item => {
+            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
+            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
+          });
+        } else {
+          text += '\n--- ' + title + ' ---\n';
+          text += '  ' + items.join(', ') + '\n';
+        }
+      });
+      navigator.clipboard.writeText(text).then(() => {
+        const status = document.getElementById('exportStatus');
+        if (status) { status.textContent = '✅ Copied to clipboard! Paste it in an email to your teacher.'; setTimeout(() => status.textContent = '', 4000); }
+      }).catch(() => {
+        const status = document.getElementById('exportStatus');
+        if (status) { status.textContent = '❌ Could not copy. Try selecting text manually.'; setTimeout(() => status.textContent = '', 4000); }
+      });
     }
 
     function celebrate() {
@@ -1278,9 +1484,16 @@
         updateMadLib();
       } catch(e) {}
       setTimeout(updateProgress, 100);
+      setTimeout(refreshPreview, 200);
     })();
 
     setInterval(() => { try { saveAll(); } catch(e) {} }, 30000);
+
+    document.querySelectorAll('.mb-container input, .mb-container textarea, .mb-container .rating-stars span, .mb-container .choice-left, .mb-container .choice-right, .mb-container label').forEach(el => {
+      el.addEventListener('input', refreshPreview);
+      el.addEventListener('change', refreshPreview);
+      el.addEventListener('click', function() { setTimeout(refreshPreview, 50); });
+    });
   </script>
 </body>
 </html>
