@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Send a message to Mrs. Shimaa - ask a question, share something, or just say hi!">
+  <meta name="theme-color" content="#6c5ce7">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
+  <title>Ask Mrs. Shimaa - MATHwzShima</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&family=Patrick+Hand&display=swap');
+
+    .ask-page { background: #f0f4ff; }
+
+    .ask-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+      font-family: 'Comic Neue', cursive;
+    }
+
+    /* ── Hero banner ── */
+    .ask-hero {
+      text-align: center;
+      background: linear-gradient(135deg, #a855f7, #6c5ce7, #4d96ff);
+      border-radius: 28px;
+      padding: 44px 30px 36px;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ask-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.07) 20px, rgba(255,255,255,0.07) 40px);
+      pointer-events: none;
+    }
+    .ask-hero .hero-emoji {
+      font-size: 3.8em;
+      display: block;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+    .ask-hero h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.6em;
+      color: #fff;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 8px;
+    }
+    .ask-hero p {
+      font-size: 1.15em;
+      color: rgba(255,255,255,0.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Card ── */
+    .ask-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 32px;
+      box-shadow: 0 8px 32px rgba(108,92,231,0.10);
+      border: 3px solid #ede9fe;
+    }
+
+    /* ── Name field ── */
+    .ask-field {
+      margin-bottom: 24px;
+    }
+    .ask-field label {
+      display: block;
+      font-weight: 700;
+      font-size: 1.05em;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .ask-field label span { font-size: 1.1em; margin-right: 4px; }
+    .ask-field input, .ask-field textarea {
+      font-family: 'Comic Neue', cursive;
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 14px;
+      font-size: 1.05em;
+      outline: none;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ask-field input:focus, .ask-field textarea:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 0 3px rgba(168,85,247,0.12);
+      background: #fff;
+    }
+    .ask-field textarea {
+      min-height: 140px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    /* ── Message type chips ── */
+    .type-label {
+      display: block;
+      font-weight: 700;
+      font-size: 1.05em;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .type-label span { font-size: 1.1em; margin-right: 4px; }
+    .type-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .type-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 18px;
+      border-radius: 50px;
+      border: 2.5px solid #e0e0e0;
+      background: #fafafa;
+      cursor: pointer;
+      font-family: 'Comic Neue', cursive;
+      font-size: 0.97em;
+      font-weight: 700;
+      color: #666;
+      transition: all 0.18s;
+      user-select: none;
+    }
+    .type-chip:hover { border-color: #a855f7; color: #a855f7; background: #faf5ff; }
+    .type-chip.selected {
+      border-color: transparent;
+      color: #fff;
+    }
+    .type-chip[data-type="question"].selected  { background: #4d96ff; }
+    .type-chip[data-type="hi"].selected        { background: #ffa94d; }
+    .type-chip[data-type="help"].selected      { background: #ff6b9d; }
+    .type-chip[data-type="compliment"].selected{ background: #6bcb77; }
+
+    /* ── Send button ── */
+    .send-btn-wrap { text-align: center; margin-top: 8px; }
+    #sendBtn {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5em;
+      background: linear-gradient(135deg, #a855f7, #6c5ce7);
+      color: #fff;
+      border: none;
+      padding: 16px 52px;
+      border-radius: 22px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(108,92,231,0.30);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    #sendBtn:hover:not(:disabled) {
+      transform: scale(1.04);
+      box-shadow: 0 10px 32px rgba(108,92,231,0.38);
+    }
+    #sendBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    #sendStatus {
+      margin-top: 18px;
+      font-weight: 700;
+      font-size: 1.05em;
+      min-height: 32px;
+      text-align: center;
+    }
+
+    /* ── Success card ── */
+    .success-card {
+      display: none;
+      text-align: center;
+      background: linear-gradient(135deg, #f0fdf4, #e0f2fe);
+      border: 3px solid #6bcb77;
+      border-radius: 24px;
+      padding: 44px 28px;
+    }
+    .success-card .s-emoji { font-size: 4em; margin-bottom: 12px; }
+    .success-card h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2em;
+      color: #059669;
+      margin-bottom: 8px;
+    }
+    .success-card p { color: #555; font-size: 1.05em; line-height: 1.7; }
+    .success-card .send-another {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1em;
+      background: #6bcb77;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(107,203,119,0.30);
+      transition: transform 0.18s;
+    }
+    .success-card .send-another:hover { transform: scale(1.04); }
+
+    /* ── Confetti ── */
+    .confetti-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-10px) rotate(0deg);   opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── Tip box ── */
+    .tip-box {
+      margin-top: 28px;
+      background: #fefce8;
+      border: 2px dashed #fde68a;
+      border-radius: 16px;
+      padding: 16px 20px;
+      font-size: 0.93em;
+      color: #92400e;
+      line-height: 1.6;
+    }
+    .tip-box strong { font-weight: 700; }
+
+    @media (max-width: 600px) {
+      .ask-hero h1 { font-size: 2em; }
+      .ask-card { padding: 24px 18px; }
+      .type-chips { gap: 8px; }
+      .type-chip { padding: 8px 14px; font-size: 0.92em; }
+      #sendBtn { font-size: 1.2em; padding: 14px 36px; }
+    }
+  </style>
+</head>
+<body class="ask-page">
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <header>
+    <h1>MATHwzShima</h1>
+    <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="practices.html">Practices</a></li>
+      <li><a href="quizzes.html">Quizzes</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="puzzles.html">Puzzles</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="memory-book.html">Memory Book 2025/2026</a></li>
+      <li><a href="ask.html" class="active">&#128236; Ask Mrs. Shimaa</a></li>
+      <li><a href="teacher.html" class="teacher-link">&#128274; Teacher</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content">
+    <div class="ask-container">
+
+      <!-- Hero -->
+      <div class="ask-hero">
+        <span class="hero-emoji">📬</span>
+        <h1>Ask Mrs. Shimaa</h1>
+        <p>Got a question? Something on your mind? Just want to say hi?<br>Send a message — I read every single one! 💛</p>
+      </div>
+
+      <!-- Form card -->
+      <div class="ask-card" id="formCard">
+
+        <div class="ask-field">
+          <label><span>✏️</span> Your Name</label>
+          <input type="text" id="senderName" placeholder="Type your name here..." maxlength="80" autocomplete="off">
+        </div>
+
+        <div>
+          <span class="type-label"><span>💬</span> What kind of message is this?</span>
+          <div class="type-chips">
+            <div class="type-chip" data-type="question">❓ Question</div>
+            <div class="type-chip" data-type="hi">👋 Just saying hi!</div>
+            <div class="type-chip" data-type="help">🆘 Need help</div>
+            <div class="type-chip" data-type="compliment">💛 Compliment</div>
+          </div>
+        </div>
+
+        <div class="ask-field">
+          <label><span>📝</span> Your Message</label>
+          <textarea id="messageText" placeholder="Write your message here... Don't be shy! 😊" maxlength="1000"></textarea>
+        </div>
+
+        <div class="send-btn-wrap">
+          <button id="sendBtn" onclick="sendMessage()">📨 Send to Mrs. Shimaa!</button>
+          <div id="sendStatus"></div>
+        </div>
+
+        <div class="tip-box">
+          <strong>💡 Tip:</strong> Mrs. Shimaa will see your message right away. If you need a reply, mention your name clearly so she knows who to look for! 😊
+        </div>
+      </div>
+
+      <!-- Success card (shown after send) -->
+      <div class="success-card" id="successCard">
+        <div class="s-emoji">🎉</div>
+        <h2>Message Sent!</h2>
+        <p>Mrs. Shimaa has received your message.<br>She'll see it very soon! 💛</p>
+        <button class="send-another" onclick="resetForm()">📬 Send Another Message</button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
+  </footer>
+
+  <script>
+    const FIREBASE_DB_URL = 'https://mathwzshima-32042-default-rtdb.firebaseio.com';
+    const FORMSPREE_URL   = 'https://formspree.io/f/meedrpyk';
+
+    // ── Type chip selection ──────────────────────────────────────────────────
+    let selectedType = '';
+    document.querySelectorAll('.type-chip').forEach(chip => {
+      chip.addEventListener('click', function () {
+        document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedType = this.dataset.type;
+      });
+    });
+
+    // ── Send ─────────────────────────────────────────────────────────────────
+    function sendMessage() {
+      const name    = document.getElementById('senderName').value.trim();
+      const message = document.getElementById('messageText').value.trim();
+      const status  = document.getElementById('sendStatus');
+      const btn     = document.getElementById('sendBtn');
+
+      // Validate
+      if (!name) {
+        status.style.color = '#f59e0b';
+        status.innerHTML = '⚠️ Please type your name first!';
+        document.getElementById('senderName').focus();
+        return;
+      }
+      if (!message) {
+        status.style.color = '#f59e0b';
+        status.innerHTML = '⚠️ Don\'t forget to write a message!';
+        document.getElementById('messageText').focus();
+        return;
+      }
+
+      // Sending state
+      btn.disabled = true;
+      btn.textContent = '⏳ Sending…';
+      status.style.color = '#888';
+      status.innerHTML = '⏳ Sending your message to Mrs. Shimaa…';
+
+      const typeLabels = {
+        question:   '❓ Question',
+        hi:         '👋 Just saying hi!',
+        help:       '🆘 Need help',
+        compliment: '💛 Compliment',
+      };
+
+      const payload = {
+        studentName:  name,
+        messageType:  typeLabels[selectedType] || '💬 General',
+        message:      message,
+        sentAt:       new Date().toISOString(),
+        source:       'ask-page'
+      };
+
+      // Save to Firebase
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages.json', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Firebase ' + res.status);
+
+        // Email notification (fire-and-forget)
+        if (FORMSPREE_URL && !FORMSPREE_URL.includes('YOUR_FORM_ID')) {
+          fetch(FORMSPREE_URL, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body:    JSON.stringify({
+              _subject: '💬 New Message from ' + name,
+              student_name: name,
+              message_type: typeLabels[selectedType] || 'General',
+              message: message
+            })
+          }).catch(() => {});
+        }
+
+        showSuccess();
+      })
+      .catch(err => {
+        status.style.color = '#e17055';
+        status.innerHTML = '❌ Couldn\'t send right now. Please try again or tell Mrs. Shimaa in person!';
+        btn.disabled = false;
+        btn.textContent = '📨 Send to Mrs. Shimaa!';
+        console.error('Send error:', err);
+      });
+    }
+
+    function showSuccess() {
+      document.getElementById('formCard').style.display    = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      launchConfetti();
+    }
+
+    function resetForm() {
+      document.getElementById('senderName').value  = '';
+      document.getElementById('messageText').value = '';
+      document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('selected'));
+      selectedType = '';
+      document.getElementById('sendStatus').innerHTML = '';
+      document.getElementById('sendBtn').disabled    = false;
+      document.getElementById('sendBtn').textContent = '📨 Send to Mrs. Shimaa!';
+      document.getElementById('formCard').style.display    = 'block';
+      document.getElementById('successCard').style.display = 'none';
+    }
+
+    function launchConfetti() {
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      document.body.appendChild(container);
+      const colors = ['#a855f7','#6c5ce7','#4d96ff','#ffd93d','#6bcb77','#ff6b9d','#ffa94d'];
+      for (let i = 0; i < 90; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left              = Math.random() * 100 + '%';
+        el.style.background        = colors[Math.floor(Math.random() * colors.length)];
+        el.style.width             = (Math.random() * 8 + 4) + 'px';
+        el.style.height            = (Math.random() * 8 + 4) + 'px';
+        el.style.borderRadius      = Math.random() > 0.5 ? '50%' : '3px';
+        el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+        el.style.animationDelay    = (Math.random() * 1.5) + 's';
+        container.appendChild(el);
+      }
+      setTimeout(() => container.remove(), 4000);
+    }
+
+    // Allow Enter key to submit (Shift+Enter = new line in textarea)
+    document.getElementById('senderName').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('messageText').focus(); }
+    });
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>
