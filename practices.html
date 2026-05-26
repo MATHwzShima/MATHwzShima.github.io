@@ -39,6 +39,7 @@
         <button class="back-btn" onclick="backToLessons()">&larr; All Lessons</button>
         <h3 id="practiceTitle">Place Value</h3>
       </div>
+      <div id="practiceVisual"></div>
       <div class="practice-question" id="practiceQuestion">Loading...</div>
       <div id="practiceInputArea">
         <div class="practice-input-area">
@@ -244,13 +245,74 @@
       {
         id: "line-plot", title: "Line Plot", icon: "_/\\_",
         generate: function() {
-          const data = [
-            { q: "In a line plot with 3 xs at 2, 5 xs at 3, and 2 xs at 4, what is the total number of xs?", a: "10" },
-            { q: "In a line plot with 4 xs at 1, 6 xs at 2, and 3 xs at 3, what value has the most xs?", a: "2" },
-            { q: "In a line plot with xs at 1,1,2,2,2,3,4,4, how many xs are at 2?", a: "3" },
-            { q: "In a line plot with xs at 1,2,2,3,3,3,4, how many different values are shown?", a: "4" },
+          const values = [];
+          const numValues = Math.floor(Math.random() * 3) + 3;
+          let start = Math.floor(Math.random() * 5) + 1;
+          const data = {};
+          for (let i = 0; i < numValues; i++) {
+            const v = start + i;
+            const count = Math.floor(Math.random() * 4) + 1;
+            data[v] = count;
+            values.push(v);
+            if (Math.random() < 0.3) start++;
+          }
+          const qTypes = [
+            {
+              q: "What is the total number of X's?",
+              getAnswer: function(d) {
+                let total = 0;
+                for (let v in d) total += d[v];
+                return total.toString();
+              }
+            },
+            {
+              q: "Which value has the most X's?",
+              getAnswer: function(d) {
+                let maxV = null, maxC = -1;
+                for (let v in d) { if (d[v] > maxC) { maxC = d[v]; maxV = v; } }
+                return maxV;
+              }
+            },
+            {
+              q: null,
+              getAnswer: function(d) {
+                const keys = Object.keys(d);
+                const target = keys[Math.floor(Math.random() * keys.length)];
+                this.q = `How many X's are above the value ${target}?`;
+                return d[target].toString();
+              }
+            },
+            {
+              q: "How many different values have X's?",
+              getAnswer: function(d) {
+                return Object.keys(d).length.toString();
+              }
+            },
           ];
-          return data[Math.floor(Math.random() * data.length)];
+          const q = qTypes[Math.floor(Math.random() * qTypes.length)];
+          const answer = q.getAnswer(data);
+          return {
+            question: q.q,
+            answer: answer,
+            render: function(container) {
+              const keys = Object.keys(data).map(Number).sort((a,b) => a-b);
+              const maxCount = Math.max(...Object.values(data));
+              let html = '<div style="display:flex;align-items:flex-end;gap:0;padding:1rem 0.5rem;overflow-x:auto;">';
+              keys.forEach(v => {
+                const c = data[v];
+                html += '<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:50px;">';
+                html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">';
+                for (let i = 0; i < c; i++) {
+                  html += '<div style="font-size:1.1rem;font-weight:700;line-height:1.2;color:#6c5ce7;">x</div>';
+                }
+                html += '</div>';
+                html += `<div style="border-top:2px solid #333;width:100%;text-align:center;padding-top:4px;font-weight:700;font-size:0.95rem;">${v}</div>`;
+                html += '</div>';
+              });
+              html += '</div>';
+              container.innerHTML = html;
+            }
+          };
         }
       },
       {
@@ -344,6 +406,11 @@
       answered = false;
       document.getElementById('practiceMessage').textContent = '';
       document.getElementById('practiceMessage').className = 'game-message';
+      document.getElementById('practiceVisual').innerHTML = '';
+
+      if (currentProblem.render) {
+        currentProblem.render(document.getElementById('practiceVisual'));
+      }
 
       if (currentProblem.opts) {
         isMultipleChoice = true;

@@ -675,6 +675,15 @@ footer {
   color: #6c5ce7;
 }
 
+#practiceVisual {
+  background: #fff;
+  border: 2px solid #e8e5ff;
+  border-radius: 12px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  min-height: 50px;
+}
+
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
