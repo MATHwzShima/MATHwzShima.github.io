@@ -122,6 +122,7 @@
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCounter = document.getElementById('lightboxCounter');
+    let shuffledImages = [];
     let currentIndex = 0;
 
     function shuffleArray(arr) {
@@ -133,9 +134,9 @@
     }
 
     function renderGallery() {
-      const shuffled = shuffleArray([...images]);
+      shuffledImages = shuffleArray([...images]);
       grid.innerHTML = '';
-      shuffled.forEach((src, idx) => {
+      shuffledImages.forEach((src, idx) => {
         const item = document.createElement('div');
         item.className = 'gallery-item';
         const img = document.createElement('img');
@@ -150,9 +151,8 @@
 
     function openLightbox(index) {
       currentIndex = index;
-      const src = images[index];
-      lightboxImg.src = src;
-      lightboxCounter.textContent = `${index + 1} / ${images.length}`;
+      lightboxImg.src = shuffledImages[index];
+      lightboxCounter.textContent = `${index + 1} / ${shuffledImages.length}`;
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -163,15 +163,15 @@
     }
 
     function prevImage() {
-      currentIndex = (currentIndex - 1 + images.length) % images.length;
-      lightboxImg.src = images[currentIndex];
-      lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+      currentIndex = (currentIndex - 1 + shuffledImages.length) % shuffledImages.length;
+      lightboxImg.src = shuffledImages[currentIndex];
+      lightboxCounter.textContent = `${currentIndex + 1} / ${shuffledImages.length}`;
     }
 
     function nextImage() {
-      currentIndex = (currentIndex + 1) % images.length;
-      lightboxImg.src = images[currentIndex];
-      lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+      currentIndex = (currentIndex + 1) % shuffledImages.length;
+      lightboxImg.src = shuffledImages[currentIndex];
+      lightboxCounter.textContent = `${currentIndex + 1} / ${shuffledImages.length}`;
     }
 
     document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
