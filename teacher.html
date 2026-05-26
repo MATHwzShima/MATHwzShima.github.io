@@ -189,6 +189,22 @@
     .dash-section { display:none; }
     .dash-section.active { display:block; }
 
+    /* Delete button */
+    .del-btn {
+      background: transparent;
+      border: 2px solid #fca5a5;
+      color: #e17055;
+      border-radius: 10px;
+      padding: 5px 12px;
+      font-size: .8em;
+      cursor: pointer;
+      font-family: 'Fredoka One', cursive;
+      transition: all .18s;
+      flex-shrink: 0;
+    }
+    .del-btn:hover { background:#fee2e2; border-color:#e17055; }
+    .s-card-top { display:flex; justify-content:space-between; align-items:flex-start; }
+
     /* Message cards */
     .msgs-list { display:flex; flex-direction:column; gap:14px; }
     .msg-card {
@@ -436,7 +452,10 @@
         var pct  = parseInt(sub.completion) || 0;
         var date = sub.submittedAt ? new Date(sub.submittedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
         html += '<div class="s-card" id="sc'+i+'" onclick="showStudent('+i+')">';
+        html += '<div class="s-card-top">';
         html += '<div class="s-name">&#128100; ' + esc(sub.studentName || 'Anonymous') + '</div>';
+        html += '<button class="del-btn" onclick="event.stopPropagation();deleteSubmission(\''+sub._fbKey+'\',\''+esc(sub.studentName||'Anonymous')+'\')">🗑 Delete</button>';
+        html += '</div>';
         html += '<div class="s-meta">' + date + '</div>';
         html += '<div class="s-bar"><div class="s-fill" style="width:'+pct+'%"></div></div>';
         html += '<div class="s-pct">' + pct + '% complete</div>';
@@ -464,7 +483,10 @@
       var html = '<div class="v-hdr">';
       html += '<div><h3>&#128100; ' + esc(name) + '\'s Memory Book</h3>';
       html += '<div class="sub">' + pct + '% complete &middot; ' + date + '</div></div>';
-      html += '<button class="v-close" onclick="closeViewer()" title="Close">&#10005;</button></div>';
+      html += '<div style="display:flex;gap:8px;align-items:center;">';
+      html += '<button class="del-btn" style="border-color:rgba(255,255,255,.5);color:#fff;" onclick="deleteSubmission(\''+sub._fbKey+'\',\''+esc(name)+'\')">🗑 Delete</button>';
+      html += '<button class="v-close" onclick="closeViewer()" title="Close">&#10005;</button>';
+      html += '</div></div>';
 
       if (keys.length === 0) {
         // Fallback: show raw answers text
@@ -540,6 +562,28 @@
       return d.innerHTML;
     }
 
+    /* ── Delete functions ── */
+    function deleteSubmission(key, name) {
+      if (!confirm('Delete ' + name + '\'s Memory Book submission?\n\nThis cannot be undone.')) return;
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/submissions/' + key + '.json', { method: 'DELETE' })
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          closeViewer();
+          loadSubmissions();
+        })
+        .catch(function(err) { alert('Could not delete: ' + err.message); });
+    }
+
+    function deleteMessage(key, name) {
+      if (!confirm('Delete this message from ' + name + '?\n\nThis cannot be undone.')) return;
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages/' + key + '.json', { method: 'DELETE' })
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          loadMessages();
+        })
+        .catch(function(err) { alert('Could not delete: ' + err.message); });
+    }
+
     /* ── Messages loader ── */
     var allMessages = [];
 
@@ -608,7 +652,10 @@
         html += '<div class="msg-top">';
         html += '<div><div class="msg-name">&#128100; ' + esc(msg.studentName || 'Anonymous') + '</div>';
         html += '<div class="msg-date">' + date + '</div></div>';
+        html += '<div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">';
         html += '<span class="msg-type-badge">' + esc(rawType) + '</span>';
+        html += '<button class="del-btn" onclick="deleteMessage(\''+msg._fbKey+'\',\''+esc(msg.studentName||'Anonymous')+'\')">🗑 Delete</button>';
+        html += '</div>';
         html += '</div>';
         html += '<div class="msg-body">' + esc(msg.message || '') + '</div>';
         html += '</div>';
