@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Book 2015/2016 - MATHwzShima</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&family=Patrick+Hand&display=swap');
+
+    .memory-book-page { background: #fff9e6; }
+
+    .mb-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: 'Comic Neue', cursive;
+      color: #333;
+    }
+
+    .mb-container .cover {
+      text-align: center;
+      padding: 50px 30px 40px;
+      background: linear-gradient(135deg, #ff6b9d, #ffa94d, #ffd93d, #6bcb77, #4d96ff, #a855f7);
+      border-radius: 30px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mb-container .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px);
+      pointer-events: none;
+    }
+    .mb-container .cover h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3.8em;
+      color: #fff;
+      text-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 1;
+    }
+    .mb-container .cover .subtitle {
+      font-size: 1.6em;
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 1;
+    }
+    .mb-container .cover .year {
+      font-family: 'Fredoka One', cursive;
+      font-size: 5em;
+      color: rgba(255,255,255,0.3);
+      position: absolute;
+      bottom: -10px;
+      right: 20px;
+      z-index: 0;
+    }
+    .mb-container .cover .year-sub {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3em;
+      color: rgba(255,255,255,0.2);
+      position: absolute;
+      bottom: 50px;
+      left: 20px;
+      z-index: 0;
+    }
+    .mb-container .cover-input {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+    }
+    .mb-container .cover-input input {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1.5em;
+      padding: 10px 24px;
+      border: 3px dashed rgba(255,255,255,0.6);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.85);
+      text-align: center;
+      width: 80%;
+      max-width: 400px;
+      outline: none;
+    }
+    .mb-container .cover-input input:focus {
+      border-color: #fff;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+
+    .mb-container .section {
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      page-break-inside: avoid;
+      border: 3px solid #f0f0f0;
+    }
+    .mb-container .section:hover { border-color: #e0e0e0; }
+    .mb-container .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 3px dashed #eee;
+    }
+    .mb-container .section-header .icon { font-size: 2em; }
+    .mb-container .section-header h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.7em;
+      color: #333;
+    }
+    .mb-container .section-header .badge {
+      margin-left: auto;
+      background: #ffd93d;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85em;
+    }
+
+    .mb-container .prompt { margin-bottom: 16px; }
+    .mb-container .prompt label {
+      display: block;
+      font-weight: 700;
+      font-size: 1.1em;
+      margin-bottom: 4px;
+      color: #555;
+    }
+    .mb-container .prompt input, .mb-container .prompt textarea {
+      font-family: 'Comic Neue', cursive;
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1em;
+      outline: none;
+      background: #fafafa;
+    }
+    .mb-container .prompt input:focus, .mb-container .prompt textarea:focus {
+      border-color: #4d96ff;
+      background: #fff;
+    }
+    .mb-container .prompt textarea { min-height: 70px; resize: vertical; line-height: 1.5; }
+    .mb-container .prompt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .mb-container .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .mb-container .fav-item {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+    .mb-container .fav-item:nth-child(2n) { background: linear-gradient(135deg, #e0f2fe, #bae6fd); }
+    .mb-container .fav-item:nth-child(3n) { background: linear-gradient(135deg, #fce7f3, #f9a8d4); }
+    .mb-container .fav-item .fav-label { font-weight: 700; font-size: 0.95em; margin-bottom: 4px; }
+    .mb-container .fav-item input {
+      font-family: 'Comic Neue', cursive;
+      width: 100%;
+      text-align: center;
+      border: none;
+      background: rgba(255,255,255,0.6);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.95em;
+      outline: none;
+    }
+    .mb-container .fav-item input:focus { background: rgba(255,255,255,0.9); }
+
+    .mb-container .top10-list { list-style: none; counter-reset: top10; }
+    .mb-container .top10-list li {
+      counter-increment: top10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .mb-container .top10-list li::before {
+      content: counter(top10);
+      font-family: 'Fredoka One', cursive;
+      background: #ffd93d;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1em;
+    }
+    .mb-container .top10-list li:nth-child(1)::before { background: #ffd700; }
+    .mb-container .top10-list li:nth-child(2)::before { background: #c0c0c0; }
+    .mb-container .top10-list li:nth-child(3)::before { background: #cd7f32; }
+    .mb-container .top10-list li input {
+      font-family: 'Comic Neue', cursive;
+      flex: 1;
+      padding: 9px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 0.98em;
+      outline: none;
+    }
+    .mb-container .top10-list li input:focus { border-color: #4d96ff; }
+
+    .mb-container .super-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .mb-container .super-card {
+      background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      border: 2px solid #c4b5fd;
+    }
+    .mb-container .super-card:nth-child(2n) { background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-color: #93c5fd; }
+    .mb-container .super-card:nth-child(3n) { background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-color: #6ee7b7; }
+    .mb-container .super-card .super-title { font-weight: 700; font-size: 1em; margin-bottom: 6px; }
+    .mb-container .super-card input {
+      font-family: 'Comic Neue', cursive;
+      width: 100%;
+      text-align: center;
+      border: none;
+      background: rgba(255,255,255,0.7);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.95em;
+      outline: none;
+    }
+
+    .mb-container .friend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .mb-container .friend-card {
+      background: #fff;
+      border: 2px dashed #4d96ff;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .mb-container .friend-card .friend-emoji { font-size: 2.5em; }
+    .mb-container .friend-card input {
+      font-family: 'Patrick Hand', cursive;
+      width: 100%;
+      text-align: center;
+      border: none;
+      border-bottom: 2px dotted #ccc;
+      background: transparent;
+      font-size: 1em;
+      outline: none;
+      padding: 2px;
+    }
+    .mb-container .friend-card .friend-memory { font-size: 0.8em; color: #888; }
+
+    .mb-container .letter-page {
+      background: linear-gradient(180deg, #fff 0%, #fefce8 100%);
+      border: 3px solid #fde68a;
+      border-radius: 20px;
+      padding: 30px;
+    }
+    .mb-container .letter-page .letter-greeting {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+    .mb-container .letter-page textarea {
+      font-family: 'Patrick Hand', cursive;
+      width: 100%;
+      min-height: 250px;
+      border: none;
+      background: rgba(255,255,255,0.5);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 1.2em;
+      line-height: 1.8;
+      outline: none;
+      resize: vertical;
+    }
+    .mb-container .letter-page textarea:focus { background: rgba(255,255,255,0.8); }
+
+    .mb-container .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .mb-container .choice-grid .choice-left, .mb-container .choice-grid .choice-right {
+      background: #f0f4ff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      border: 2px solid transparent;
+      user-select: none;
+    }
+    .mb-container .choice-grid .choice-left:hover, .mb-container .choice-grid .choice-right:hover { border-color: #4d96ff; }
+    .mb-container .choice-grid .choice-left.picked { background: #4d96ff; color: #fff; border-color: #4d96ff; }
+    .mb-container .choice-grid .choice-right.picked { background: #ff6b9d; color: #fff; border-color: #ff6b9d; }
+    .mb-container .choice-grid .vs {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3em;
+      color: #ffa94d;
+    }
+    .mb-container .choice-grid .chosen-count { font-size: 0.75em; color: #999; margin-top: 2px; }
+
+    .mb-container .word-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 36px);
+      gap: 3px;
+      justify-content: center;
+      margin: 15px 0;
+    }
+    .mb-container .word-cell {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9em;
+      background: #fff;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 4px;
+    }
+    .mb-container .word-cell.found { background: #ffd93d; border-color: #f59e0b; }
+    .mb-container .word-cell.highlight { background: #6bcb77; color: #fff; }
+    .mb-container .word-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .mb-container .word-list span {
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: #f0f0f0;
+    }
+    .mb-container .word-list span.found-word { background: #6bcb77; color: #fff; text-decoration: line-through; }
+
+    .mb-container .sig-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .mb-container .sig-line {
+      border-bottom: 2px dotted #ccc;
+      padding: 8px 4px 2px;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1em;
+      min-height: 30px;
+      text-align: center;
+    }
+    .mb-container .sig-line input {
+      font-family: 'Patrick Hand', cursive;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 1em;
+      outline: none;
+    }
+
+    .mb-container .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .mb-container .rating-row .rating-label { width: 140px; font-weight: 700; flex-shrink: 0; }
+    .mb-container .rating-stars { display: flex; gap: 4px; }
+    .mb-container .rating-stars span { font-size: 1.6em; cursor: pointer; opacity: 0.3; }
+    .mb-container .rating-stars span.on { opacity: 1; }
+
+    .mb-container .snapshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .mb-container .snapshot {
+      background: #f8f9fa;
+      border: 2px dashed #ccc;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      min-height: 100px;
+    }
+    .mb-container .snapshot .snap-emoji { font-size: 2.5em; margin-bottom: 6px; }
+    .mb-container .snapshot textarea {
+      font-family: 'Comic Neue', cursive;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 0.95em;
+      outline: none;
+      resize: none;
+      min-height: 50px;
+    }
+
+    .mb-container .print-btn-container { text-align: center; margin: 30px 0; }
+    .mb-container .print-btn-container button {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4em;
+      background: linear-gradient(135deg, #4d96ff, #a855f7);
+      color: #fff;
+      border: none;
+      padding: 16px 44px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(77,150,255,0.35);
+    }
+    .mb-container .print-btn-container button:hover { transform: scale(1.03); }
+
+    .mb-container .save-btn {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1em;
+      background: #6bcb77;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 14px;
+      cursor: pointer;
+      margin: 0 8px;
+    }
+
+    .mb-container .tab-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+    .mb-container .tab-btn {
+      font-family: 'Fredoka One', cursive;
+      padding: 10px 20px;
+      border-radius: 16px;
+      border: 3px solid transparent;
+      background: #fff;
+      font-size: 0.9em;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .mb-container .tab-btn:hover { border-color: #ddd; }
+    .mb-container .tab-btn.active { border-color: #4d96ff; background: #f0f7ff; }
+    .mb-container .tab-section { display: none; }
+    .mb-container .tab-section.active { display: block; }
+
+    .mb-container .progress-bar {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .mb-container .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6bcb77, #4d96ff);
+      border-radius: 3px;
+      width: 0%;
+    }
+    .mb-container .progress-text { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 10px; }
+
+    .mb-container .confetti-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .mb-container .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    .mb-container .footer-note { text-align: center; color: #bbb; font-size: 0.9em; margin-top: 40px; padding-bottom: 40px; }
+
+    @media (max-width: 600px) {
+      .mb-container .cover h1 { font-size: 2.4em; }
+      .mb-container .cover .subtitle { font-size: 1.2em; }
+      .mb-container .prompt-row { grid-template-columns: 1fr; }
+      .mb-container .snapshot-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      @page { margin: 0.4in; }
+      .memory-book-page main { max-width: 100%; margin: 0; padding: 0; }
+      .memory-book-page header,
+      .memory-book-page nav,
+      .memory-book-page footer { display: none !important; }
+      .mb-container .section { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+      .mb-container .cover { border-radius: 0; padding: 30px; }
+      .mb-container .print-btn-container { display: none; }
+      .mb-container .save-btn { display: none; }
+    }
+  </style>
+</head>
+<body class="memory-book-page">
+  <header>
+    <h1>MATHwzShima</h1>
+    <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="practices.html">Practices</a></li>
+      <li><a href="quizzes.html">Quizzes</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="puzzles.html">Puzzles</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="memory-book.html" class="active">Memory Book 2015/2016</a></li>
+    </ul>
+  </nav>
+
+  <main style="max-width:100%;padding:0;margin:0;background:#fff9e6;">
+    <div class="mb-container">
+
+      <div class="tab-bar" id="tabBar">
+        <button class="tab-btn active" data-tab="tab-memories">Memories</button>
+        <button class="tab-btn" data-tab="tab-favorites">Favorites</button>
+        <button class="tab-btn" data-tab="tab-superlatives">Awards</button>
+        <button class="tab-btn" data-tab="tab-friends">Friends</button>
+        <button class="tab-btn" data-tab="tab-letters">Letters</button>
+        <button class="tab-btn" data-tab="tab-fun">Fun</button>
+      </div>
+
+      <div class="progress-text" id="progressText">0% complete</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+      <!-- TAB 1: MEMORIES -->
+      <div class="tab-section active" id="tab-memories">
+
+        <div class="cover">
+          <h1>MY 5TH GRADE<br>MEMORY BOOK</h1>
+          <div class="subtitle">Here's my story...</div>
+          <div class="year">2016</div>
+          <div class="year-sub">2015</div>
+          <div class="cover-input">
+            <input id="studentName" placeholder="Type your name here..." oninput="updateProgress()">
+          </div>
+          <div style="margin-top:10px;z-index:1;position:relative;">
+            <input id="schoolName" placeholder="School..." style="font-family:'Patrick Hand',cursive;font-size:1.2em;padding:6px 16px;border:2px dashed rgba(255,255,255,0.4);border-radius:10px;background:rgba(255,255,255,0.6);text-align:center;width:220px;outline:none;" oninput="updateProgress()">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#128221;</div>
+            <h2>My 5th Grade Story</h2>
+            <span class="badge">Real talk!</span>
+          </div>
+          <p style="margin-bottom:16px;color:#666;">The good, the hard, and everything in between. Be honest!</p>
+          <div class="snapshot-grid">
+            <div class="snapshot" style="border-color:#ffadad;">
+              <div class="snap-emoji">&#128557;</div>
+              <textarea placeholder="A difficult moment I went through this year..." oninput="updateProgress()"></textarea>
+            </div>
+            <div class="snapshot" style="border-color:#bae6fd;">
+              <div class="snap-emoji">&#128513;</div>
+              <textarea placeholder="My happiest moment this year..." oninput="updateProgress()"></textarea>
+            </div>
+            <div class="snapshot" style="border-color:#a7f3d0;">
+              <div class="snap-emoji">&#128170;</div>
+              <textarea placeholder="Something I overcame — a challenge I faced..." oninput="updateProgress()"></textarea>
+            </div>
+            <div class="snapshot" style="border-color:#fde68a;">
+              <div class="snap-emoji">&#128214;</div>
+              <textarea placeholder="A struggle I went through and what it taught me..." oninput="updateProgress()"></textarea>
+            </div>
+            <div class="snapshot" style="border-color:#ddd6fe;grid-column:span 2;">
+              <div class="snap-emoji">&#129309;</div>
+              <textarea placeholder="A friend or person who really affected my life this year..." oninput="updateProgress()" style="min-height:80px;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#11088;</div>
+            <h2>Rate Your Year</h2>
+            <span class="badge">Tap the stars!</span>
+          </div>
+          <div class="rating-row">
+            <div class="rating-label">Overall 5th Grade:</div>
+            <div class="rating-stars" data-max="5">
+              <span data-val="1">&#11088;</span><span data-val="2">&#11088;</span><span data-val="3">&#11088;</span><span data-val="4">&#11088;</span><span data-val="5">&#11088;</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#128151;</div>
+            <h2>My Heart This Year</h2>
+            <span class="badge">Get real!</span>
+          </div>
+          <p style="margin-bottom:14px;color:#666;">The emotional stuff — be honest, this is for YOU.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:#fce4ec;border-radius:14px;padding:14px;border:2px solid #f8bbd0;">
+              <div style="font-size:1.5em;text-align:center;margin-bottom:4px;">&#128170;</div>
+              <textarea placeholder="A moment I felt really proud of myself..." style="background:transparent;border:none;width:100%;min-height:60px;font-family:'Comic Neue',cursive;font-size:0.98em;outline:none;resize:vertical;" oninput="updateProgress()"></textarea>
+            </div>
+            <div style="background:#e3f2fd;border-radius:14px;padding:14px;border:2px solid #bbdefb;">
+              <div style="font-size:1.5em;text-align:center;margin-bottom:4px;">&#128546;</div>
+              <textarea placeholder="Something that made me really sad this year..." style="background:transparent;border:none;width:100%;min-height:60px;font-family:'Comic Neue',cursive;font-size:0.98em;outline:none;resize:vertical;" oninput="updateProgress()"></textarea>
+            </div>
+            <div style="background:#fff3e0;border-radius:14px;padding:14px;border:2px solid #ffe0b2;">
+              <div style="font-size:1.5em;text-align:center;margin-bottom:4px;">&#128584;</div>
+              <textarea placeholder="A time I felt nervous but did it anyway..." style="background:transparent;border:none;width:100%;min-height:60px;font-family:'Comic Neue',cursive;font-size:0.98em;outline:none;resize:vertical;" oninput="updateProgress()"></textarea>
+            </div>
+            <div style="background:#f3e5f5;border-radius:14px;padding:14px;border:2px solid #e1bee7;">
+              <div style="font-size:1.5em;text-align:center;margin-bottom:4px;">&#128591;</div>
+              <textarea placeholder="Something I'm grateful for from this year..." style="background:transparent;border:none;width:100%;min-height:60px;font-family:'Comic Neue',cursive;font-size:0.98em;outline:none;resize:vertical;" oninput="updateProgress()"></textarea>
+            </div>
+            <div style="background:#e8f5e9;border-radius:14px;padding:14px;border:2px solid #c8e6c9;">
+              <div style="font-size:1.5em;text-align:center;margin-bottom:4px;">&#128200;</div>
+              <textarea placeholder="How I've changed since the beginning of the year..." style="background:transparent;border:none;width:100%;min-height:60px;font-family:'Comic Neue',cursive;font-size:0.98em;outline:none;resize:vertical;" oninput="updateProgress()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: FAVORITES -->
+      <div class="tab-section" id="tab-favorites">
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#11088;</div>
+            <h2>My 5th Grade Favorites</h2>
+            <span class="badge">You pick!</span>
+          </div>
+          <div class="favorites-grid">
+            <div class="fav-item"><div class="fav-label">Subject</div><input placeholder="e.g. Math, Art..." oninput="updateProgress()"></div>
+            <div class="fav-item"><div class="fav-label">Book</div><input placeholder="e.g. Harry Potter..." oninput="updateProgress()"></div>
+            <div class="fav-item"><div class="fav-label">Lunch</div><input placeholder="e.g. Pizza day!" oninput="updateProgress()"></div>
+            <div class="fav-item"><div class="fav-label">Recess Game</div><input placeholder="e.g. Four Square..." oninput="updateProgress()"></div>
+            <div class="fav-item"><div class="fav-label">Project</div><input placeholder="e.g. Volcano..." oninput="updateProgress()"></div>
+            <div class="fav-item"><div class="fav-label">Song</div><input placeholder="e.g. Call Me Maybe..." oninput="updateProgress()"></div>
+            <div class="fav-item"><div class="fav-label">Inside Joke</div><input placeholder="What made you laugh?" oninput="updateProgress()"></div>
+          </div>
+          <div style="margin-top:20px;">
+            <div class="prompt">
+              <label>Three words that describe 5th grade:</label>
+              <div class="prompt-row">
+                <input placeholder="Word 1..." oninput="updateProgress()">
+                <input placeholder="Word 2..." oninput="updateProgress()">
+                <input placeholder="Word 3..." oninput="updateProgress()">
+              </div>
+            </div>
+          </div>
+          <div class="prompt" style="margin-top:16px;">
+            <label>If you could take ONE thing from 5th grade with you forever, what would it be?</label>
+            <textarea placeholder="A memory? A lesson? A friendship? Something you learned about yourself?..." style="min-height:70px;" oninput="updateProgress()"></textarea>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#127942;</div>
+            <h2>Top 10 Moments of 5th Grade</h2>
+            <span class="badge">Count 'em down!</span>
+          </div>
+          <ol class="top10-list">
+            <li><input placeholder="My #1 moment..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="..." oninput="updateProgress()"></li>
+            <li><input placeholder="My #10 moment..." oninput="updateProgress()"></li>
+          </ol>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#127912;</div>
+            <h2>A Picture of My Year</h2>
+            <span class="badge">Describe it!</span>
+          </div>
+          <div class="prompt">
+            <label>If 5th grade was a drawing, what would it look like?</label>
+            <textarea placeholder="Describe or sketch with words what your year looked like..." style="min-height:100px;" oninput="updateProgress()"></textarea>
+          </div>
+          <div class="prompt">
+            <label>What emoji represents this year for you?</label>
+            <input placeholder="e.g. &#128513; or &#128588; or &#127881;" style="max-width:200px;text-align:center;font-size:1.5em;" oninput="updateProgress()">
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: SUPERLATIVES / AWARDS -->
+      <div class="tab-section" id="tab-superlatives">
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#127942;</div>
+            <h2>Class Awards</h2>
+            <span class="badge">Nominate!</span>
+          </div>
+          <p style="margin-bottom:16px;color:#666;">Give a classmate (or yourself!) an award for each category.</p>
+          <div class="super-grid">
+            <div class="super-card"><div class="super-title">The Nerd</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">The Coolest</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">The Quietest</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">The Funniest</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">The Friendliest</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Best Dancer</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Kindest Heart</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Future Scientist</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Best Artist</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Most Likely to Succeed</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Best Smile</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Class MVP</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Most Athletic</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Biggest Heart</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Best Laugh</div><input placeholder="Name..." oninput="updateProgress()"></div>
+            <div class="super-card"><div class="super-title">Most Creative</div><input placeholder="Name..." oninput="updateProgress()"></div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#127775;</div>
+            <h2>My Personal Award</h2>
+            <span class="badge">Yourself!</span>
+          </div>
+          <div class="prompt">
+            <label>I deserve the "Most _________ " award because...</label>
+            <div class="prompt-row">
+              <input placeholder="e.g. Most Improved" oninput="updateProgress()">
+              <input placeholder="e.g. Most Creative" oninput="updateProgress()">
+            </div>
+            <textarea placeholder="Explain why you deserve this award..." style="margin-top:10px;" oninput="updateProgress()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: FRIENDS -->
+      <div class="tab-section" id="tab-friends">
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#129309;</div>
+            <h2>Friends Forever</h2>
+            <span class="badge">Sign here!</span>
+          </div>
+          <p style="margin-bottom:16px;color:#666;">Type your friends' names and a memory with each one!</p>
+          <div class="friend-grid">
+            <div class="friend-card"><div class="friend-emoji">&#128578;</div><input placeholder="Friend's name..." oninput="updateProgress()"><input class="friend-memory" placeholder="Our memory..." oninput="updateProgress()"></div>
+            <div class="friend-card"><div class="friend-emoji">&#128578;</div><input placeholder="Friend's name..." oninput="updateProgress()"><input class="friend-memory" placeholder="Our memory..." oninput="updateProgress()"></div>
+            <div class="friend-card"><div class="friend-emoji">&#128578;</div><input placeholder="Friend's name..." oninput="updateProgress()"><input class="friend-memory" placeholder="Our memory..." oninput="updateProgress()"></div>
+            <div class="friend-card"><div class="friend-emoji">&#128578;</div><input placeholder="Friend's name..." oninput="updateProgress()"><input class="friend-memory" placeholder="Our memory..." oninput="updateProgress()"></div>
+            <div class="friend-card"><div class="friend-emoji">&#128578;</div><input placeholder="Friend's name..." oninput="updateProgress()"><input class="friend-memory" placeholder="Our memory..." oninput="updateProgress()"></div>
+            <div class="friend-card"><div class="friend-emoji">&#128578;</div><input placeholder="Friend's name..." oninput="updateProgress()"><input class="friend-memory" placeholder="Our memory..." oninput="updateProgress()"></div>
+          </div>
+        </div>
+
+        <div class="section" style="border-color:#f9a8d4;background:linear-gradient(135deg,#fdf2f8,#fce7f3);">
+          <div class="section-header">
+            <div class="icon">&#128140;</div>
+            <h2>A Message for My Teacher</h2>
+            <span class="badge" style="background:#f472b6;color:#fff;">Say thanks!</span>
+          </div>
+          <p style="margin-bottom:12px;color:#666;">Write a thank-you message to your teacher, then print and give it to them!</p>
+          <div style="max-width:500px;margin:0 auto;">
+            <div style="background:#fff;border-radius:16px;padding:24px;border:2px solid #f9a8d4;box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+              <div style="text-align:center;font-size:2em;margin-bottom:6px;">&#128140;</div>
+              <div style="text-align:center;font-family:'Fredoka One',cursive;font-size:1.4em;color:#d946ef;margin-bottom:12px;">Thank You, Teacher!</div>
+              <textarea placeholder="Dear Teacher, thank you for... (write your message here!)" style="font-family:'Patrick Hand',cursive;width:100%;min-height:150px;border:2px dashed #f9a8d4;border-radius:12px;padding:14px;font-size:1.15em;line-height:1.7;outline:none;resize:vertical;background:#fef7fa;" oninput="updateProgress()"></textarea>
+              <div style="text-align:right;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:0.85em;color:#999;">Print, cut out, and give to your teacher!</span>
+                <span><span style="font-family:'Patrick Hand',cursive;font-size:0.95em;color:#999;">From,</span>
+                <input placeholder="Your name..." style="font-family:'Patrick Hand',cursive;border:none;border-bottom:2px dotted #ccc;font-size:1em;text-align:right;width:140px;outline:none;background:transparent;margin-left:4px;" oninput="updateProgress()"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#9998;</div>
+            <h2>Autograph Page</h2>
+            <span class="badge">Signatures!</span>
+          </div>
+          <p style="margin-bottom:10px;color:#666;">Type your name so your classmates can remember you!</p>
+          <div class="sig-area">
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+            <div class="sig-line"><input placeholder="Your name..."></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: LETTERS -->
+      <div class="tab-section" id="tab-letters">
+        <div class="section letter-page">
+          <div class="section-header">
+            <div class="icon">&#9993;</div>
+            <h2>Letter to My Future Self</h2>
+            <span class="badge">Open in 2017!</span>
+          </div>
+          <div class="letter-greeting">Dear Future Me,</div>
+          <textarea placeholder="Write a letter to yourself one year from now... What do you want to remember? What are your hopes for 6th grade? What was your favorite part of 5th grade? Don't forget to sign it!" oninput="updateProgress()"></textarea>
+          <div style="text-align:right;margin-top:8px;">
+            <input placeholder="Sign your name..." style="font-family:'Patrick Hand',cursive;border:none;border-bottom:2px dotted #ccc;font-size:1.3em;text-align:right;width:200px;outline:none;background:transparent;" oninput="updateProgress()">
+          </div>
+        </div>
+
+        <div class="section letter-page" style="border-color:#a5b4fc;background:linear-gradient(180deg,#fff,#eef2ff);">
+          <div class="section-header">
+            <div class="icon">&#128172;</div>
+            <h2>What I Learned — Letter to My Teacher</h2>
+            <span class="badge">Thank you!</span>
+          </div>
+          <div class="letter-greeting">Dear Teacher,</div>
+          <textarea placeholder="Write a thank-you letter to your teacher. What did you learn this year? What was your favorite lesson? How did they help you grow? What will you never forget?" oninput="updateProgress()"></textarea>
+          <div style="text-align:right;margin-top:8px;">
+            <input placeholder="Your name..." style="font-family:'Patrick Hand',cursive;border:none;border-bottom:2px dotted #ccc;font-size:1.3em;text-align:right;width:200px;outline:none;background:transparent;" oninput="updateProgress()">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#128172;</div>
+            <h2>Advice for Next Year's 5th Graders</h2>
+            <span class="badge">Pay it forward!</span>
+          </div>
+          <div class="prompt">
+            <label>What should incoming 5th graders know?</label>
+            <textarea placeholder="Give your best advice — what do you wish you knew at the START of 5th grade?" style="min-height:100px;" oninput="updateProgress()"></textarea>
+          </div>
+          <div class="prompt">
+            <label>The #1 most important thing to succeed in 5th grade:</label>
+            <input placeholder="e.g. Always do your homework, be kind, have fun..." oninput="updateProgress()">
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: FUN -->
+      <div class="tab-section" id="tab-fun">
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#127918;</div>
+            <h2>This or That — 5th Grade Edition</h2>
+            <span class="badge">Pick a side!</span>
+          </div>
+          <p style="margin-bottom:14px;color:#666;">Click your choice for each one!</p>
+          <div id="thisOrThatContainer"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#128269;</div>
+            <h2>End-of-Year Word Search</h2>
+            <span class="badge">Find 'em all!</span>
+          </div>
+          <p style="margin-bottom:10px;color:#666;">Click and drag to highlight words. Find all 10 hidden 5th grade words!</p>
+          <div class="word-search-container">
+            <div class="word-grid" id="wordGrid"></div>
+            <div class="word-list" id="wordList"></div>
+            <p style="margin-top:10px;font-size:0.9em;color:#888;" id="wordSearchStatus">Still looking...</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#128221;</div>
+            <h2>Mad Lib: My Year in 5th Grade</h2>
+            <span class="badge">Fill in!</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+            <input id="ml_adj1" placeholder="Adjective" oninput="updateMadLib()">
+            <input id="ml_noun1" placeholder="Noun (plural)" oninput="updateMadLib()">
+            <input id="ml_verb1" placeholder="Verb (-ing)" oninput="updateMadLib()">
+            <input id="ml_adj2" placeholder="Adjective" oninput="updateMadLib()">
+            <input id="ml_noun2" placeholder="Noun" oninput="updateMadLib()">
+            <input id="ml_animal" placeholder="Animal (plural)" oninput="updateMadLib()">
+            <input id="ml_adj3" placeholder="Adjective" oninput="updateMadLib()">
+            <input id="ml_food" placeholder="Food (plural)" oninput="updateMadLib()">
+            <input id="ml_verb2" placeholder="Verb" oninput="updateMadLib()">
+          </div>
+          <div id="madLibResult" style="background:#fefce8;border-radius:14px;padding:18px;border:2px solid #fde68a;font-size:1.08em;line-height:1.7;">
+            Fill in the words above to see your story!
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#129300;</div>
+            <h2>Would You Rather... School Edition</h2>
+            <span class="badge">Tough choices!</span>
+          </div>
+          <p style="margin-bottom:14px;color:#666;">Click your pick for each one — no take-backs!</p>
+          <div id="wouldYouRatherContainer"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#9998;</div>
+            <h2>Finish the Sentence</h2>
+            <span class="badge">You finish it!</span>
+          </div>
+          <p style="margin-bottom:12px;color:#666;">Type how YOU would finish each sentence!</p>
+          <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+            <div style="background:#f0fdf4;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">The funniest thing that happened all year was...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#fef3c7;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">My teacher always said...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#e0f2fe;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">If I could relive one day this year, it would be...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#fce7f3;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">The most important thing I learned (not from a textbook) was...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#f3e5f5;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">One thing I'll miss about 5th grade is...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#fff3e0;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">A moment that changed me this year was...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#e8f5e9;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">What I'm most excited about for 6th grade...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+            <div style="background:#e1f5fe;border-radius:12px;padding:12px 16px;">
+              <label style="font-weight:700;">Something I'm nervous about for middle school...</label>
+              <input placeholder="Finish the sentence..." style="font-family:'Comic Neue',cursive;width:100%;padding:8px 12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1em;outline:none;margin-top:4px;" oninput="updateProgress()">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="icon">&#127754;</div>
+            <h2>Summer Bucket List</h2>
+            <span class="badge">Check 'em off!</span>
+          </div>
+          <p style="margin-bottom:12px;color:#666;">Click to check off what you want to do this summer!</p>
+          <div id="bucketListContainer" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+        </div>
+      </div>
+
+      <!-- FINISH LINE -->
+      <div class="section" style="text-align:center;border-color:#6bcb77;background:#f0fdf4;">
+        <div style="font-size:4em;margin-bottom:10px;">&#127881;</div>
+        <h2 style="font-family:'Fredoka One',cursive;font-size:1.8em;color:#6bcb77;">You Did It!</h2>
+        <p style="font-size:1.2em;color:#666;margin:10px 0;">You finished 5th grade! You're ready for MIDDLE SCHOOL!</p>
+        <div style="margin:20px 0;">
+          <button class="save-btn" style="font-size:1.2em;padding:14px 32px;" onclick="celebrate()">Celebrate!</button>
+          <button class="save-btn" style="font-size:1.2em;padding:14px 32px;background:#4d96ff;" onclick="saveAll()">Save My Book</button>
+        </div>
+        <p style="color:#888;">Your work is saved automatically in your browser. Come back anytime!</p>
+      </div>
+
+      <div class="print-btn-container">
+        <button onclick="window.print()">Print My Book!</button>
+      </div>
+      <div class="footer-note">Made with love for the Class of 2016</div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
+  </footer>
+
+  <script>
+    const GOOGLE_FORM_URL = '';
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(this.dataset.tab).classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.rating-stars').forEach(container => {
+      const stars = container.querySelectorAll('span');
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const val = parseInt(this.dataset.val);
+          stars.forEach(s => s.classList.toggle('on', parseInt(s.dataset.val) <= val));
+          updateProgress();
+        });
+      });
+    });
+
+    (function() {
+      const choices = [
+        { left: 'Pizza', right: 'Tacos' },
+        { left: 'Summer', right: 'Winter' },
+        { left: 'Books', right: 'Movies' },
+        { left: 'Recess', right: 'Art Class' },
+        { left: 'Dogs', right: 'Cats' },
+        { left: 'Math', right: 'Science' },
+        { left: 'Beach', right: 'Mountains' },
+        { left: 'Morning Person', right: 'Night Owl' },
+      ];
+      const container = document.getElementById('thisOrThatContainer');
+      choices.forEach((c, idx) => {
+        const div = document.createElement('div');
+        div.className = 'choice-grid';
+        div.innerHTML = `<div class="choice-left" data-idx="${idx}" data-side="left">${c.left}</div><div class="vs">VS</div><div class="choice-right" data-idx="${idx}" data-side="right">${c.right}</div>`;
+        container.appendChild(div);
+      });
+      container.addEventListener('click', function(e) {
+        const target = e.target.closest('.choice-left, .choice-right');
+        if (!target) return;
+        const group = target.parentElement;
+        group.querySelectorAll('.choice-left, .choice-right').forEach(el => el.classList.remove('picked'));
+        target.classList.add('picked');
+        updateProgress();
+      });
+    })();
+
+    (function() {
+      const prompts = [
+        { a: 'Have no homework for a year', b: 'Have pizza for lunch every day' },
+        { a: 'Be able to fly', b: 'Be invisible' },
+        { a: 'Have a pet dinosaur', b: 'Have a pet dragon' },
+        { a: 'Skip school for a day', b: 'Skip chores for a week' },
+        { a: 'Live in a treehouse', b: 'Live in a castle' },
+        { a: 'Be the funniest kid in class', b: 'Be the smartest kid in class' },
+        { a: 'Have unlimited candy', b: 'Have unlimited video games' },
+      ];
+      const container = document.getElementById('wouldYouRatherContainer');
+      prompts.forEach((p, idx) => {
+        const div = document.createElement('div');
+        div.className = 'choice-grid';
+        div.innerHTML = `<div class="choice-left" data-wyr="${idx}" data-side="a">${p.a}</div><div class="vs">OR</div><div class="choice-right" data-wyr="${idx}" data-side="b">${p.b}</div>`;
+        container.appendChild(div);
+      });
+      container.addEventListener('click', function(e) {
+        const target = e.target.closest('.choice-left, .choice-right');
+        if (!target) return;
+        const group = target.parentElement;
+        group.querySelectorAll('.choice-left, .choice-right').forEach(el => el.classList.remove('picked'));
+        target.classList.add('picked');
+        updateProgress();
+      });
+    })();
+
+    (function() {
+      const items = [
+        'Go swimming', 'Eat ice cream', 'Read a book for fun',
+        'Go on a road trip', 'Stay up late', 'Make a new friend',
+        'Go to the beach', 'Watch fireworks', 'Ride a bike',
+        'Camp outside', 'Visit a museum', 'Learn a new game',
+      ];
+      const container = document.getElementById('bucketListContainer');
+      items.forEach(item => {
+        const label = document.createElement('label');
+        label.style.cssText = 'display:flex;align-items:center;gap:8px;background:#f8f9fa;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:0.98em;border:2px solid #e0e0e0;';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.style.cssText = 'width:20px;height:20px;accent-color:#6bcb77;cursor:pointer;';
+        cb.addEventListener('change', function() {
+          label.style.background = this.checked ? '#d1fae5' : '#f8f9fa';
+          label.style.borderColor = this.checked ? '#6bcb77' : '#e0e0e0';
+          label.style.textDecoration = this.checked ? 'line-through' : 'none';
+          updateProgress();
+        });
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(item));
+        container.appendChild(label);
+      });
+    })();
+
+    (function() {
+      const words = ['GRADUATION', 'SUMMER', 'FRIENDS', 'MATH', 'SCIENCE', 'RECESS', 'READING', 'FIELDTRIP', 'ART', 'MUSIC'];
+      const size = 10;
+      const grid = [];
+      for (let r = 0; r < size; r++) { grid[r] = []; for (let c = 0; c < size; c++) { grid[r][c] = ''; } }
+      const directions = [[0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1],[1,-1],[-1,1]];
+      words.forEach(word => {
+        let placed = false, attempts = 0;
+        while (!placed && attempts < 200) {
+          attempts++;
+          const dir = directions[Math.floor(Math.random() * directions.length)];
+          const startR = Math.floor(Math.random() * size);
+          const startC = Math.floor(Math.random() * size);
+          let ok = true;
+          for (let i = 0; i < word.length; i++) {
+            const r = startR + dir[0] * i, c = startC + dir[1] * i;
+            if (r < 0 || r >= size || c < 0 || c >= size) { ok = false; break; }
+            if (grid[r][c] !== '' && grid[r][c] !== word[i]) { ok = false; break; }
+          }
+          if (ok) { for (let i = 0; i < word.length; i++) { grid[startR + dir[0]*i][startC + dir[1]*i] = word[i]; } placed = true; }
+        }
+      });
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      for (let r = 0; r < size; r++) { for (let c = 0; c < size; c++) { if (grid[r][c] === '') grid[r][c] = letters[Math.floor(Math.random() * letters.length)]; } }
+      const wordGridEl = document.getElementById('wordGrid');
+      const wordListEl = document.getElementById('wordList');
+      const cells = [];
+      const found = new Set();
+      let currentDrag = [];
+      grid.forEach((row, r) => { row.forEach((ch, c) => {
+        const div = document.createElement('div');
+        div.className = 'word-cell';
+        div.textContent = ch;
+        div.dataset.row = r; div.dataset.col = c;
+        wordGridEl.appendChild(div);
+        cells.push(div);
+      });});
+      const wordStatus = {};
+      words.forEach(w => { wordStatus[w] = false; const span = document.createElement('span'); span.textContent = w; span.id = 'ws-' + w; wordListEl.appendChild(span); });
+      let selecting = false;
+      wordGridEl.addEventListener('mousedown', e => { const cell = e.target.closest('.word-cell'); if (!cell) return; selecting = true; currentDrag = [cell]; cell.classList.add('highlight'); });
+      wordGridEl.addEventListener('mouseenter', e => { if (!selecting) return; const cell = e.target.closest('.word-cell'); if (!cell) return; if (!currentDrag.includes(cell)) { currentDrag.push(cell); cell.classList.add('highlight'); }});
+      document.addEventListener('mouseup', () => {
+        if (!selecting) return; selecting = false;
+        const selectedText = currentDrag.map(el => el.textContent).join('');
+        const selectedTextRev = currentDrag.map(el => el.textContent).reverse().join('');
+        let foundWord = null;
+        for (const w of words) { if (wordStatus[w]) continue; if (selectedText === w || selectedTextRev === w) { foundWord = w; break; } }
+        if (foundWord) {
+          wordStatus[foundWord] = true;
+          currentDrag.forEach(el => { el.classList.remove('highlight'); el.classList.add('found'); });
+          document.getElementById('ws-' + foundWord).classList.add('found-word');
+          const allFound = Object.values(wordStatus).every(v => v);
+          document.getElementById('wordSearchStatus').textContent = allFound ? 'You found them ALL!' : `Found ${Object.values(wordStatus).filter(v=>v).length}/${words.length} words!`;
+          updateProgress();
+        } else { currentDrag.forEach(el => el.classList.remove('highlight')); }
+        currentDrag = [];
+      });
+      wordGridEl.addEventListener('touchstart', e => { const cell = e.target.closest('.word-cell'); if (!cell) return; selecting = true; currentDrag = [cell]; cell.classList.add('highlight'); }, { passive: true });
+      wordGridEl.addEventListener('touchmove', e => { if (!selecting) return; const touch = e.touches[0]; const el = document.elementFromPoint(touch.clientX, touch.clientY); if (!el || !el.classList.contains('word-cell')) return; if (!currentDrag.includes(el)) { currentDrag.push(el); el.classList.add('highlight'); }}, { passive: true });
+      wordGridEl.addEventListener('touchend', () => {
+        if (!selecting) return; selecting = false;
+        const selectedText = currentDrag.map(el => el.textContent).join('');
+        const selectedTextRev = currentDrag.map(el => el.textContent).reverse().join('');
+        let foundWord = null;
+        for (const w of words) { if (wordStatus[w]) continue; if (selectedText === w || selectedTextRev === w) { foundWord = w; break; } }
+        if (foundWord) {
+          wordStatus[foundWord] = true;
+          currentDrag.forEach(el => { el.classList.remove('highlight'); el.classList.add('found'); });
+          document.getElementById('ws-' + foundWord).classList.add('found-word');
+          const allFound = Object.values(wordStatus).every(v => v);
+          document.getElementById('wordSearchStatus').textContent = allFound ? 'You found them ALL!' : `Found ${Object.values(wordStatus).filter(v=>v).length}/${words.length} words!`;
+          updateProgress();
+        } else { currentDrag.forEach(el => el.classList.remove('highlight')); }
+        currentDrag = [];
+      }, { passive: true });
+    })();
+
+    function updateMadLib() {
+      const adj1 = document.getElementById('ml_adj1').value || '______';
+      const noun1 = document.getElementById('ml_noun1').value || '______';
+      const verb1 = document.getElementById('ml_verb1').value || '______';
+      const adj2 = document.getElementById('ml_adj2').value || '______';
+      const noun2 = document.getElementById('ml_noun2').value || '______';
+      const animal = document.getElementById('ml_animal').value || '______';
+      const adj3 = document.getElementById('ml_adj3').value || '______';
+      const food = document.getElementById('ml_food').value || '______';
+      const verb2 = document.getElementById('ml_verb2').value || '______';
+      document.getElementById('madLibResult').innerHTML = `Fifth grade was a <strong>${adj1}</strong> year! I walked into class on the first day feeling like a bag of <strong>${noun1}</strong>. We spent the year <strong>${verb1}</strong> through fractions, reading <strong>${adj2}</strong> books, and learning about the <strong>${noun2}</strong>. At recess, we ran around like wild <strong>${animal}</strong>! My favorite lunch was always <strong>${food}</strong>. Now that the year is over, I feel <strong>${adj3}</strong> and ready to <strong>${verb2}</strong> into 6th grade! Bring it on, middle school!`;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('.mb-container input:not([type="hidden"]):not([type="checkbox"]), .mb-container textarea');
+      let filled = 0, total = 0;
+      inputs.forEach(el => {
+        if (el.closest('.sig-area')) return;
+        total++;
+        if (el.value && el.value.trim() !== '') filled++;
+      });
+      document.querySelectorAll('.mb-container input[type="checkbox"]').forEach(cb => { total++; if (cb.checked) filled++; });
+      document.querySelectorAll('.mb-container .rating-stars').forEach(container => { total++; if (container.querySelectorAll('.on').length > 0) filled++; });
+      document.querySelectorAll('.mb-container .choice-grid').forEach(grid => { total++; if (grid.querySelector('.picked')) filled++; });
+      total++;
+      if (document.querySelectorAll('.mb-container .word-list .found-word').length >= 10) filled++;
+      const pct = Math.min(100, Math.round((filled / total) * 100));
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = pct + '% complete';
+    }
+
+    function saveAll() {
+      const data = {};
+      document.querySelectorAll('.mb-container input:not([type="hidden"]):not([type="checkbox"]), .mb-container textarea').forEach(el => {
+        if (el.id) data[el.id] = el.value;
+        else if (el.placeholder) data[el.placeholder] = el.value;
+      });
+      document.querySelectorAll('.mb-container input[type="checkbox"]').forEach((cb, idx) => { data['cb_' + idx] = cb.checked; });
+      document.querySelectorAll('.mb-container .rating-stars').forEach((container, idx) => { data['rating_' + idx] = container.querySelectorAll('.on').length; });
+      document.querySelectorAll('.mb-container .choice-grid').forEach((grid, idx) => { const picked = grid.querySelector('.picked'); data['choice_' + idx] = picked ? picked.textContent.trim() : ''; });
+      localStorage.setItem('grade5_memory_book_2016', JSON.stringify(data));
+      alert('Saved! Your memory book is stored in your browser.');
+    }
+
+    function celebrate() {
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      document.body.appendChild(container);
+      const colors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#a855f7','#ff6b9d','#ffa94d'];
+      for (let i = 0; i < 120; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.width = (Math.random() * 8 + 4) + 'px';
+        el.style.height = (Math.random() * 8 + 4) + 'px';
+        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+        el.style.animationDelay = (Math.random() * 2) + 's';
+        container.appendChild(el);
+      }
+      setTimeout(() => container.remove(), 4000);
+    }
+
+    (function loadSavedData() {
+      const raw = localStorage.getItem('grade5_memory_book_2016');
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        document.querySelectorAll('.mb-container input:not([type="hidden"]):not([type="checkbox"]), .mb-container textarea').forEach(el => {
+          if (el.id && data[el.id]) el.value = data[el.id];
+          else if (el.placeholder && data[el.placeholder]) el.value = data[el.placeholder];
+        });
+        document.querySelectorAll('.mb-container input[type="checkbox"]').forEach((cb, idx) => {
+          if (data['cb_' + idx]) { cb.checked = true; const label = cb.closest('label'); if (label) { label.style.background = '#d1fae5'; label.style.borderColor = '#6bcb77'; label.style.textDecoration = 'line-through'; }}
+        });
+        document.querySelectorAll('.mb-container .rating-stars').forEach((container, idx) => {
+          const val = data['rating_' + idx]; if (val) { container.querySelectorAll('span').forEach(s => s.classList.toggle('on', parseInt(s.dataset.val) <= val)); }
+        });
+        document.querySelectorAll('.mb-container .choice-grid').forEach((grid, idx) => {
+          const val = data['choice_' + idx]; if (val) { grid.querySelectorAll('.choice-left, .choice-right').forEach(el => { if (el.textContent.trim() === val) el.classList.add('picked'); }); }
+        });
+        updateMadLib();
+      } catch(e) {}
+      setTimeout(updateProgress, 100);
+    })();
+
+    setInterval(() => { try { saveAll(); } catch(e) {} }, 30000);
+  </script>
+</body>
+</html>
