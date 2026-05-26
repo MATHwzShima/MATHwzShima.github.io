@@ -994,9 +994,10 @@
         <p style="font-size:1.2em;color:#666;margin:10px 0;">You finished 5th grade! You're ready for MIDDLE SCHOOL!</p>
         <div style="margin:20px 0;">
           <button class="save-btn" style="font-size:1.2em;padding:14px 32px;" onclick="celebrate()">Celebrate!</button>
-          <button class="save-btn" style="font-size:1.2em;padding:14px 32px;background:#4d96ff;" onclick="saveAll()">Save My Book</button>
+          <button class="save-btn" style="font-size:1.2em;padding:14px 32px;background:#4d96ff;" onclick="saveAll();document.getElementById('manualSaveStatus').textContent='Saved!';setTimeout(()=>document.getElementById('manualSaveStatus').textContent='',3000)">Save My Book</button>
         </div>
         <p style="color:#888;">Your work is saved automatically in your browser. Come back anytime!</p>
+        <div id="manualSaveStatus" style="font-size:0.95em;min-height:24px;color:#6bcb77;font-weight:700;"></div>
       </div>
 
       <!-- SUBMIT TO TEACHER -->
@@ -1061,11 +1062,12 @@
 
   <script>
     const GOOGLE_FORM_URL = '';
-    
+    const SUBMIT_WEBHOOK_URL = ''; // Paste your Google Apps Script webhook URL here
+
     setTimeout(() => {
-      if (!GOOGLE_FORM_URL) {
-        const status = document.getElementById('submitStatus');
-        if (status) status.innerHTML = '&#128295; Teacher: set <code>GOOGLE_FORM_URL</code> in the script to enable one-click submit. Students can still download or copy their answers below.';
+      const status = document.getElementById('submitStatus');
+      if (!SUBMIT_WEBHOOK_URL && !GOOGLE_FORM_URL) {
+        if (status) status.innerHTML = '&#128295; Teacher: set <code>SUBMIT_WEBHOOK_URL</code> (Google Sheet) or <code>GOOGLE_FORM_URL</code> in the script to enable one-click submit. Students can still download or copy below.';
       }
     }, 500);
 
@@ -1293,153 +1295,160 @@
       refreshPreview();
     }
 
+
+
     function collectAnswers() {
       const sections = {};
+      const name = (document.getElementById('studentName')?.value || '').trim() || 'Anonymous';
       document.querySelectorAll('.tab-section').forEach(section => {
         const title = section.querySelector('h2')?.textContent || 'Section';
-        const qs = [];
+        const items = [];
+
         section.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], textarea').forEach(el => {
           if (el.closest('.sig-area')) return;
           if (el.value && el.value.trim()) {
             const label = el.closest('div')?.querySelector('label, strong, b')?.textContent?.trim() || el.placeholder || 'Answer';
-            qs.push({ q: label, a: el.value.trim() });
+            items.push({ type: 'text', label, value: el.value.trim() });
           }
         });
+
         section.querySelectorAll('.rating-stars').forEach(container => {
           const val = container.querySelectorAll('.on').length;
           if (val > 0) {
             const label = container.closest('div')?.querySelector('strong, b, label')?.textContent?.trim() || 'Rating';
-            qs.push({ q: label, a: '⭐'.repeat(val) });
+            items.push({ type: 'rating', label, value: val, stars: '⭐'.repeat(val) });
           }
         });
+
         section.querySelectorAll('.choice-grid .picked').forEach(el => {
           const label = el.closest('div')?.previousElementSibling?.textContent?.trim() || 'Choice';
-          qs.push({ q: label, a: el.textContent.trim() });
+          items.push({ type: 'choice', label, value: el.textContent.trim() });
         });
+
         section.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
           const label = cb.closest('label')?.textContent?.trim() || 'Checked';
-          qs.push({ q: '✓', a: label });
+          items.push({ type: 'checkbox', label, value: label });
         });
+
         section.querySelectorAll('.found-word').forEach(w => {
           if (!sections['Word Search']) sections['Word Search'] = [];
           sections['Word Search'].push(w.textContent.trim());
         });
+
         const madLib = document.getElementById('madLibResult');
         if (madLib && madLib.textContent && madLib.textContent !== 'Your story will appear here...') {
-          sections['Mad Lib'] = [madLib.textContent.trim()];
+          if (!sections['Mad Lib']) sections['Mad Lib'] = [];
+          sections['Mad Lib'].push(madLib.textContent.trim());
         }
-        if (qs.length > 0) sections[title] = qs;
+
+        if (items.length > 0) sections[title] = items;
       });
-      return sections;
+      return { name, sections };
+    }
+
+    function formatAnswersText(sections, header) {
+      let text = header + '\n';
+      let anyContent = false;
+      Object.entries(sections).forEach(([title, items]) => {
+        if (Array.isArray(items) && items.length > 0 && typeof items[0] === 'string') {
+          text += '\n--- ' + title + ' ---\n';
+          items.forEach(item => { text += '  • ' + item + '\n'; anyContent = true; });
+        } else if (Array.isArray(items)) {
+          text += '\n--- ' + title + ' ---\n';
+          items.forEach(item => {
+            if (item.type === 'rating') text += '  ⭐ ' + item.label + ': ' + item.stars + '\n';
+            else text += '  • ' + item.label + ': ' + item.value + '\n';
+            anyContent = true;
+          });
+        }
+      });
+      return anyContent ? text : header + '\n\n  (No answers filled in yet)\n';
     }
 
     function refreshPreview() {
       const preview = document.getElementById('answerPreview');
       if (!preview) return;
-      const sections = collectAnswers();
-      let text = '=== My 5th Grade Memory Book ===\n\n';
-      let anyContent = false;
-      Object.entries(sections).forEach(([title, items]) => {
-        if (Array.isArray(items)) {
-          text += '--- ' + title + ' ---\n';
-          items.forEach(item => {
-            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
-            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
-            anyContent = true;
-          });
-          text += '\n';
-        } else {
-          text += '--- ' + title + ' ---\n';
-          text += '  ' + items.join(', ') + '\n\n';
-          anyContent = true;
-        }
-      });
-      if (!anyContent) text += 'Fill in your answers above, and they will appear here!\n';
+      const { name, sections } = collectAnswers();
+      const text = formatAnswersText(sections, '=== My 5th Grade Memory Book (' + name + ') ===');
       preview.value = text;
     }
 
+    function collectSubmitPayload() {
+      const { name, sections } = collectAnswers();
+      const pct = document.getElementById('progressText')?.textContent?.replace('% complete', '') || 0;
+      return {
+        studentName: name,
+        completion: parseInt(pct) || 0,
+        sections: sections
+      };
+    }
+
     function submitToTeacher() {
-      const sections = collectAnswers();
-      let text = '=== My 5th Grade Memory Book ===\n\n';
-      Object.entries(sections).forEach(([title, items]) => {
-        if (Array.isArray(items)) {
-          text += '--- ' + title + ' ---\n';
-          items.forEach(item => {
-            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
-            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
-          });
-          text += '\n';
-        } else {
-          text += '--- ' + title + ' ---\n';
-          text += '  ' + items.join(', ') + '\n\n';
-        }
-      });
-
+      const payload = collectSubmitPayload();
       const status = document.getElementById('submitStatus');
+      status.innerHTML = '&#128260; Sending...';
 
-      if (GOOGLE_FORM_URL) {
+      function fallbackClipboard() {
+        const text = formatAnswersText(payload.sections, '=== My 5th Grade Memory Book (' + payload.studentName + ') ===');
         navigator.clipboard.writeText(text).then(() => {
-          status.innerHTML = '&#9989; Copied! Opening form... paste your answers there!';
-          setTimeout(() => window.open(GOOGLE_FORM_URL, '_blank'), 800);
+          if (GOOGLE_FORM_URL) {
+            status.innerHTML = '&#9989; Copied! Opening form... paste your answers there!';
+            setTimeout(() => window.open(GOOGLE_FORM_URL, '_blank'), 800);
+          } else {
+            status.innerHTML = '&#9989; Answers copied! Send them to your teacher.';
+          }
         }).catch(() => {
-          status.innerHTML = '&#128196; Unable to copy. Please copy your answers manually from the preview below.';
+          status.innerHTML = '&#128196; Could not send. Use Download instead.';
         });
+      }
+
+      if (SUBMIT_WEBHOOK_URL) {
+        fetch(SUBMIT_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json()).then(d => {
+          if (d.success) {
+            status.innerHTML = '&#9989; Submitted to your teacher successfully!';
+            downloadAnswers();
+          } else {
+            status.innerHTML = '&#9888;&#65039; Server error. Using clipboard instead.';
+            fallbackClipboard();
+          }
+        }).catch(() => {
+          status.innerHTML = '&#9888;&#65039; Could not reach server. Using clipboard instead.';
+          fallbackClipboard();
+        });
+      } else if (GOOGLE_FORM_URL) {
+        fallbackClipboard();
       } else {
-        navigator.clipboard.writeText(text).then(() => {
-          status.innerHTML = '&#9989; Answers copied to clipboard! Send them to your teacher.';
-        }).catch(() => {
-          status.innerHTML = '&#128196; Could not copy. Use Download or manually select text below.';
-        });
+        fallbackClipboard();
       }
     }
 
     function downloadAnswers() {
-      const sections = collectAnswers();
-      let text = '=== My 5th Grade Memory Book ===\n';
-      Object.entries(sections).forEach(([title, items]) => {
-        if (Array.isArray(items)) {
-          text += '\n--- ' + title + ' ---\n';
-          items.forEach(item => {
-            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
-            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
-          });
-        } else {
-          text += '\n--- ' + title + ' ---\n';
-          text += '  ' + items.join(', ') + '\n';
-        }
-      });
-      const blob = new Blob([text], { type: 'text/plain' });
+      const { name, sections } = collectAnswers();
+      const text = formatAnswersText(sections, '=== My 5th Grade Memory Book (' + name + ') ===');
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'My_5th_Grade_Memory_Book.txt';
+      a.download = name.replace(/\s+/g, '_') + '_Memory_Book.txt';
       a.click();
       URL.revokeObjectURL(url);
-      const status = document.getElementById('exportStatus');
-      if (status) { status.textContent = '✅ File downloaded! Send it to your teacher.'; setTimeout(() => status.textContent = '', 4000); }
+      const s = document.getElementById('exportStatus');
+      if (s) { s.textContent = '✅ File downloaded!'; setTimeout(() => s.textContent = '', 4000); }
     }
 
     function copyAnswers() {
-      const sections = collectAnswers();
-      let text = '=== My 5th Grade Memory Book ===\n';
-      Object.entries(sections).forEach(([title, items]) => {
-        if (Array.isArray(items)) {
-          text += '\n--- ' + title + ' ---\n';
-          items.forEach(item => {
-            if (typeof item === 'string') { text += '  • ' + item + '\n'; }
-            else { text += '  • ' + item.q + ': ' + item.a + '\n'; }
-          });
-        } else {
-          text += '\n--- ' + title + ' ---\n';
-          text += '  ' + items.join(', ') + '\n';
-        }
-      });
+      const { name, sections } = collectAnswers();
+      const text = formatAnswersText(sections, '=== My 5th Grade Memory Book (' + name + ') ===');
       navigator.clipboard.writeText(text).then(() => {
-        const status = document.getElementById('exportStatus');
-        if (status) { status.textContent = '✅ Copied to clipboard! Paste it in an email to your teacher.'; setTimeout(() => status.textContent = '', 4000); }
+        const s = document.getElementById('exportStatus');
+        if (s) { s.textContent = '✅ Copied! Send to your teacher.'; setTimeout(() => s.textContent = '', 4000); }
       }).catch(() => {
-        const status = document.getElementById('exportStatus');
-        if (status) { status.textContent = '❌ Could not copy. Try selecting text manually.'; setTimeout(() => status.textContent = '', 4000); }
+        const s = document.getElementById('exportStatus');
+        if (s) { s.textContent = '❌ Could not copy. Try selecting text manually.'; setTimeout(() => s.textContent = '', 4000); }
       });
     }
 
