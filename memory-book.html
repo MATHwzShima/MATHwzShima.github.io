@@ -1422,6 +1422,7 @@
         form.remove();
         status.innerHTML = '&#9989; Submitted! A backup file was also downloaded.';
         downloadAnswers();
+        setTimeout(clearMemoryBook, 1500);
       } else if (GOOGLE_FORM_URL) {
         fallbackClipboard();
       } else {
@@ -1453,6 +1454,25 @@
         const s = document.getElementById('exportStatus');
         if (s) { s.textContent = '❌ Could not copy. Try selecting text manually.'; setTimeout(() => s.textContent = '', 4000); }
       });
+    }
+
+    function clearMemoryBook() {
+      document.querySelectorAll('.mb-container input[type="text"], .mb-container input[type="number"], .mb-container input[type="tel"], .mb-container textarea').forEach(el => el.value = '');
+      document.querySelectorAll('.mb-container input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+        const label = cb.closest('label');
+        if (label) { label.style.background = ''; label.style.borderColor = ''; label.style.textDecoration = ''; }
+      });
+      document.querySelectorAll('.mb-container .rating-stars span').forEach(s => s.classList.remove('on'));
+      document.querySelectorAll('.mb-container .choice-grid .picked').forEach(el => el.classList.remove('picked'));
+      document.querySelectorAll('.mb-container .found-word').forEach(el => el.classList.remove('found-word'));
+      document.querySelectorAll('.mb-container .word-cell.found').forEach(el => el.classList.remove('found'));
+      document.querySelectorAll('#madLibResult').forEach(el => el.textContent = 'Your story will appear here...');
+      document.querySelectorAll('.word-search-container input').forEach(el => el.value = '');
+      document.getElementById('wordSearchStatus').textContent = 'Still looking...';
+      localStorage.removeItem('grade5_memory_book_2016');
+      updateProgress();
+      refreshPreview();
     }
 
     function celebrate() {
