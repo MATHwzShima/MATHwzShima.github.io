@@ -28,12 +28,167 @@
   <main>
     <div class="page-header">
       <h2>Gallery</h2>
-      <p>Coming soon!</p>
+      <p>Our 2025/2026 class memories</p>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid"></div>
+
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose">&times;</button>
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</button>
+      <button class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</button>
+      <img id="lightboxImg" src="" alt="Gallery image">
+      <div class="lightbox-counter" id="lightboxCounter"></div>
     </div>
   </main>
 
   <footer>
     &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
   </footer>
+
+  <script>
+    const images = [
+      'gallery/1000008366.jpg',
+      'gallery/1000008369.jpg',
+      'gallery/1000008370.jpg',
+      'gallery/1000008371.jpg',
+      'gallery/1000008372.png',
+      'gallery/1000008373.png',
+      'gallery/1000008374.png',
+      'gallery/1000008375.png',
+      'gallery/1000008377.jpg',
+      'gallery/1000008378.jpg',
+      'gallery/1000008379.jpg',
+      'gallery/1000008380.jpg',
+      'gallery/1000008381.jpg',
+      'gallery/1000008382.jpg',
+      'gallery/1000008383.jpg',
+      'gallery/1000008384.jpg',
+      'gallery/1000008385.jpg',
+      'gallery/1000008386.jpg',
+      'gallery/1000008554.jpg',
+      'gallery/1000008555.jpg',
+      'gallery/1000008589.jpg',
+      'gallery/1000008590.jpg',
+      'gallery/1000008591.jpg',
+      'gallery/1000008594.jpg',
+      'gallery/1000008595.jpg',
+      'gallery/1000008596.jpg',
+      'gallery/1000008597.jpg',
+      'gallery/1000008598.jpg',
+      'gallery/1000008599.jpg',
+      'gallery/1000008600.jpg',
+      'gallery/1000008601.jpg',
+      'gallery/1000008602.jpg',
+      'gallery/1000008603.jpg',
+      'gallery/1000008604.jpg',
+      'gallery/1000008605.jpg',
+      'gallery/1000008606.jpg',
+      'gallery/generated-image.png',
+      'gallery/generated-image 2.png',
+      'gallery/generated-image (1).png',
+      'gallery/generated-image (1) 2.png',
+      'gallery/generated-image (2).png',
+      'gallery/generated-image (2) 2.png',
+      'gallery/generated-image (2) 3.png',
+      'gallery/generated-image (3).png',
+      'gallery/generated-image (3) 2.png',
+      'gallery/generated-image (3) 3.png',
+      'gallery/generated-image (4).png',
+      'gallery/generated-image (4) 2.png',
+      'gallery/generated-image (5).png',
+      'gallery/generated-image (5) 2.png',
+      'gallery/generated-image (6).png',
+      'gallery/generated-image (7).png',
+      'gallery/generated-image (9).png',
+      'gallery/generated-image (10).png',
+      'gallery/generated-image (11).png',
+      'gallery/generated-image (12).png',
+      'gallery/generated-image (13).png',
+      'gallery/generated-image (14).png',
+      'gallery/generated-image (15).png',
+      'gallery/generated-image (16).png',
+      'gallery/generated-image (17).png',
+      'gallery/generated-image (18).png',
+      'gallery/generated-image (19).png',
+      'gallery/generated-image (20).png',
+      'gallery/generated-image (21).png',
+      'gallery/generated-image (22).png',
+      'gallery/generated-image (23).png',
+    ];
+
+    const grid = document.getElementById('galleryGrid');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCounter = document.getElementById('lightboxCounter');
+    let currentIndex = 0;
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function renderGallery() {
+      const shuffled = shuffleArray([...images]);
+      grid.innerHTML = '';
+      shuffled.forEach((src, idx) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        const img = document.createElement('img');
+        img.src = src;
+        img.loading = 'lazy';
+        img.alt = 'Class photo';
+        item.appendChild(img);
+        item.addEventListener('click', () => openLightbox(idx));
+        grid.appendChild(item);
+      });
+    }
+
+    function openLightbox(index) {
+      currentIndex = index;
+      const src = images[index];
+      lightboxImg.src = src;
+      lightboxCounter.textContent = `${index + 1} / ${images.length}`;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      lightboxImg.src = images[currentIndex];
+      lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % images.length;
+      lightboxImg.src = images[currentIndex];
+      lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+    }
+
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    document.getElementById('lightboxPrev').addEventListener('click', prevImage);
+    document.getElementById('lightboxNext').addEventListener('click', nextImage);
+
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'ArrowRight') nextImage();
+    });
+
+    renderGallery();
+  </script>
 </body>
 </html>
