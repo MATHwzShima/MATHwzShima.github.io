@@ -32,9 +32,9 @@ function getOrCreateSheet() {
 function doGet(e) {
   const key = e.parameter.key || e.parameter.p;
   if (key !== SECRET_KEY) {
-    return ContentApp
+    return ContentService
       .createTextOutput(JSON.stringify({ error: 'unauthorized' }))
-      .setMimeType(ContentApp.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON);
   }
 
   const sheet = getOrCreateSheet();
@@ -53,9 +53,9 @@ function doGet(e) {
     rows.push(row);
   }
 
-  return ContentApp
+  return ContentService
     .createTextOutput(JSON.stringify({ success: true, data: rows }))
-    .setMimeType(ContentApp.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
@@ -70,12 +70,12 @@ function doPost(e) {
       JSON.stringify(body.sections || {})
     ]);
 
-    return ContentApp
+    return ContentService
       .createTextOutput(JSON.stringify({ success: true }))
-      .setMimeType(ContentApp.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
-    return ContentApp
+    return ContentService
       .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
-      .setMimeType(ContentApp.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
