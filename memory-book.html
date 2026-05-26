@@ -455,6 +455,9 @@
       position: sticky;
       top: 10px;
       z-index: 100;
+      background: #fff9e6;
+      padding: 8px 0;
+      border-radius: 0 0 12px 12px;
     }
     .mb-container .tab-btn {
       font-family: 'Fredoka One', cursive;
@@ -641,6 +644,7 @@
         <button class="tab-btn" data-tab="tab-friends">Friends</button>
         <button class="tab-btn" data-tab="tab-letters">Letters</button>
         <button class="tab-btn" data-tab="tab-fun">Fun</button>
+        <button class="tab-btn" data-tab="tab-submit" style="background:linear-gradient(135deg,#6bcb77,#4d96ff);color:#fff;border-color:transparent;">🎉 Submit</button>
       </div>
 
       <div class="progress-text" id="progressText">0% complete</div>
@@ -1075,55 +1079,60 @@
         </div>
       </div>
 
-      <!-- FINISH LINE -->
-      <div class="section" style="text-align:center;border-color:#6bcb77;background:#f0fdf4;">
-        <div style="font-size:4em;margin-bottom:10px;">&#127881;</div>
-        <h2 style="font-family:'Fredoka One',cursive;font-size:1.8em;color:#6bcb77;">You Did It!</h2>
-        <p style="font-size:1.2em;color:#666;margin:10px 0;">You finished 5th grade! You're ready for MIDDLE SCHOOL!</p>
-        <div style="margin:20px 0;">
-          <button class="save-btn" style="font-size:1.2em;padding:14px 32px;" onclick="celebrate()">Celebrate!</button>
-          <button class="save-btn" style="font-size:1.2em;padding:14px 32px;background:#4d96ff;" onclick="saveAll();document.getElementById('manualSaveStatus').textContent='Saved!';setTimeout(()=>document.getElementById('manualSaveStatus').textContent='',3000)">Save My Book</button>
-        </div>
-        <p style="color:#888;">Your work is saved automatically in your browser. Come back anytime!</p>
-        <div id="manualSaveStatus" style="font-size:0.95em;min-height:24px;color:#6bcb77;font-weight:700;"></div>
-      </div>
+      <!-- TAB 7: SUBMIT -->
+      <div class="tab-section" id="tab-submit">
 
-      <!-- SUBMIT TO TEACHER -->
-      <div class="section" style="border-color:#6bcb77;background:linear-gradient(135deg,#f0fdf4,#f0f7ff);">
-        <div class="section-header">
-          <div class="icon">&#128228;</div>
-          <h2>Submit to Your Teacher</h2>
-          <span class="badge" style="background:#6bcb77;color:#fff;">Send!</span>
-        </div>
-
-        <div style="text-align:center;padding:20px 10px;">
-          <p style="color:#555;font-size:1.05em;margin-bottom:24px;">When you're done, click the big button to send your Memory Book to Mrs. Shimaa! &#127881;</p>
-          <button id="submitBtn" onclick="submitToTeacher()" style="font-family:'Fredoka One',cursive;font-size:1.8em;background:linear-gradient(135deg,#6bcb77,#4d96ff);color:#fff;border:none;padding:20px 52px;border-radius:28px;cursor:pointer;box-shadow:0 8px 30px rgba(77,150,255,0.35);transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 12px 36px rgba(77,150,255,0.45)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 30px rgba(77,150,255,0.35)'">
-            &#128228; Submit to Teacher!
-          </button>
-          <div id="submitStatus" style="margin-top:18px;font-weight:700;font-size:1.1em;min-height:36px;"></div>
-        </div>
-
-        <!-- Backup options -->
-        <div style="margin-top:12px;border-top:2px dashed #d1fae5;padding-top:16px;">
-          <p style="text-align:center;font-size:0.88em;color:#aaa;margin-bottom:12px;">Having trouble submitting? Use a backup option:</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:2px solid #dbeafe;">
-              <div style="font-size:1.8em;">&#128230;</div>
-              <h4 style="font-family:'Fredoka One',cursive;font-size:1em;color:#4d96ff;margin:4px 0;">Download File</h4>
-              <p style="font-size:0.8em;color:#888;margin-bottom:8px;">Save as .txt and hand it in</p>
-              <button onclick="downloadAnswers()" style="font-family:'Fredoka One',cursive;font-size:0.95em;background:#4d96ff;color:#fff;border:none;padding:8px 18px;border-radius:10px;cursor:pointer;">&#128230; Download</button>
-            </div>
-            <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:2px solid #a7f3d0;">
-              <div style="font-size:1.8em;">&#128203;</div>
-              <h4 style="font-family:'Fredoka One',cursive;font-size:1em;color:#6bcb77;margin:4px 0;">Copy Text</h4>
-              <p style="font-size:0.8em;color:#888;margin-bottom:8px;">Copy and paste into an email</p>
-              <button onclick="copyAnswers()" style="font-family:'Fredoka One',cursive;font-size:0.95em;background:#6bcb77;color:#fff;border:none;padding:8px 18px;border-radius:10px;cursor:pointer;">&#128203; Copy</button>
-            </div>
+        <!-- FINISH LINE -->
+        <div class="section" style="text-align:center;border-color:#6bcb77;background:#f0fdf4;">
+          <div style="font-size:4em;margin-bottom:10px;">&#127881;</div>
+          <h2 style="font-family:'Fredoka One',cursive;font-size:1.8em;color:#6bcb77;">You Did It!</h2>
+          <p style="font-size:1.2em;color:#666;margin:10px 0;">You finished 5th grade! You're ready for MIDDLE SCHOOL!</p>
+          <div style="margin:20px 0;">
+            <button class="save-btn" style="font-size:1.2em;padding:14px 32px;" onclick="celebrate()">Celebrate!</button>
+            <button class="save-btn" style="font-size:1.2em;padding:14px 32px;background:#4d96ff;" onclick="saveAll();document.getElementById('manualSaveStatus').textContent='Saved!';setTimeout(()=>document.getElementById('manualSaveStatus').textContent='',3000)">Save My Book</button>
           </div>
-          <div id="exportStatus" style="text-align:center;font-weight:700;font-size:0.95em;min-height:20px;margin-top:10px;"></div>
+          <p style="color:#888;">Your work is saved automatically in your browser. Come back anytime!</p>
+          <div id="manualSaveStatus" style="font-size:0.95em;min-height:24px;color:#6bcb77;font-weight:700;"></div>
         </div>
-      </div>
+
+        <!-- SUBMIT TO TEACHER -->
+        <div class="section" style="border-color:#6bcb77;background:linear-gradient(135deg,#f0fdf4,#f0f7ff);">
+          <div class="section-header">
+            <div class="icon">&#128228;</div>
+            <h2>Submit to Your Teacher</h2>
+            <span class="badge" style="background:#6bcb77;color:#fff;">Send!</span>
+          </div>
+
+          <div style="text-align:center;padding:20px 10px;">
+            <p style="color:#555;font-size:1.05em;margin-bottom:24px;">When you're done, click the big button to send your Memory Book to Mrs. Shimaa! &#127881;</p>
+            <button id="submitBtn" onclick="submitToTeacher()" style="font-family:'Fredoka One',cursive;font-size:1.8em;background:linear-gradient(135deg,#6bcb77,#4d96ff);color:#fff;border:none;padding:20px 52px;border-radius:28px;cursor:pointer;box-shadow:0 8px 30px rgba(77,150,255,0.35);transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 12px 36px rgba(77,150,255,0.45)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 30px rgba(77,150,255,0.35)'">
+              &#128228; Submit to Teacher!
+            </button>
+            <div id="submitStatus" style="margin-top:18px;font-weight:700;font-size:1.1em;min-height:36px;"></div>
+          </div>
+
+          <!-- Backup options -->
+          <div style="margin-top:12px;border-top:2px dashed #d1fae5;padding-top:16px;">
+            <p style="text-align:center;font-size:0.88em;color:#aaa;margin-bottom:12px;">Having trouble submitting? Use a backup option:</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:2px solid #dbeafe;">
+                <div style="font-size:1.8em;">&#128230;</div>
+                <h4 style="font-family:'Fredoka One',cursive;font-size:1em;color:#4d96ff;margin:4px 0;">Download File</h4>
+                <p style="font-size:0.8em;color:#888;margin-bottom:8px;">Save as .txt and hand it in</p>
+                <button onclick="downloadAnswers()" style="font-family:'Fredoka One',cursive;font-size:0.95em;background:#4d96ff;color:#fff;border:none;padding:8px 18px;border-radius:10px;cursor:pointer;">&#128230; Download</button>
+              </div>
+              <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:2px solid #a7f3d0;">
+                <div style="font-size:1.8em;">&#128203;</div>
+                <h4 style="font-family:'Fredoka One',cursive;font-size:1em;color:#6bcb77;margin:4px 0;">Copy Text</h4>
+                <p style="font-size:0.8em;color:#888;margin-bottom:8px;">Copy and paste into an email</p>
+                <button onclick="copyAnswers()" style="font-family:'Fredoka One',cursive;font-size:0.95em;background:#6bcb77;color:#fff;border:none;padding:8px 18px;border-radius:10px;cursor:pointer;">&#128203; Copy</button>
+              </div>
+            </div>
+            <div id="exportStatus" style="text-align:center;font-weight:700;font-size:0.95em;min-height:20px;margin-top:10px;"></div>
+          </div>
+        </div>
+
+      </div><!-- end tab-submit -->
 
       <div class="print-btn-container">
         <button onclick="window.print()">Print My Book!</button>
