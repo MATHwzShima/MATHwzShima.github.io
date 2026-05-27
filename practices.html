@@ -310,148 +310,425 @@
       {
         id: "place-value", title: "Place Value", icon: "123",
         generate: function() {
-          const digits = [4,5,6,7][Math.floor(Math.random()*4)];
-          let num = 0;
-          for (let i = 0; i < digits; i++) {
-            num = num * 10 + Math.floor(Math.random()*9) + 1;
-            if (i === 0) num = Math.floor(Math.random()*9) + 1;
-          }
-          const positions = ["ones","tens","hundreds","thousands","ten-thousands","hundred-thousands","millions"];
-          const pos = Math.floor(Math.random() * Math.min(digits, 5)) + 1;
-          const digitVal = Math.floor(num / Math.pow(10, pos-1)) % 10;
-          const placeValue = digitVal * Math.pow(10, pos-1);
-          return {
-            question: `What is the value of the digit ${digitVal} in ${num.toLocaleString()}?`,
-            answer: placeValue.toString(),
-            label: positions[pos-1]
+          const ri = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+          const makeNum = () => {
+            const digits = [4,5,6,7][ri(0,3)];
+            let n = 0;
+            for (let i=0; i<digits; i++) { n=n*10+ri(i===0?1:0,9); }
+            return n;
           };
+          const places = ["ones","tens","hundreds","thousands","ten-thousands","hundred-thousands"];
+          const type = ri(0,5);
+
+          if (type === 0) {
+            // digit value
+            const num = makeNum(); const s = num.toString();
+            const pos = ri(0, Math.min(s.length-1, 5));
+            const d = parseInt(s[s.length-1-pos]);
+            const val = d * Math.pow(10,pos);
+            return { question:`What is the value of the digit ${d} in ${num.toLocaleString()}?`, answer: val.toLocaleString() };
+          } else if (type === 1) {
+            // which digit is in a given place
+            const num = makeNum(); const s = num.toString();
+            const pos = ri(0, Math.min(s.length-1, 4));
+            const d = parseInt(s[s.length-1-pos]);
+            return { question:`In ${num.toLocaleString()}, which digit is in the ${places[pos]} place?`, answer: d.toString() };
+          } else if (type === 2) {
+            // expanded form → standard
+            const h = ri(1,9), th = ri(0,9), hu = ri(0,9), te = ri(0,9), on = ri(0,9);
+            const num = h*10000 + th*1000 + hu*100 + te*10 + on;
+            const exp = [h*10000,th*1000,hu*100,te*10,on].filter(v=>v>0).join(' + ');
+            return { question:`${exp} = ?`, answer: num.toLocaleString() };
+          } else if (type === 3) {
+            // round to nearest 10 / 100 / 1000
+            const round10  = n => Math.round(n/10)*10;
+            const round100 = n => Math.round(n/100)*100;
+            const round1k  = n => Math.round(n/1000)*1000;
+            const choice = ri(0,2);
+            const num = ri(1000,99999);
+            if (choice===0) return { question:`Round ${num.toLocaleString()} to the nearest 10.`,    answer: round10(num).toLocaleString() };
+            if (choice===1) return { question:`Round ${num.toLocaleString()} to the nearest 100.`,   answer: round100(num).toLocaleString() };
+            return { question:`Round ${num.toLocaleString()} to the nearest 1,000.`, answer: round1k(num).toLocaleString() };
+          } else if (type === 4) {
+            // compare two numbers
+            const a = makeNum(), b = makeNum();
+            const sym = a > b ? '>' : a < b ? '<' : '=';
+            const opts = ['>', '<', '='];
+            return { question:`Compare: ${a.toLocaleString()} ___ ${b.toLocaleString()}\n(Type >, <, or =)`, answer: sym };
+          } else {
+            // order three numbers least to greatest
+            const nums = [makeNum(), makeNum(), makeNum()].sort((x,y)=>x-y);
+            const shuffled = [...nums].sort(()=>Math.random()-0.5);
+            return { question:`Put these numbers in order from least to greatest:\n${shuffled.map(n=>n.toLocaleString()).join('  ,  ')}\n(Type all three separated by commas)`, answer: nums.map(n=>n.toLocaleString()).join(', ') };
+          }
         }
       },
       {
         id: "add-sub-decimals", title: "Add & Subtract Decimals", icon: "0.0",
         generate: function() {
-          const op = Math.random() < 0.5 ? "+" : "-";
-          let a = (Math.random() * 90 + 10).toFixed(1);
-          let b = (Math.random() * 90 + 10).toFixed(1);
-          if (op === "+") {
-            return { question: `${a} + ${b} = ?`, answer: (parseFloat(a) + parseFloat(b)).toFixed(1) };
+          const r1 = () => parseFloat((Math.random()*90+5).toFixed(1));
+          const r2 = () => parseFloat((Math.random()*90+5).toFixed(2));
+          const type = Math.floor(Math.random()*6);
+
+          if (type === 0) {
+            // 1-decimal addition
+            const a=r1(), b=r1();
+            return { question:`${a} + ${b} = ?`, answer: (a+b).toFixed(1) };
+          } else if (type === 1) {
+            // 1-decimal subtraction
+            let a=r1(), b=r1(); if(a<b)[a,b]=[b,a];
+            return { question:`${a} − ${b} = ?`, answer: (a-b).toFixed(1) };
+          } else if (type === 2) {
+            // 2-decimal addition
+            const a=r2(), b=r2();
+            return { question:`${a.toFixed(2)} + ${b.toFixed(2)} = ?`, answer: (a+b).toFixed(2) };
+          } else if (type === 3) {
+            // 2-decimal subtraction
+            let a=r2(), b=r2(); if(a<b)[a,b]=[b,a];
+            return { question:`${a.toFixed(2)} − ${b.toFixed(2)} = ?`, answer: (a-b).toFixed(2) };
+          } else if (type === 4) {
+            // missing addend: ? + b = c
+            const b=r1(), ans=r1(), c=parseFloat((ans+b).toFixed(1));
+            return { question:`? + ${b} = ${c}\nWhat is the missing number?`, answer: ans.toFixed(1) };
           } else {
-            if (parseFloat(a) < parseFloat(b)) [a,b] = [b,a];
-            return { question: `${a} - ${b} = ?`, answer: (parseFloat(a) - parseFloat(b)).toFixed(1) };
+            // word problem
+            const scenarios = [
+              () => { const a=r1(),b=r1(); return { question:`Sara had $${a.toFixed(2)} and earned $${b.toFixed(2)} more.\nHow much does she have now?`, answer:(a+b).toFixed(2) }; },
+              () => { let a=r1(),b=r1(); if(a<b)[a,b]=[b,a]; return { question:`A rope is ${a.toFixed(1)} m long. You cut off ${b.toFixed(1)} m.\nHow long is the remaining piece (in meters)?`, answer:(a-b).toFixed(1) }; },
+              () => { const a=r1(),b=r1(),c=r1(); return { question:`${a.toFixed(1)} + ${b.toFixed(1)} + ${c.toFixed(1)} = ?`, answer:(a+b+c).toFixed(1) }; },
+            ];
+            return scenarios[Math.floor(Math.random()*scenarios.length)]();
           }
         }
       },
       {
         id: "multiplication", title: "Multiplication", icon: "x",
         generate: function() {
-          const a = Math.floor(Math.random() * 90) + 10;
-          const b = Math.floor(Math.random() * 90) + 10;
-          return { question: `${a} x ${b} = ?`, answer: (a * b).toString() };
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type = ri(0,5);
+          if (type === 0) {
+            // 2-digit × 2-digit
+            const a=ri(10,99), b=ri(10,99);
+            return { question:`${a} × ${b} = ?`, answer:(a*b).toString() };
+          } else if (type === 1) {
+            // 3-digit × 1-digit
+            const a=ri(100,999), b=ri(2,9);
+            return { question:`${a} × ${b} = ?`, answer:(a*b).toString() };
+          } else if (type === 2) {
+            // 3-digit × 2-digit
+            const a=ri(100,500), b=ri(10,50);
+            return { question:`${a} × ${b} = ?`, answer:(a*b).toString() };
+          } else if (type === 3) {
+            // multiply by 10/100/1000
+            const a=ri(2,999), p=[10,100,1000][ri(0,2)];
+            return { question:`${a} × ${p} = ?`, answer:(a*p).toLocaleString() };
+          } else if (type === 4) {
+            // missing factor: a × ? = c
+            const a=ri(3,12), b=ri(10,99);
+            return { question:`${a} × ? = ${a*b}\nWhat is the missing number?`, answer:b.toString() };
+          } else {
+            // word problem
+            const items=['boxes','bags','crates','trays','shelves']; const item=items[ri(0,items.length-1)];
+            const a=ri(12,50), b=ri(3,25);
+            return { question:`There are ${a} ${item} with ${b} items in each one.\nHow many items in total?`, answer:(a*b).toString() };
+          }
         }
       },
       {
         id: "decimal-multiplication", title: "Decimal Multiplication", icon: "1.5x",
         generate: function() {
-          const a = (Math.random() * 9 + 1).toFixed(1);
-          const b = (Math.random() * 90 + 10).toFixed(1);
-          const ans = (parseFloat(a) * parseFloat(b));
-          return { question: `${a} x ${b} = ?`, answer: ans.toFixed(2) };
+          const type = Math.floor(Math.random()*5);
+          if (type === 0) {
+            // decimal × whole
+            const a=parseFloat((Math.random()*9+0.5).toFixed(1)), b=Math.floor(Math.random()*18)+2;
+            return { question:`${a} × ${b} = ?`, answer:(Math.round(a*b*100)/100).toString() };
+          } else if (type === 1) {
+            // decimal × decimal (1dp each)
+            const a=parseFloat((Math.random()*9+0.5).toFixed(1)), b=parseFloat((Math.random()*9+0.5).toFixed(1));
+            return { question:`${a} × ${b} = ?`, answer:(Math.round(a*b*100)/100).toString() };
+          } else if (type === 2) {
+            // multiply by 10 / 100
+            const a=parseFloat((Math.random()*99+1).toFixed(2)), p=[10,100][Math.floor(Math.random()*2)];
+            return { question:`${a} × ${p} = ?`, answer:(Math.round(a*p*100)/100).toString() };
+          } else if (type === 3) {
+            // 2-dp × whole
+            const a=parseFloat((Math.random()*9+0.1).toFixed(2)), b=Math.floor(Math.random()*9)+2;
+            return { question:`${a.toFixed(2)} × ${b} = ?`, answer:(Math.round(a*b*1000)/1000).toString() };
+          } else {
+            // word problem
+            const price=parseFloat((Math.random()*9+0.5).toFixed(2)), qty=Math.floor(Math.random()*9)+2;
+            return { question:`Each item costs $${price.toFixed(2)}.\nHow much do ${qty} items cost?`, answer:'$'+(Math.round(price*qty*100)/100).toFixed(2) };
+          }
         }
       },
       {
         id: "long-division", title: "Long Division", icon: "/",
         generate: function() {
-          const divisor = Math.floor(Math.random() * 9) + 2;
-          const quotient = Math.floor(Math.random() * 90) + 10;
-          const dividend = divisor * quotient;
-          return { question: `${dividend} / ${divisor} = ?`, answer: quotient.toString() };
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type = ri(0,5);
+          if (type === 0) {
+            // exact division, 3-digit ÷ 1-digit
+            const d=ri(2,9), q=ri(10,99);
+            return { question:`${d*q} ÷ ${d} = ?`, answer:q.toString() };
+          } else if (type === 1) {
+            // exact division, 4-digit ÷ 2-digit
+            const d=ri(10,25), q=ri(10,50);
+            return { question:`${d*q} ÷ ${d} = ?`, answer:q.toString() };
+          } else if (type === 2) {
+            // with remainder
+            const d=ri(3,9), q=ri(10,50), r=ri(1,d-1);
+            const dd=d*q+r;
+            return { question:`${dd} ÷ ${d} = ? remainder ?\n(Write as: quotient R remainder, e.g. 5 R 2)`, answer:`${q} R ${r}` };
+          } else if (type === 3) {
+            // missing dividend: ? ÷ d = q
+            const d=ri(2,9), q=ri(10,99);
+            return { question:`? ÷ ${d} = ${q}\nWhat is the missing dividend?`, answer:(d*q).toString() };
+          } else if (type === 4) {
+            // missing divisor: dd ÷ ? = q
+            const d=ri(2,9), q=ri(10,50);
+            return { question:`${d*q} ÷ ? = ${q}\nWhat is the missing divisor?`, answer:d.toString() };
+          } else {
+            // word problem
+            const total=ri(2,9)*ri(10,50), groups=ri(2,9);
+            const exact = total - (total % groups);
+            return { question:`${exact} students are divided equally into ${groups} teams.\nHow many students are on each team?`, answer:(exact/groups).toString() };
+          }
         }
       },
       {
         id: "decimal-division", title: "Decimal Division", icon: "./.",
         generate: function() {
-          const divisor = Math.floor(Math.random() * 9) + 2;
-          const quotient = (Math.random() * 9 + 1).toFixed(1);
-          const dividend = (divisor * parseFloat(quotient));
-          return { question: `${dividend.toFixed(1)} / ${divisor} = ?`, answer: quotient };
+          const type = Math.floor(Math.random()*5);
+          if (type === 0) {
+            // decimal ÷ whole
+            const d=Math.floor(Math.random()*8)+2, q=parseFloat((Math.random()*9+0.5).toFixed(1));
+            return { question:`${(d*q).toFixed(1)} ÷ ${d} = ?`, answer:q.toFixed(1) };
+          } else if (type === 1) {
+            // decimal ÷ decimal (tenths)
+            const d=parseFloat((Math.random()*4+0.5).toFixed(1)), q=Math.floor(Math.random()*9)+2;
+            const dd=parseFloat((d*q).toFixed(1));
+            return { question:`${dd} ÷ ${d} = ?`, answer:q.toString() };
+          } else if (type === 2) {
+            // divide by 10 / 100
+            const a=parseFloat((Math.random()*999+10).toFixed(1)), p=[10,100][Math.floor(Math.random()*2)];
+            return { question:`${a} ÷ ${p} = ?`, answer:(a/p).toFixed(p===10?2:3) };
+          } else if (type === 3) {
+            // missing dividend: ? ÷ d = q (decimal quotient)
+            const d=Math.floor(Math.random()*8)+2, q=parseFloat((Math.random()*9+0.5).toFixed(1));
+            return { question:`? ÷ ${d} = ${q.toFixed(1)}\nWhat is the missing number?`, answer:(d*q).toFixed(1) };
+          } else {
+            // word problem
+            const total=parseFloat((Math.random()*9+1).toFixed(1)), parts=Math.floor(Math.random()*4)+2;
+            return { question:`${(total*parts).toFixed(1)} kg of rice is packed equally into ${parts} bags.\nHow many kg is in each bag?`, answer:total.toFixed(1) };
+          }
         }
       },
       {
         id: "add-sub-fractions", title: "Add & Subtract Fractions", icon: "1/2",
         generate: function() {
-          const op = Math.random() < 0.5 ? "+" : "-";
-          const d = Math.floor(Math.random() * 5) + 4;
-          let n1 = Math.floor(Math.random() * (d-1)) + 1;
-          let n2 = Math.floor(Math.random() * (d-1)) + 1;
-          if (op === "-" && n1 < n2) [n1,n2] = [n2,n1];
-          const num = op === "+" ? n1 + n2 : n1 - n2;
-          const gcd = (a,b) => b ? gcd(b, a%b) : a;
-          const g = gcd(Math.abs(num), d);
-          const sn = num / g, sd = d / g;
-          const ans = sd === 1 ? sn.toString() : `${sn}/${sd}`;
-          return { question: `${n1}/${d} ${op} ${n2}/${d} = ?`, answer: ans };
+          const gcd=(a,b)=>b?gcd(b,a%b):a;
+          const simplify=(n,d)=>{const g=gcd(Math.abs(n),d);return[n/g,d/g];};
+          const fmtFrac=(n,d)=>d===1?n.toString():n+'/'+d;
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type=ri(0,5);
+
+          if (type===0) {
+            // same denominator, add
+            const d=ri(4,12); const n1=ri(1,d-1),n2=ri(1,d-1);
+            const [sn,sd]=simplify(n1+n2,d);
+            const whole=Math.floor(sn/sd), rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`${n1}/${d} + ${n2}/${d} = ?`, answer:ans };
+          } else if (type===1) {
+            // same denominator, subtract
+            const d=ri(4,12); let n1=ri(2,d-1),n2=ri(1,n1-1);
+            const [sn,sd]=simplify(n1-n2,d);
+            return { question:`${n1}/${d} − ${n2}/${d} = ?`, answer:fmtFrac(sn,sd) };
+          } else if (type===2) {
+            // unlike denominators, add
+            const d1=[2,3,4,5,6,8,10][ri(0,6)], d2=[2,3,4,5,6,8,10][ri(0,6)];
+            const n1=ri(1,d1-1),n2=ri(1,d2-1);
+            const lcd=d1*d2/gcd(d1,d2);
+            const [sn,sd]=simplify(n1*(lcd/d1)+n2*(lcd/d2),lcd);
+            const whole=Math.floor(sn/sd),rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`${n1}/${d1} + ${n2}/${d2} = ?`, answer:ans };
+          } else if (type===3) {
+            // unlike denominators, subtract
+            const d1=[3,4,5,6,8,10][ri(0,5)], d2=[2,3,4,5,6][ri(0,4)];
+            const n1=ri(1,d1-1),n2=ri(1,d2-1);
+            const lcd=d1*d2/gcd(d1,d2);
+            const diff=n1*(lcd/d1)-n2*(lcd/d2);
+            if(diff<=0) return {question:`1/2 + 1/4 = ?`,answer:'3/4'};
+            const [sn,sd]=simplify(diff,lcd);
+            return { question:`${n1}/${d1} − ${n2}/${d2} = ?`, answer:fmtFrac(sn,sd) };
+          } else if (type===4) {
+            // mixed number + fraction
+            const w=ri(1,5), d=ri(2,8), n1=ri(1,d-1), n2=ri(1,d-1);
+            const total=n1+n2, whole2=Math.floor(total/d), rem=total%d;
+            const ans=rem===0?(w+whole2).toString():(w+whole2)+' '+rem+'/'+d;
+            return { question:`${w} ${n1}/${d} + ${n2}/${d} = ?`, answer:ans };
+          } else {
+            // word problem
+            const d=ri(4,10), n1=ri(2,d-1), n2=ri(1,n1-1);
+            const [sn,sd]=simplify(n1-n2,d);
+            return { question:`A pizza has ${n1}/${d} left.\nYou eat ${n2}/${d} more.\nHow much pizza is left?`, answer:fmtFrac(sn,sd) };
+          }
         }
       },
       {
         id: "multiply-fractions", title: "Multiply Fractions", icon: "1/2x",
         generate: function() {
-          const n1 = Math.floor(Math.random() * 5) + 1;
-          const d1 = Math.floor(Math.random() * 5) + 2;
-          const n2 = Math.floor(Math.random() * 5) + 1;
-          const d2 = Math.floor(Math.random() * 5) + 2;
-          const num = n1 * n2;
-          const den = d1 * d2;
-          const gcd = (a,b) => b ? gcd(b, a%b) : a;
-          const g = gcd(num, den);
-          const sn = num/g, sd = den/g;
-          const ans = sd === 1 ? sn.toString() : `${sn}/${sd}`;
-          return { question: `${n1}/${d1} x ${n2}/${d2} = ?`, answer: ans };
+          const gcd=(a,b)=>b?gcd(b,a%b):a;
+          const simplify=(n,d)=>{const g=gcd(Math.abs(n),d);return[n/g,d/g];};
+          const fmtFrac=(n,d)=>d===1?n.toString():n+'/'+d;
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type=ri(0,4);
+
+          if (type===0) {
+            // fraction × fraction
+            const n1=ri(1,5),d1=ri(2,8),n2=ri(1,5),d2=ri(2,8);
+            const [sn,sd]=simplify(n1*n2,d1*d2);
+            return { question:`${n1}/${d1} × ${n2}/${d2} = ?`, answer:fmtFrac(sn,sd) };
+          } else if (type===1) {
+            // whole × fraction
+            const w=ri(2,10),n=ri(1,7),d=ri(2,9);
+            const [sn,sd]=simplify(w*n,d);
+            const whole=Math.floor(sn/sd),rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`${w} × ${n}/${d} = ?`, answer:ans };
+          } else if (type===2) {
+            // fraction × fraction, simplify answer
+            const d1=ri(3,8),d2=ri(3,8),n1=ri(1,d1-1),n2=ri(1,d2-1);
+            const [sn,sd]=simplify(n1*n2,d1*d2);
+            return { question:`${n1}/${d1} × ${n2}/${d2} = ?\n(Simplify your answer)`, answer:fmtFrac(sn,sd) };
+          } else if (type===3) {
+            // missing factor: (n1/d1) × ? = ans  → ? = ans × d1/n1
+            const n1=ri(1,4),d1=ri(2,6),n2=ri(1,4),d2=ri(2,6);
+            const [sn,sd]=simplify(n1*n2,d1*d2);
+            const ansStr=fmtFrac(sn,sd);
+            return { question:`${n1}/${d1} × ? = ${ansStr}\nWhat is the missing fraction?`, answer:fmtFrac(n2,d2) };
+          } else {
+            // word problem
+            const w=ri(2,8),n=ri(1,5),d=ri(3,10);
+            const [sn,sd]=simplify(w*n,d);
+            const whole=Math.floor(sn/sd),rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`A recipe needs ${n}/${d} cup of sugar.\nYou are making ${w} batches.\nHow many cups of sugar do you need?`, answer:ans };
+          }
         }
       },
       {
         id: "divide-fractions", title: "Divide Fractions", icon: "1/2/",
         generate: function() {
-          const n1 = Math.floor(Math.random() * 5) + 1;
-          const d1 = Math.floor(Math.random() * 5) + 2;
-          const n2 = Math.floor(Math.random() * 5) + 1;
-          const d2 = Math.floor(Math.random() * 5) + 2;
-          const num = n1 * d2;
-          const den = d1 * n2;
-          const gcd = (a,b) => b ? gcd(b, a%b) : a;
-          const g = gcd(num, den);
-          const sn = num/g, sd = den/g;
-          const ans = sd === 1 ? sn.toString() : `${sn}/${sd}`;
-          return { question: `${n1}/${d1} / ${n2}/${d2} = ?`, answer: ans };
+          const gcd=(a,b)=>b?gcd(b,a%b):a;
+          const simplify=(n,d)=>{const g=gcd(Math.abs(n),d);return[n/g,d/g];};
+          const fmtFrac=(n,d)=>d===1?n.toString():n+'/'+d;
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type=ri(0,4);
+
+          if (type===0) {
+            // fraction ÷ fraction (keep-change-flip)
+            const n1=ri(1,5),d1=ri(2,8),n2=ri(1,5),d2=ri(2,8);
+            const [sn,sd]=simplify(n1*d2,d1*n2);
+            const whole=Math.floor(sn/sd),rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`${n1}/${d1} ÷ ${n2}/${d2} = ?`, answer:ans };
+          } else if (type===1) {
+            // whole ÷ fraction
+            const w=ri(2,8),n=ri(1,5),d=ri(2,8);
+            const [sn,sd]=simplify(w*d,n);
+            const whole=Math.floor(sn/sd),rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`${w} ÷ ${n}/${d} = ?`, answer:ans };
+          } else if (type===2) {
+            // fraction ÷ whole
+            const n=ri(1,8),d=ri(2,9),w=ri(2,6);
+            const [sn,sd]=simplify(n,d*w);
+            return { question:`${n}/${d} ÷ ${w} = ?`, answer:fmtFrac(sn,sd) };
+          } else if (type===3) {
+            // what is the missing divisor? a/b ÷ ? = c/d → ? = (a/b)/(c/d)
+            const n1=ri(2,6),d1=ri(3,8),n2=ri(1,4),d2=ri(2,6);
+            // quotient = n1/d1 ÷ n2/d2 = n1*d2 / (d1*n2)
+            const [qn,qd]=simplify(n1*d2,d1*n2);
+            return { question:`${n1}/${d1} ÷ ? = ${fmtFrac(qn,qd)}\nWhat is the missing fraction?`, answer:fmtFrac(n2,d2) };
+          } else {
+            // word problem
+            const total=ri(2,6), piece=ri(2,6), pd=ri(3,8);
+            const [sn,sd]=simplify(total*pd,piece);
+            const whole=Math.floor(sn/sd),rem=sn%sd;
+            const ans=rem===0?whole.toString():(whole>0?whole+' '+rem+'/'+sd:fmtFrac(sn,sd));
+            return { question:`You have ${total} meters of ribbon.\nEach bow needs ${piece}/${pd} meters.\nHow many bows can you make?`, answer:ans };
+          }
         }
       },
       {
         id: "volume", title: "Volume", icon: "3D",
         generate: function() {
-          const l = Math.floor(Math.random() * 5) + 2;
-          const w = Math.floor(Math.random() * 5) + 2;
-          const h = Math.floor(Math.random() * 5) + 2;
-          return { question: `Find the volume: ${l} x ${w} x ${h} = ?`, answer: (l*w*h).toString() };
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type=ri(0,4);
+          if (type===0) {
+            // standard l×w×h
+            const l=ri(2,10),w=ri(2,8),h=ri(2,6);
+            return { question:`Find the volume of a box:\nLength=${l} cm, Width=${w} cm, Height=${h} cm`, answer:(l*w*h).toString() };
+          } else if (type===1) {
+            // find missing dimension
+            const l=ri(2,10),w=ri(2,8),h=ri(2,6),vol=l*w*h;
+            const miss=ri(0,2);
+            if(miss===0) return { question:`Volume=${vol} cm³, Width=${w} cm, Height=${h} cm.\nFind the Length.`, answer:l.toString() };
+            if(miss===1) return { question:`Volume=${vol} cm³, Length=${l} cm, Height=${h} cm.\nFind the Width.`, answer:w.toString() };
+            return { question:`Volume=${vol} cm³, Length=${l} cm, Width=${w} cm.\nFind the Height.`, answer:h.toString() };
+          } else if (type===2) {
+            // cube volume
+            const s=ri(2,8);
+            return { question:`Find the volume of a cube with side ${s} cm.`, answer:(s*s*s).toString() };
+          } else if (type===3) {
+            // unit cubes — how many fill this box?
+            const l=ri(2,6),w=ri(2,5),h=ri(2,4);
+            return { question:`A box is ${l} units long, ${w} units wide, and ${h} units tall.\nHow many unit cubes fill it?`, answer:(l*w*h).toString() };
+          } else {
+            // word problem
+            const l=ri(3,12),w=ri(2,8),h=ri(2,5);
+            return { question:`A fish tank is ${l} cm long, ${w} cm wide, and ${h} cm tall.\nWhat is its volume in cm³?`, answer:(l*w*h).toString() };
+          }
         }
       },
       {
         id: "order-of-operations", title: "Order of Operations", icon: "PEMDAS",
         generate: function() {
-          const type = Math.floor(Math.random() * 3);
-          if (type === 0) {
-            const a = Math.floor(Math.random() * 9) + 1;
-            const b = Math.floor(Math.random() * 9) + 1;
-            const c = Math.floor(Math.random() * 9) + 1;
-            return { question: `${a} + ${b} x ${c} = ?`, answer: (a + b * c).toString() };
-          } else if (type === 1) {
-            const a = Math.floor(Math.random() * 9) + 2;
-            const b = Math.floor(Math.random() * 9) + 2;
-            const c = Math.floor(Math.random() * 9) + 2;
-            return { question: `(${a} + ${b}) x ${c} = ?`, answer: ((a+b)*c).toString() };
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const type=ri(0,7);
+          if (type===0) {
+            const a=ri(1,9),b=ri(1,9),c=ri(1,9);
+            return { question:`${a} + ${b} × ${c} = ?`, answer:(a+b*c).toString() };
+          } else if (type===1) {
+            const a=ri(2,9),b=ri(2,9),c=ri(2,9);
+            return { question:`(${a} + ${b}) × ${c} = ?`, answer:((a+b)*c).toString() };
+          } else if (type===2) {
+            const a=ri(10,30),b=ri(2,9),c=ri(2,5);
+            const ans=a-b*c; if(ans<0) return {question:`5 + 3 × 2 = ?`,answer:'11'};
+            return { question:`${a} − ${b} × ${c} = ?`, answer:ans.toString() };
+          } else if (type===3) {
+            // division in expression: a ÷ b + c
+            const b=ri(2,9),q=ri(2,9),c=ri(1,9);
+            return { question:`${b*q} ÷ ${b} + ${c} = ?`, answer:(q+c).toString() };
+          } else if (type===4) {
+            // two operations: a × b + c × d
+            const a=ri(2,6),b=ri(2,6),c=ri(2,6),d=ri(2,6);
+            return { question:`${a} × ${b} + ${c} × ${d} = ?`, answer:(a*b+c*d).toString() };
+          } else if (type===5) {
+            // nested parentheses: (a + b) × (c − d)
+            const a=ri(3,9),b=ri(2,8),c=ri(5,15),d=ri(1,4);
+            return { question:`(${a} + ${b}) × (${c} − ${d}) = ?`, answer:((a+b)*(c-d)).toString() };
+          } else if (type===6) {
+            // a + b × c − d
+            const a=ri(5,20),b=ri(2,8),c=ri(2,6),d=ri(1,5);
+            const ans=a+b*c-d;
+            return { question:`${a} + ${b} × ${c} − ${d} = ?`, answer:ans.toString() };
           } else {
-            const a = Math.floor(Math.random() * 20) + 5;
-            const b = Math.floor(Math.random() * 9) + 2;
-            const c = Math.floor(Math.random() * 5) + 2;
-            return { question: `${a} - ${b} x ${c} = ?`, answer: (a - b * c).toString() };
+            // a × (b − c) + d
+            const b=ri(5,15),c=ri(1,b-2),a=ri(2,8),d=ri(1,10);
+            return { question:`${a} × (${b} − ${c}) + ${d} = ?`, answer:(a*(b-c)+d).toString() };
           }
         }
       },
@@ -498,15 +775,33 @@
       {
         id: "coordinate-plane", title: "Coordinate Plane", icon: "(x,y)",
         generate: function() {
-          const x = (Math.floor(Math.random() * 5) + 1) * (Math.random() < 0.5 ? 1 : -1);
-          const y = (Math.floor(Math.random() * 5) + 1) * (Math.random() < 0.5 ? 1 : -1);
-          const tasks = [
-            { q: `What is the x-coordinate of point (${x}, ${y})?`, a: x.toString() },
-            { q: `What is the y-coordinate of point (${x}, ${y})?`, a: y.toString() },
-            { q: `In which quadrant is (${x}, ${y})? (1, 2, 3, or 4)`, a: (x > 0 && y > 0 ? "1" : x < 0 && y > 0 ? "2" : x < 0 && y < 0 ? "3" : "4") },
-          ];
-          const t = tasks[Math.floor(Math.random() * tasks.length)];
-          return { question: t.q, answer: t.a };
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const rp=()=>(ri(1,8))*(Math.random()<0.5?1:-1);
+          const quad=(x,y)=>x>0&&y>0?'1':x<0&&y>0?'2':x<0&&y<0?'3':'4';
+          const type=ri(0,6);
+          const x=rp(), y=rp();
+
+          if (type===0) return { question:`What is the x-coordinate of point (${x}, ${y})?`, answer:x.toString() };
+          if (type===1) return { question:`What is the y-coordinate of point (${x}, ${y})?`, answer:y.toString() };
+          if (type===2) return { question:`In which quadrant is point (${x}, ${y})?\n(Answer: 1, 2, 3, or 4)`, answer:quad(x,y) };
+          if (type===3) {
+            // which axis is the point on?
+            const onX=ri(1,8)*(Math.random()<0.5?1:-1);
+            return { question:`Point (${onX}, 0) lies on which axis?`, answer:'x-axis' };
+          }
+          if (type===4) {
+            const onY=ri(1,8)*(Math.random()<0.5?1:-1);
+            return { question:`Point (0, ${onY}) lies on which axis?`, answer:'y-axis' };
+          }
+          if (type===5) {
+            // horizontal distance between two points
+            const y0=ri(1,6), x1=ri(1,8), x2=ri(1,8);
+            const dist=Math.abs(x1-x2);
+            return { question:`What is the distance between (${x1}, ${y0}) and (${x2}, ${y0})?\n(Same y-coordinate — count along the x-axis)`, answer:dist.toString() };
+          }
+          // vertical distance
+          const x0=ri(1,6), y1=ri(1,8), y2=ri(1,8);
+          return { question:`What is the distance between (${x0}, ${y1}) and (${x0}, ${y2})?\n(Same x-coordinate — count along the y-axis)`, answer:Math.abs(y1-y2).toString() };
         }
       },
       {
@@ -525,7 +820,7 @@
           }
           const qTypes = [
             {
-              q: "What is the total number of X's?",
+              q: "What is the total number of X's in the line plot?",
               getAnswer: function(d) {
                 let total = 0;
                 for (let v in d) total += d[v];
@@ -533,11 +828,19 @@
               }
             },
             {
-              q: "Which value has the most X's?",
+              q: "Which value has the MOST X's? (the mode)",
               getAnswer: function(d) {
                 let maxV = null, maxC = -1;
                 for (let v in d) { if (d[v] > maxC) { maxC = d[v]; maxV = v; } }
                 return maxV;
+              }
+            },
+            {
+              q: "Which value has the FEWEST X's?",
+              getAnswer: function(d) {
+                let minV = null, minC = Infinity;
+                for (let v in d) { if (d[v] < minC) { minC = d[v]; minV = v; } }
+                return minV;
               }
             },
             {
@@ -553,6 +856,33 @@
               q: "How many different values have X's?",
               getAnswer: function(d) {
                 return Object.keys(d).length.toString();
+              }
+            },
+            {
+              q: "What is the RANGE of the data? (largest value − smallest value)",
+              getAnswer: function(d) {
+                const keys = Object.keys(d).map(Number);
+                return (Math.max(...keys) - Math.min(...keys)).toString();
+              }
+            },
+            {
+              q: "What is the largest (maximum) value in the data?",
+              getAnswer: function(d) {
+                return Math.max(...Object.keys(d).map(Number)).toString();
+              }
+            },
+            {
+              q: "What is the smallest (minimum) value in the data?",
+              getAnswer: function(d) {
+                return Math.min(...Object.keys(d).map(Number)).toString();
+              }
+            },
+            {
+              q: "What is the SUM of all the data values? (multiply each value by its count, then add)",
+              getAnswer: function(d) {
+                let sum = 0;
+                for (let v in d) sum += Number(v) * d[v];
+                return sum.toString();
               }
             },
           ];
@@ -633,74 +963,107 @@
       {
         id: "quadrilaterals", title: "Quadrilateral Classification", icon: "quad",
         generate: function() {
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
           const shapes = [
-            { id: "square", svg: "10,85 85,85 85,10 10,10", label: "Square", props: "4 equal sides, 4 right angles" },
-            { id: "rectangle", svg: "5,85 95,85 95,15 5,15", label: "Rectangle", props: "opposite sides equal, 4 right angles" },
-            { id: "rhombus", svg: "50,90 90,50 50,10 10,50", label: "Rhombus", props: "4 equal sides, no right angles" },
-            { id: "trapezoid", svg: "15,90 85,90 65,10 35,10", label: "Trapezoid", props: "exactly one pair of parallel sides" },
-            { id: "parallelogram", svg: "20,90 95,90 75,10 5,10", label: "Parallelogram", props: "opposite sides parallel and equal" },
+            { id:"square",       svg:"10,85 85,85 85,10 10,10",   label:"Square",       props:"4 equal sides, 4 right angles" },
+            { id:"rectangle",    svg:"5,85 95,85 95,15 5,15",     label:"Rectangle",    props:"opposite sides equal, 4 right angles" },
+            { id:"rhombus",      svg:"50,90 90,50 50,10 10,50",   label:"Rhombus",      props:"4 equal sides, no right angles" },
+            { id:"trapezoid",    svg:"15,90 85,90 65,10 35,10",   label:"Trapezoid",    props:"exactly one pair of parallel sides" },
+            { id:"parallelogram",svg:"20,90 95,90 75,10 5,10",    label:"Parallelogram",props:"2 pairs of parallel sides, no right angles" },
           ];
-          const qTypes = [
-            {
-              label: "identify",
-              make: function(s, others) {
-                const all = [s, ...others.filter(o => o.id !== s.id)].slice(0, 4);
-                const opts = all.map(o => o.label);
-                const a = opts.indexOf(s.label);
-                return { q: "What shape is this?", opts, a, render: function(c) { c.innerHTML = `<svg viewBox="0 0 100 100" style="width:140px;height:140px;display:block;margin:0 auto;"><polygon points="${s.svg}" fill="#e8e5ff" stroke="#6c5ce7" stroke-width="2"/></svg>`; } };
-              }
-            },
-            {
-              label: "property",
-              make: function(s, others) {
-                const all = [s, ...others.filter(o => o.id !== s.id)].slice(0, 4);
-                const opts = all.map(o => o.label);
-                const a = opts.indexOf(s.label);
-                return { q: `Which shape has: ${s.props}?`, opts, a, render: function(c) { c.innerHTML = `<svg viewBox="0 0 100 100" style="width:140px;height:140px;display:block;margin:0 auto;"><polygon points="${s.svg}" fill="#e8e5ff" stroke="#6c5ce7" stroke-width="2"/></svg>`; } };
-              }
-            },
-          ];
-          const shuffled = [...shapes].sort(() => Math.random() - 0.5);
-          const s = shuffled[0];
-          const others = shuffled.slice(1);
-          const qt = qTypes[Math.floor(Math.random() * qTypes.length)];
-          return qt.make(s, others);
+          const type=ri(0,4);
+
+          if (type<=1) {
+            const shuffled=[...shapes].sort(()=>Math.random()-0.5);
+            const s=shuffled[0], others=shuffled.slice(1);
+            const all=[s,...others.filter(o=>o.id!==s.id)].slice(0,4);
+            const opts=all.map(o=>o.label), a=opts.indexOf(s.label);
+            const question=type===0 ? "What shape is this?" : `Which shape has: ${s.props}?`;
+            return { question, opts, a, render:c=>{ c.innerHTML=`<svg viewBox="0 0 100 100" style="width:140px;height:140px;display:block;margin:0 auto;"><polygon points="${s.svg}" fill="#e8e5ff" stroke="#6c5ce7" stroke-width="2"/></svg>`; } };
+          } else if (type===2) {
+            // missing angle in a quadrilateral (sum = 360°)
+            const a1=ri(60,100), a2=ri(60,100), a3=ri(60,100);
+            const a4=360-a1-a2-a3;
+            if(a4<40||a4>160) return { question:`A rectangle has angles 90°, 90°, 90°, ___.\nWhat is the missing angle?`, answer:'90' };
+            return { question:`A quadrilateral has angles ${a1}°, ${a2}°, ${a3}°, and ___.\nAngles in a quadrilateral add up to 360°.\nWhat is the missing angle?`, answer:a4.toString() };
+          } else if (type===3) {
+            // true/false property MCQ
+            const facts = [
+              {q:'A square is always a rectangle.',        opts:['True','False'], a:0},
+              {q:'A rectangle is always a square.',        opts:['True','False'], a:1},
+              {q:'A rhombus has 4 equal sides.',           opts:['True','False'], a:0},
+              {q:'A trapezoid has 2 pairs of parallel sides.', opts:['True','False'], a:1},
+              {q:'A parallelogram has opposite sides parallel.', opts:['True','False'], a:0},
+              {q:'All rectangles have 4 right angles.',    opts:['True','False'], a:0},
+              {q:'A rhombus always has 4 right angles.',   opts:['True','False'], a:1},
+              {q:'A square is a special type of rhombus.', opts:['True','False'], a:0},
+            ];
+            const f=facts[ri(0,facts.length-1)];
+            return { question:f.q, answer:f.opts[f.a], opts:f.opts, a:f.a };
+          } else {
+            // how many sides / angles
+            const qbank=[
+              {q:'How many sides does a quadrilateral have?',answer:'4'},
+              {q:'What is the sum of all angles in any quadrilateral?',answer:'360'},
+              {q:'How many pairs of parallel sides does a trapezoid have?',answer:'1'},
+              {q:'How many pairs of parallel sides does a parallelogram have?',answer:'2'},
+              {q:'How many right angles does a rectangle have?',answer:'4'},
+            ];
+            const item=qbank[ri(0,qbank.length-1)];
+            return { question:item.q, answer:item.answer };
+          }
         }
       },
       {
         id: "triangles", title: "Triangle Classification", icon: "tri",
         generate: function() {
-          const shapes = [
-            { id: "equilateral", svg: "50,5 95,90 5,90", label: "Equilateral", props: "all sides equal" },
-            { id: "isosceles", svg: "50,5 90,90 10,90", label: "Isosceles", props: "two sides equal" },
-            { id: "scalene", svg: "10,90 90,80 30,10", label: "Scalene", props: "no sides equal" },
-            { id: "right", svg: "10,10 10,90 90,90", label: "Right", props: "one right angle" },
+          const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+          const shapes=[
+            {id:"equilateral",svg:"50,5 95,90 5,90",  label:"Equilateral",props:"all 3 sides are equal"},
+            {id:"isosceles",  svg:"50,5 90,90 10,90",  label:"Isosceles",  props:"exactly 2 sides are equal"},
+            {id:"scalene",    svg:"10,90 90,80 30,10", label:"Scalene",    props:"no sides are equal"},
+            {id:"right",      svg:"10,10 10,90 90,90", label:"Right",      props:"one right angle (90°)"},
+            {id:"acute",      svg:"50,5 90,90 10,85",  label:"Acute",      props:"all angles less than 90°"},
+            {id:"obtuse",     svg:"5,80 95,90 60,10",  label:"Obtuse",     props:"one angle greater than 90°"},
           ];
-          const qTypes = [
-            {
-              label: "identify",
-              make: function(s, others) {
-                const all = [s, ...others.filter(o => o.id !== s.id)].slice(0, 4);
-                const opts = all.map(o => o.label);
-                const a = opts.indexOf(s.label);
-                return { q: "What type of triangle is this?", opts, a, render: function(c) { c.innerHTML = `<svg viewBox="0 0 100 100" style="width:140px;height:140px;display:block;margin:0 auto;"><polygon points="${s.svg}" fill="#e8e5ff" stroke="#6c5ce7" stroke-width="2"/></svg>`; } };
-              }
-            },
-            {
-              label: "property",
-              make: function(s, others) {
-                const all = [s, ...others.filter(o => o.id !== s.id)].slice(0, 4);
-                const opts = all.map(o => o.label);
-                const a = opts.indexOf(s.label);
-                return { q: `Which triangle has ${s.props}?`, opts, a, render: function(c) { c.innerHTML = `<svg viewBox="0 0 100 100" style="width:140px;height:140px;display:block;margin:0 auto;"><polygon points="${s.svg}" fill="#e8e5ff" stroke="#6c5ce7" stroke-width="2"/></svg>`; } };
-              }
-            },
-          ];
-          const shuffled = [...shapes].sort(() => Math.random() - 0.5);
-          const s = shuffled[0];
-          const others = shuffled.slice(1);
-          const qt = qTypes[Math.floor(Math.random() * qTypes.length)];
-          return qt.make(s, others);
+          const type=ri(0,4);
+
+          if (type<=1) {
+            const shuffled=[...shapes].sort(()=>Math.random()-0.5);
+            const s=shuffled[0],others=shuffled.slice(1);
+            const all=[s,...others.filter(o=>o.id!==s.id)].slice(0,4);
+            const opts=all.map(o=>o.label),a=opts.indexOf(s.label);
+            const question=type===0?'What type of triangle is this?':`Which triangle has: ${s.props}?`;
+            return { question,opts,a, render:c=>{ c.innerHTML=`<svg viewBox="0 0 100 100" style="width:140px;height:140px;display:block;margin:0 auto;"><polygon points="${s.svg}" fill="#e8e5ff" stroke="#6c5ce7" stroke-width="2"/></svg>`; } };
+          } else if (type===2) {
+            // find missing angle
+            const a1=ri(30,80), a2=ri(20,80-Math.max(a1-60,0));
+            const a3=180-a1-a2;
+            if(a3<=0||a3>=180) return {question:`A triangle has angles 60°, 60°, ___.\nWhat is the missing angle?`, answer:'60'};
+            return {question:`A triangle has angles ${a1}° and ${a2}°.\nAngles in a triangle add up to 180°.\nWhat is the third angle?`, answer:a3.toString()};
+          } else if (type===3) {
+            // classify by angles
+            const facts=[
+              {q:'A triangle with all angles equal to 60° is an ___ triangle.',opts:['Acute','Equilateral','Right','Obtuse'],a:1},
+              {q:'A triangle with one angle of 90° is called a ___ triangle.',opts:['Acute','Equilateral','Right','Obtuse'],a:2},
+              {q:'A triangle where all angles are less than 90° is called ___.', opts:['Acute','Right','Obtuse','Equilateral'],a:0},
+              {q:'A triangle with one angle greater than 90° is called ___.', opts:['Acute','Right','Obtuse','Equilateral'],a:2},
+              {q:'The sum of all angles in any triangle equals ___.',opts:['90°','180°','270°','360°'],a:1},
+            ];
+            const f=facts[ri(0,facts.length-1)];
+            return {question:f.q, answer:f.opts[f.a], opts:f.opts, a:f.a};
+          } else {
+            // calculate angles of a specific triangle
+            const qbank=[
+              {q:'An equilateral triangle has all equal angles. What is each angle?',answer:'60'},
+              {q:'A right isosceles triangle has one 90° angle and two equal angles.\nWhat are the two equal angles?',answer:'45'},
+              {q:'An isosceles triangle has a top angle of 40°.\nThe two base angles are equal. What is each base angle?',answer:'70'},
+              {q:'A triangle has two equal angles of 55°. What is the third angle?',answer:'70'},
+              {q:'A triangle has angles 3x, 3x, and 3x (all equal). What is x?',answer:'20'},
+            ];
+            const item=qbank[ri(0,qbank.length-1)];
+            return {question:item.q, answer:item.answer};
+          }
         }
       },
       // ── 7 NEW LESSONS ────────────────────────────────────────
