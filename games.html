@@ -292,6 +292,31 @@
           <h3>Number Sorter</h3>
           <p>Click the numbers from smallest to biggest!</p>
         </div>
+        <div class="game-select-card" onclick="openGame('pemdas')">
+          <div class="gs-icon">&#128290;&#10133;&#10134;</div>
+          <h3>PEMDAS Challenge</h3>
+          <p>Solve order-of-operations problems — pick the right answer!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('percent')">
+          <div class="gs-icon">&#128175;</div>
+          <h3>Percent Whiz</h3>
+          <p>Find percentages of numbers as fast as you can!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('prime')">
+          <div class="gs-icon">&#128273;</div>
+          <h3>Prime Hunter</h3>
+          <p>Is it prime or composite? Click fast and score big!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('area')">
+          <div class="gs-icon">&#128207;</div>
+          <h3>Area Race</h3>
+          <p>Calculate the area of shapes before time runs out!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('decimal')">
+          <div class="gs-icon">&#128992;</div>
+          <h3>Decimal Dash</h3>
+          <p>45 seconds of decimal arithmetic — how many can you get?</p>
+        </div>
       </div>
     </div>
 
@@ -418,6 +443,98 @@
       </div>
     </div>
 
+    <!-- ══ GAME 8: PEMDAS Challenge ══ -->
+    <div class="game-panel" id="panel-pemdas">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128290; PEMDAS Challenge</h3>
+        <p>Apply the correct order of operations and pick the right answer!</p>
+        <div class="score-row">Score: <span id="pemScore">0</span> &nbsp;/&nbsp; <span id="pemTotal">0</span></div>
+        <div class="game-numbers" id="pemExpr" style="font-size:1.6rem;">?</div>
+        <div id="pemOptions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 0;"></div>
+        <div class="game-message" id="pemMsg" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- ══ GAME 9: Percent Whiz ══ -->
+    <div class="game-panel" id="panel-percent">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128175; Percent Whiz</h3>
+        <p>Type the answer to each percentage question!</p>
+        <div class="score-row">Score: <span id="pctScore">0</span></div>
+        <div class="game-numbers" id="pctQuestion" style="font-size:1.5rem;">What is 25% of 80?</div>
+        <div class="game-input">
+          <input type="number" id="pctAnswer" placeholder="?" autocomplete="off">
+          <button onclick="checkPct()">Check</button>
+        </div>
+        <div class="game-message" id="pctMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetPct()">&#128260; New Game</button>
+      </div>
+    </div>
+
+    <!-- ══ GAME 10: Prime Hunter ══ -->
+    <div class="game-panel" id="panel-prime">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128273; Prime Hunter</h3>
+        <p>Is the number <strong>Prime</strong> or <strong>Composite</strong>? Answer fast!</p>
+        <div class="score-row">Score: <span id="primeScore">0</span> &nbsp;|&nbsp; Streak: <span id="primeStreak">0</span> &#128293;</div>
+        <div class="game-numbers" id="primeNum" style="font-size:4rem;">?</div>
+        <div class="tf-btns">
+          <button class="tf-true-btn" id="primePrimeBtn" onclick="checkPrime(true)">&#128273; Prime</button>
+          <button class="tf-false-btn" id="primeCompBtn"  onclick="checkPrime(false)">&#9940; Composite</button>
+        </div>
+        <div class="game-message" id="primeMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetPrime()">&#128260; New Game</button>
+      </div>
+    </div>
+
+    <!-- ══ GAME 11: Area Race ══ -->
+    <div class="game-panel" id="panel-area">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128207; Area Race</h3>
+        <p>Calculate the area of the shape shown!</p>
+        <div class="score-row">Score: <span id="areaScore">0</span></div>
+        <div class="game-numbers" id="areaQuestion" style="font-size:1.5rem;line-height:1.6;">?</div>
+        <div class="game-input">
+          <input type="number" id="areaAnswer" placeholder="area = ?" autocomplete="off">
+          <button onclick="checkArea()">Check</button>
+        </div>
+        <div class="game-message" id="areaMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetArea()">&#128260; New Shape</button>
+      </div>
+    </div>
+
+    <!-- ══ GAME 12: Decimal Dash ══ -->
+    <div class="game-panel" id="panel-decimal">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128992; Decimal Dash</h3>
+        <div id="decStartScreen" style="text-align:center;padding:1rem 0;">
+          <p>You have <strong>45 seconds</strong> to solve as many decimal problems as possible!</p>
+          <button class="game-btn" onclick="startDecimal()" style="font-size:1.2rem;">&#9654; Start!</button>
+        </div>
+        <div id="decPlayArea" style="display:none;">
+          <div class="sprint-timer" id="decTimer">45</div>
+          <div class="score-row">Correct: <span id="decScore">0</span> &nbsp;|&nbsp; Wrong: <span id="decWrong">0</span></div>
+          <div class="game-numbers" id="decProblem">?</div>
+          <div class="game-input">
+            <input type="number" id="decAnswer" placeholder="?" step="0.01" autocomplete="off">
+            <button onclick="checkDecimal()">&#9654;</button>
+          </div>
+          <div class="game-message" id="decMsg" aria-live="polite"></div>
+        </div>
+        <div class="sprint-result-screen" id="decResult" style="display:none;">
+          <div class="big-emoji" id="decEmoji">&#127881;</div>
+          <div class="result-score">You got <span id="decFinalScore">0</span> correct!</div>
+          <p id="decResultMsg"></p>
+          <button class="game-btn" onclick="restartDecimal()">&#128260; Play Again</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ GAME 7: Number Sorter ══ -->
     <div class="game-panel" id="panel-sorter">
       <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
@@ -457,11 +574,17 @@
       if (id === 'trueFalse'){ resetTF(); }
       if (id === 'missing')  { resetMissing(); }
       if (id === 'sorter')   { resetSorter(); }
+      if (id === 'pemdas')   { resetPemdas(); }
+      if (id === 'percent')  { resetPct(); }
+      if (id === 'prime')    { resetPrime(); }
+      if (id === 'area')     { resetArea(); }
+      if (id === 'decimal')  { resetDecimalUI(); }
     }
   }
 
   function closeGame() {
     stopSprint();
+    if (typeof decInterval !== 'undefined' && decInterval) { clearInterval(decInterval); decInterval = null; }
     document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('gameSelector').style.display = '';
   }
@@ -935,6 +1058,309 @@
     document.getElementById('sortScore').textContent = '0';
     newSorter();
   }
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 8 — PEMDAS CHALLENGE
+  // ════════════════════════════════════════════════════════════
+  const PEMDAS_POOL = [
+    {e:'2 + 3 × 4',  ans:14,  opts:[14,20,24,10]},
+    {e:'(2 + 3) × 4',ans:20,  opts:[14,20,24,16]},
+    {e:'10 − 2 × 3', ans:4,   opts:[4,12,24,6]},
+    {e:'8 ÷ 2 + 3',  ans:7,   opts:[4,5,7,16]},
+    {e:'5 × (3 + 2) − 4', ans:21, opts:[11,19,21,31]},
+    {e:'24 ÷ (2 × 3)', ans:4, opts:[4,12,36,48]},
+    {e:'9 + 6 ÷ 2',  ans:12, opts:[7,12,15,18]},
+    {e:'18 − 3 × 4 + 2', ans:8, opts:[2,8,60,62]},
+    {e:'(15 − 5) ÷ (2 + 3)', ans:2, opts:[1,2,3,4]},
+    {e:'4 × 3 + 2 × 5', ans:22, opts:[50,22,32,70]},
+    {e:'3 + 4² ',     ans:19, opts:[49,19,16,28]},
+    {e:'(3 + 4)²',   ans:49, opts:[49,19,16,28]},
+    {e:'6 × 2 − 3 + 1', ans:10, opts:[10,14,8,6]},
+    {e:'50 ÷ 5 + 3 × 2', ans:16, opts:[16,22,7,23]},
+    {e:'2 × (4 + 6) ÷ 4', ans:5, opts:[5,8,3,20]},
+    {e:'12 − 3 × 2 + 6 ÷ 3', ans:8, opts:[6,8,10,14]},
+    {e:'(8 + 2) × (3 − 1)', ans:20, opts:[20,14,18,22]},
+    {e:'30 ÷ (2 + 3) × 4', ans:24, opts:[24,6,8,36]},
+    {e:'100 − 4 × 20 + 5', ans:25, opts:[25,85,2025,5]},
+    {e:'2 + 3 × 2 − 1',   ans:7,  opts:[7,9,11,4]},
+  ];
+
+  let pemScore = 0, pemTotal = 0, pemCur = null;
+
+  function newPemdas() {
+    const pool = PEMDAS_POOL.sort(() => Math.random() - 0.5);
+    pemCur = pool[0];
+    document.getElementById('pemExpr').textContent = pemCur.e + ' = ?';
+    document.getElementById('pemMsg').textContent = '';
+    document.getElementById('pemMsg').className = 'game-message';
+    const grid = document.getElementById('pemOptions');
+    grid.innerHTML = '';
+    // Shuffle opts
+    const opts = [...pemCur.opts].sort(() => Math.random() - 0.5);
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.style.cssText = 'background:#6c5ce7;color:#fff;border:none;border-radius:12px;padding:14px;font-size:1.2rem;font-weight:800;cursor:pointer;transition:all .15s;';
+      btn.textContent = opt;
+      btn.onmouseover = () => btn.style.background = '#5a4bd1';
+      btn.onmouseout  = () => { if (!btn.disabled) btn.style.background = '#6c5ce7'; };
+      btn.onclick = () => answerPemdas(opt, btn, opts);
+      grid.appendChild(btn);
+    });
+  }
+
+  function answerPemdas(val, clicked, allOpts) {
+    pemTotal++;
+    document.getElementById('pemTotal').textContent = pemTotal;
+    document.querySelectorAll('#pemOptions button').forEach(b => { b.disabled = true; b.onmouseover = null; });
+    const msg = document.getElementById('pemMsg');
+    if (val === pemCur.ans) {
+      pemScore++;
+      document.getElementById('pemScore').textContent = pemScore;
+      clicked.style.background = '#00b894';
+      msg.textContent = '✅ Correct!'; msg.className = 'game-message correct';
+    } else {
+      clicked.style.background = '#e17055';
+      msg.textContent = '❌ The answer is ' + pemCur.ans;
+      msg.className = 'game-message wrong';
+      // highlight correct
+      document.querySelectorAll('#pemOptions button').forEach(b => {
+        if (parseInt(b.textContent) === pemCur.ans) b.style.background = '#00b894';
+      });
+    }
+    setTimeout(newPemdas, 1400);
+  }
+
+  function resetPemdas() {
+    pemScore = 0; pemTotal = 0;
+    document.getElementById('pemScore').textContent = '0';
+    document.getElementById('pemTotal').textContent = '0';
+    newPemdas();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 9 — PERCENT WHIZ
+  // ════════════════════════════════════════════════════════════
+  const PCT_PERCENTS = [5, 10, 20, 25, 50, 75];
+  let pctScore = 0, pctExpected = 0;
+
+  function newPct() {
+    const pct = PCT_PERCENTS[Math.floor(Math.random() * PCT_PERCENTS.length)];
+    // Choose base so answer is a whole number
+    const answer = Math.floor(Math.random() * 18 + 2) * (100 / pct); // ensures whole answer
+    // But let's keep it simple: pick answer first, compute base
+    const ans = Math.floor(Math.random() * 20) + 1; // 1–20
+    const base = ans * (100 / pct);
+    pctExpected = ans;
+    document.getElementById('pctQuestion').textContent = 'What is ' + pct + '% of ' + base + '?';
+    document.getElementById('pctAnswer').value = '';
+    document.getElementById('pctMsg').textContent = '';
+    document.getElementById('pctMsg').className = 'game-message';
+    document.getElementById('pctAnswer').focus();
+  }
+
+  function checkPct() {
+    const val = parseFloat(document.getElementById('pctAnswer').value);
+    const msg = document.getElementById('pctMsg');
+    if (isNaN(val)) { msg.textContent = 'Enter a number!'; msg.className = 'game-message wrong'; return; }
+    if (val === pctExpected) {
+      pctScore++;
+      document.getElementById('pctScore').textContent = pctScore;
+      msg.textContent = '✅ Correct!'; msg.className = 'game-message correct';
+    } else {
+      msg.textContent = '❌ The answer is ' + pctExpected; msg.className = 'game-message wrong';
+    }
+    setTimeout(newPct, 1200);
+  }
+
+  function resetPct() {
+    pctScore = 0;
+    document.getElementById('pctScore').textContent = '0';
+    newPct();
+  }
+  document.getElementById('pctAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkPct(); });
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 10 — PRIME HUNTER
+  // ════════════════════════════════════════════════════════════
+  function isPrime(n) {
+    if (n < 2) return false;
+    for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
+    return true;
+  }
+
+  let primeScore = 0, primeStreak = 0, primeNum = 0;
+
+  function newPrimeNum() {
+    // Mix: primes and composites from 2–100
+    primeNum = Math.floor(Math.random() * 97) + 2;
+    document.getElementById('primeNum').textContent = primeNum;
+    document.getElementById('primeMsg').textContent = '';
+    document.getElementById('primeMsg').className = 'game-message';
+    document.getElementById('primePrimeBtn').disabled = false;
+    document.getElementById('primeCompBtn').disabled  = false;
+  }
+
+  function checkPrime(claimedPrime) {
+    document.getElementById('primePrimeBtn').disabled = true;
+    document.getElementById('primeCompBtn').disabled  = true;
+    const actual = isPrime(primeNum);
+    const msg = document.getElementById('primeMsg');
+    if (claimedPrime === actual) {
+      primeScore++; primeStreak++;
+      document.getElementById('primeScore').textContent  = primeScore;
+      document.getElementById('primeStreak').textContent = primeStreak;
+      const tag = actual ? ' (prime ✓)' : ' (composite ✓)';
+      msg.textContent = '✅ Correct!' + (primeStreak >= 5 ? ' 🔥 x' + primeStreak : '');
+      msg.className = 'game-message correct';
+    } else {
+      primeStreak = 0;
+      document.getElementById('primeStreak').textContent = '0';
+      msg.textContent = '❌ ' + primeNum + ' is ' + (actual ? 'PRIME' : 'COMPOSITE');
+      msg.className = 'game-message wrong';
+    }
+    setTimeout(newPrimeNum, 1200);
+  }
+
+  function resetPrime() {
+    primeScore = 0; primeStreak = 0;
+    document.getElementById('primeScore').textContent  = '0';
+    document.getElementById('primeStreak').textContent = '0';
+    newPrimeNum();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 11 — AREA RACE
+  // ════════════════════════════════════════════════════════════
+  const AREA_GEN = [
+    () => { const l=randInt(2,15),w=randInt(2,15); return { q:'📏 Rectangle\nLength: '+l+' cm   Width: '+w+' cm\nArea = ?', ans:l*w }; },
+    () => { const s=randInt(2,12); return { q:'⬛ Square\nSide: '+s+' cm\nArea = ?', ans:s*s }; },
+    () => { const b=randInt(2,14),h=randInt(2,14); return { q:'🔺 Triangle\nBase: '+b+' cm   Height: '+h+' cm\nArea = ? (A = ½ × b × h)', ans:(b*h)/2 }; },
+    () => { const l=randInt(4,20),w=randInt(2,10); return { q:'📏 Rectangle\nLength: '+l+' units   Width: '+w+' units\nArea = ?', ans:l*w }; },
+    () => { const s=randInt(3,15); return { q:'⬛ Square\nSide: '+s+' m\nArea = ?', ans:s*s }; },
+  ];
+
+  let areaScore = 0, areaExpected = 0;
+
+  function newArea() {
+    const gen = AREA_GEN[Math.floor(Math.random() * AREA_GEN.length)];
+    const p = gen();
+    areaExpected = p.ans;
+    document.getElementById('areaQuestion').textContent = p.q;
+    document.getElementById('areaAnswer').value = '';
+    document.getElementById('areaMsg').textContent = '';
+    document.getElementById('areaMsg').className = 'game-message';
+    document.getElementById('areaAnswer').focus();
+  }
+
+  function checkArea() {
+    const val = parseFloat(document.getElementById('areaAnswer').value);
+    const msg = document.getElementById('areaMsg');
+    if (isNaN(val)) { msg.textContent = 'Enter a number!'; msg.className = 'game-message wrong'; return; }
+    if (val === areaExpected) {
+      areaScore++;
+      document.getElementById('areaScore').textContent = areaScore;
+      msg.textContent = '✅ Correct! Area = ' + areaExpected + ' sq units'; msg.className = 'game-message correct';
+    } else {
+      msg.textContent = '❌ Area = ' + areaExpected; msg.className = 'game-message wrong';
+    }
+    setTimeout(newArea, 1400);
+  }
+
+  function resetArea() {
+    areaScore = 0;
+    document.getElementById('areaScore').textContent = '0';
+    newArea();
+  }
+  document.getElementById('areaAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkArea(); });
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 12 — DECIMAL DASH
+  // ════════════════════════════════════════════════════════════
+  let decInterval = null, decTimeLeft = 45;
+  let decCorrect = 0, decWrongCount = 0;
+  let decA = 0, decB = 0, decOp = '+', decExpected = 0;
+
+  function newDecProblem() {
+    const ops = ['+', '-', '×'];
+    decOp = ops[Math.floor(Math.random() * ops.length)];
+    if (decOp === '+') {
+      decA = Math.round((Math.random() * 9 + 0.1) * 10) / 10;
+      decB = Math.round((Math.random() * 9 + 0.1) * 10) / 10;
+      decExpected = Math.round((decA + decB) * 100) / 100;
+    } else if (decOp === '-') {
+      decA = Math.round((Math.random() * 9 + 1) * 10) / 10;
+      decB = Math.round((Math.random() * (decA - 0.1)) * 10) / 10;
+      if (decB < 0.1) decB = 0.1;
+      decExpected = Math.round((decA - decB) * 100) / 100;
+    } else {
+      decA = Math.round((Math.random() * 5 + 0.5) * 10) / 10;
+      decB = Math.floor(Math.random() * 5) + 2;
+      decExpected = Math.round(decA * decB * 100) / 100;
+    }
+    document.getElementById('decProblem').textContent = decA + ' ' + decOp + ' ' + decB + ' = ?';
+    document.getElementById('decAnswer').value = '';
+    document.getElementById('decMsg').textContent = '';
+    document.getElementById('decMsg').className = 'game-message';
+    document.getElementById('decAnswer').focus();
+  }
+
+  function checkDecimal() {
+    if (decTimeLeft <= 0) return;
+    const val = parseFloat(document.getElementById('decAnswer').value);
+    const msg = document.getElementById('decMsg');
+    if (isNaN(val)) return;
+    if (Math.round(val * 100) === Math.round(decExpected * 100)) {
+      decCorrect++;
+      document.getElementById('decScore').textContent = decCorrect;
+      msg.textContent = '✅ +1'; msg.className = 'game-message correct';
+    } else {
+      decWrongCount++;
+      document.getElementById('decWrong').textContent = decWrongCount;
+      msg.textContent = '❌ ' + decExpected; msg.className = 'game-message wrong';
+    }
+    setTimeout(newDecProblem, 500);
+  }
+  document.getElementById('decAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkDecimal(); });
+
+  function startDecimal() {
+    decCorrect = 0; decWrongCount = 0; decTimeLeft = 45;
+    document.getElementById('decStartScreen').style.display = 'none';
+    document.getElementById('decResult').style.display = 'none';
+    document.getElementById('decPlayArea').style.display = '';
+    document.getElementById('decScore').textContent = '0';
+    document.getElementById('decWrong').textContent = '0';
+    document.getElementById('decTimer').textContent = '45';
+    document.getElementById('decTimer').className = 'sprint-timer';
+    newDecProblem();
+    decInterval = setInterval(() => {
+      decTimeLeft--;
+      document.getElementById('decTimer').textContent = decTimeLeft;
+      if (decTimeLeft <= 10) document.getElementById('decTimer').className = 'sprint-timer warning';
+      if (decTimeLeft <= 0) endDecimal();
+    }, 1000);
+  }
+
+  function endDecimal() {
+    clearInterval(decInterval); decInterval = null;
+    document.getElementById('decPlayArea').style.display = 'none';
+    document.getElementById('decResult').style.display = '';
+    document.getElementById('decFinalScore').textContent = decCorrect;
+    let emoji = '&#128533;', msg = 'Keep practicing decimals!';
+    if (decCorrect >= 25) { emoji = '&#129351;'; msg = 'Amazing! Decimal master!'; }
+    else if (decCorrect >= 15) { emoji = '&#127881;'; msg = 'Great work! Really impressive!'; }
+    else if (decCorrect >= 8)  { emoji = '&#128522;'; msg = 'Good effort! Try to beat your score!'; }
+    document.getElementById('decEmoji').innerHTML = emoji;
+    document.getElementById('decResultMsg').textContent = msg;
+  }
+
+  function resetDecimalUI() {
+    if (decInterval) { clearInterval(decInterval); decInterval = null; }
+    document.getElementById('decStartScreen').style.display = '';
+    document.getElementById('decPlayArea').style.display = 'none';
+    document.getElementById('decResult').style.display = 'none';
+  }
+
+  function restartDecimal() { resetDecimalUI(); }
 
   </script>
   <script src="js/main.js"></script>

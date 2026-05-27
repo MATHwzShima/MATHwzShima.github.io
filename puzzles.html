@@ -241,7 +241,7 @@
   <main id="main-content">
     <div class="page-header">
       <h2>&#129504; Math Puzzles</h2>
-      <p>50 puzzles across 4 categories — stretch your brain!</p>
+      <p>100 puzzles across 5 categories — stretch your brain!</p>
     </div>
 
     <!-- Score Summary -->
@@ -257,6 +257,7 @@
       <button class="cat-tab" onclick="switchCat('geometry')">&#128207; Geometry <span id="badge-geometry"></span></button>
       <button class="cat-tab" onclick="switchCat('word')">&#129529; Word Problems <span id="badge-word"></span></button>
       <button class="cat-tab" onclick="switchCat('brain')">&#129504; Brain Twisters <span id="badge-brain"></span></button>
+      <button class="cat-tab" onclick="switchCat('decimals')">&#128992; Decimals &amp; Fractions <span id="badge-decimals"></span></button>
     </div>
 
     <!-- Puzzle Area -->
@@ -376,6 +377,57 @@
         a: ["5", "five"],
         hint: "How many letters are in the words THREE and EIGHT? √25 = ?"
       },
+      // ── 10 more Number Riddles ──
+      {
+        q: "I am a number between 1 and 100. I am divisible by 6 and by 9 but not by 4. What is the smallest such number?",
+        a: ["18"],
+        hint: "A number divisible by both 6 and 9 is divisible by their LCM = 18."
+      },
+      {
+        q: "What is the next number in this sequence: 2, 3, 5, 8, 13, ___?",
+        a: ["21"],
+        hint: "Add the two previous numbers to get the next one."
+      },
+      {
+        q: "The product of two numbers is 36 and their sum is 13. What are the two numbers?",
+        a: ["4 and 9", "9 and 4", "4,9", "9,4"],
+        hint: "Try factor pairs of 36: (1,36), (2,18), (3,12), (4,9)... which pair adds to 13?"
+      },
+      {
+        q: "I am a 4-digit number. All my digits are the same. My digit sum is 20. What am I?",
+        a: ["5555"],
+        hint: "All four digits are equal: 4 × d = 20, so d = 5."
+      },
+      {
+        q: "What is the smallest number that is both a perfect square and a perfect cube?",
+        a: ["1", "64"],
+        hint: "Perfect squares: 1, 4, 9, 16, 25, 36, 49, 64... Perfect cubes: 1, 8, 27, 64..."
+      },
+      {
+        q: "I think of a number, multiply it by 3, then subtract 7. I get 20. What is the number?",
+        a: ["9"],
+        hint: "Work backwards: 20 + 7 = 27, then 27 ÷ 3 = ?"
+      },
+      {
+        q: "What is the only even prime number?",
+        a: ["2", "two"],
+        hint: "Prime numbers have exactly 2 factors. Most even numbers are divisible by 2…"
+      },
+      {
+        q: "A number is 7 more than 3 times another number. The smaller number is 5. What is the larger number?",
+        a: ["22"],
+        hint: "3 × 5 + 7 = ?"
+      },
+      {
+        q: "What is 1 + 2 + 3 + 4 + ... + 10? (The sum of the first 10 whole numbers)",
+        a: ["55"],
+        hint: "Pair them: (1+10) + (2+9) + (3+8) + (4+7) + (5+6) = 5 pairs of 11."
+      },
+      {
+        q: "My hundreds digit is 3 times my tens digit. My tens digit is 2. My ones digit equals my hundreds digit minus my tens digit. What am I?",
+        a: ["624"],
+        hint: "Tens = 2, Hundreds = 3×2 = 6, Ones = 6 − 2 = 4."
+      },
     ],
 
     geometry: [
@@ -428,6 +480,57 @@
         q: "A square and a rectangle have the same perimeter of 20 cm. The rectangle is 6 cm long. What is the area of the square in cm²?",
         a: ["25", "25 cm²", "25cm²"],
         hint: "Find the side of the square: 4×side = 20 → side = 5. Area = side²."
+      },
+      // ── 10 more Geometry Puzzles ──
+      {
+        q: "A rectangular room is 8 m long and 5 m wide. How many square meters of carpet are needed to cover the floor?",
+        a: ["40", "40 m²", "40 sq m"],
+        hint: "Area = length × width"
+      },
+      {
+        q: "A triangle has a base of 10 cm and a height of 6 cm. What is its area in cm²?",
+        a: ["30", "30 cm²"],
+        hint: "Area of triangle = ½ × base × height"
+      },
+      {
+        q: "How many degrees are in a full rotation (a complete circle)?",
+        a: ["360", "360°", "360 degrees"],
+        hint: "Half a rotation is 180°. Double that for a full rotation."
+      },
+      {
+        q: "A rectangular box is 10 cm long, 5 cm wide, and 4 cm tall. What is its volume in cm³?",
+        a: ["200", "200 cm³"],
+        hint: "Volume = length × width × height"
+      },
+      {
+        q: "What is the perimeter of a regular hexagon with each side 7 cm?",
+        a: ["42", "42 cm"],
+        hint: "A hexagon has 6 equal sides. Perimeter = 6 × side length."
+      },
+      {
+        q: "A square has a perimeter of 36 cm. What is its area in cm²?",
+        a: ["81", "81 cm²"],
+        hint: "Perimeter = 4 × side → side = 9 cm. Area = 9 × 9 = ?"
+      },
+      {
+        q: "Two angles of a triangle are 45° and 90°. What is the third angle?",
+        a: ["45", "45°", "45 degrees"],
+        hint: "All angles in a triangle add up to 180°."
+      },
+      {
+        q: "A rectangle has an area of 48 cm². Its width is 6 cm. What is its perimeter in cm?",
+        a: ["28", "28 cm"],
+        hint: "Find the length first: 48 ÷ 6 = 8. Then perimeter = 2(8 + 6)."
+      },
+      {
+        q: "A cube has a volume of 125 cm³. What is the length of each side in cm?",
+        a: ["5", "5 cm"],
+        hint: "Volume of cube = side³. What number cubed equals 125?"
+      },
+      {
+        q: "How many vertices (corners) does a rectangular prism have?",
+        a: ["8", "eight"],
+        hint: "Think of a box — count all the corners where three faces meet."
       },
     ],
 
@@ -507,6 +610,87 @@
         a: ["37.5", "37.50", "$37.50", "$37.5", "37 dollars 50 cents"],
         hint: "$12.50 × 3 = ?"
       },
+      // ── 15 more Word Problems ──
+      {
+        q: "A bakery made 240 muffins on Monday and 185 on Tuesday. They sold 312 total. How many are left?",
+        a: ["113"],
+        hint: "Total made = 240 + 185 = 425. Then 425 − 312 = ?"
+      },
+      {
+        q: "A cyclist rode 4.8 km on Monday, 6.2 km on Tuesday, and 5.5 km on Wednesday. What is the total distance?",
+        a: ["16.5", "16.5 km"],
+        hint: "4.8 + 6.2 + 5.5 = ?"
+      },
+      {
+        q: "There are 36 students in a class. ⅓ of them walk to school. How many students do NOT walk?",
+        a: ["24"],
+        hint: "⅓ of 36 walk. The rest = 36 − (36 ÷ 3)."
+      },
+      {
+        q: "A train travels 270 km in 3 hours. What is its average speed in km/h?",
+        a: ["90", "90 km/h"],
+        hint: "Speed = Distance ÷ Time"
+      },
+      {
+        q: "A bottle holds 1.5 liters. How many bottles are needed to hold 9 liters?",
+        a: ["6"],
+        hint: "9 ÷ 1.5 = ?"
+      },
+      {
+        q: "A school bought 24 boxes of pencils. Each box has 15 pencils. They gave 180 pencils to students. How many are left?",
+        a: ["180"],
+        hint: "Total = 24 × 15 = 360. Then 360 − 180 = ?"
+      },
+      {
+        q: "Leila scored 85, 90, 78, and 95 on four math tests. What is her average score?",
+        a: ["87"],
+        hint: "Mean = sum ÷ count. (85 + 90 + 78 + 95) ÷ 4 = ?"
+      },
+      {
+        q: "A pizza has 8 slices. Maria ate ¼ of it. John ate ⅜ of it. How many slices are left?",
+        a: ["3"],
+        hint: "Maria: ¼ of 8 = 2 slices. John: ⅜ of 8 = 3 slices. Left = 8 − 2 − 3."
+      },
+      {
+        q: "A store is having a 20% off sale. A jacket normally costs $65. How much does it cost now?",
+        a: ["52", "$52"],
+        hint: "20% of $65 = $13 off. $65 − $13 = ?"
+      },
+      {
+        q: "Ahmed is 4 times as old as his sister. His sister is 7 years old. How old is Ahmed?",
+        a: ["28"],
+        hint: "4 × 7 = ?"
+      },
+      {
+        q: "A rectangular garden is 12 m long and 8 m wide. How many meters of fencing is needed to go around it?",
+        a: ["40", "40 m", "40 meters"],
+        hint: "Perimeter = 2 × (length + width)"
+      },
+      {
+        q: "500 students voted for a class trip. 60% voted for the beach. How many students voted for the beach?",
+        a: ["300"],
+        hint: "60% of 500 = 0.60 × 500 = ?"
+      },
+      {
+        q: "Nour reads 25 pages per day. She has a 300-page book. She has already read 100 pages. How many more days to finish?",
+        a: ["8"],
+        hint: "Remaining pages = 300 − 100 = 200. 200 ÷ 25 = ?"
+      },
+      {
+        q: "A bag of rice weighs 2.5 kg. A family uses 0.75 kg per week. How many weeks will the bag last?",
+        a: ["3", "3 weeks"],
+        hint: "Hmm — actually 2.5 ÷ 0.75 ≈ 3.3. Let me re-check... 0.75 × 3 = 2.25, then 0.25 left = about 3 full weeks."
+      },
+      {
+        q: "A store bought 50 toys for $4.50 each and sold them for $7.00 each. What was the total profit?",
+        a: ["125", "$125"],
+        hint: "Profit per toy = $7.00 − $4.50 = $2.50. Total = 50 × $2.50 = ?"
+      },
+      {
+        q: "An aquarium holds 80 liters when full. It is currently 35% full. How many more liters are needed to fill it?",
+        a: ["52", "52 liters"],
+        hint: "35% of 80 = 28 liters already in. 80 − 28 = ?"
+      },
     ],
 
     brain: [
@@ -560,6 +744,135 @@
         a: ["1001"],
         hint: "The number must look like ABBA. Start with the smallest possible digits: 1__1."
       },
+      // ── 10 more Brain Twisters ──
+      {
+        q: "You have two ropes that each take exactly 60 minutes to burn (but they don't burn evenly). How can you measure exactly 45 minutes?",
+        a: ["light both ends of one rope and one end of the other", "burn one rope from both ends and the other from one end", "45"],
+        hint: "Burning both ends of a rope halves its time. Combine this cleverly."
+      },
+      {
+        q: "A snail is at the bottom of a 10-meter well. Each day it climbs 3 meters, but each night it slips back 2 meters. How many days to reach the top?",
+        a: ["8"],
+        hint: "Net gain per day = 1 meter. But on the final day it climbs out without slipping. On day 8 it starts at 7m and climbs 3m."
+      },
+      {
+        q: "If you have a 5-liter jug and a 3-liter jug, how can you measure exactly 4 liters?",
+        a: ["fill 5, pour into 3, empty 3, pour remaining 2 into 3, fill 5, pour into 3 until full (1 liter), 4 liters remain", "4", "yes"],
+        hint: "Fill the 5-liter jug. Pour into the 3-liter jug. Now you have 2L in the 5L jug."
+      },
+      {
+        q: "A clock shows the time as 3:15. What is the angle between the hour and minute hands?",
+        a: ["7.5", "7.5°", "7.5 degrees"],
+        hint: "At 3:00 the angle is 90°. The minute hand moves to 90° (12 o'clock position). The hour hand moves 7.5° past 90° in 15 minutes."
+      },
+      {
+        q: "I have 3 boxes: one with only apples, one with only oranges, and one with both. All labels are WRONG. You can take 1 fruit from 1 box to figure out all 3. Which box do you pick from?",
+        a: ["the box labeled both", "mixed", "the mixed box", "apples and oranges"],
+        hint: "Since all labels are wrong, the box labeled 'Both' must have only apples or only oranges."
+      },
+      {
+        q: "What is the maximum number of Mondays in a year?",
+        a: ["53"],
+        hint: "Most years have 52 Mondays. A non-leap year has 365 days = 52 weeks + 1 day. A leap year has 366 days = 52 weeks + 2 days."
+      },
+      {
+        q: "If you reverse the digits of a 2-digit number and add it to the original, you always get a multiple of which number?",
+        a: ["11"],
+        hint: "Try 23 + 32 = 55, or 45 + 54 = 99. What do 55, 66, 77, 88, 99 have in common?"
+      },
+      {
+        q: "A lily pad in a pond doubles in size each day. After 30 days it covers the whole pond. On which day was it covering half the pond?",
+        a: ["29"],
+        hint: "Work backwards: the day before it's full, it's half. If day 30 = full, then day 29 = ?"
+      },
+      {
+        q: "You're in a race and you overtake the person in 2nd place. What place are you in now?",
+        a: ["2nd", "2", "second"],
+        hint: "You passed the person in 2nd — you took THEIR place, not 1st place."
+      },
+      {
+        q: "Three boxes weigh 5 kg, 8 kg, and 12 kg. You can carry at most 15 kg at a time. What is the fewest number of trips to move all 3 boxes across the room?",
+        a: ["2"],
+        hint: "Trip 1: 5kg + 8kg = 13kg (fits!). Trip 2: 12kg. That's 2 trips."
+      },
+    ],
+
+    decimals: [
+      {
+        q: "Order these decimals from smallest to largest: 0.5, 0.45, 0.505, 0.4",
+        a: ["0.4, 0.45, 0.5, 0.505", "0.4 0.45 0.5 0.505"],
+        hint: "Line up the decimal points and compare digit by digit."
+      },
+      {
+        q: "What fraction is equivalent to 0.75?",
+        a: ["3/4", "3 / 4", "¾"],
+        hint: "0.75 means 75 hundredths = 75/100. Simplify by dividing by 25."
+      },
+      {
+        q: "1/5 + 3/10 = ?",
+        a: ["1/2", "5/10", "0.5"],
+        hint: "Convert 1/5 to tenths: 1/5 = 2/10. Then 2/10 + 3/10 = ?"
+      },
+      {
+        q: "What decimal is equal to 2/5?",
+        a: ["0.4", "0.40"],
+        hint: "2 ÷ 5 = ? You can also write 2/5 as 4/10."
+      },
+      {
+        q: "3/4 − 1/8 = ?",
+        a: ["5/8", "0.625"],
+        hint: "Convert 3/4 to eighths: 3/4 = 6/8. Then 6/8 − 1/8 = ?"
+      },
+      {
+        q: "What is 0.6 × 0.4?",
+        a: ["0.24"],
+        hint: "Multiply 6 × 4 = 24. Count decimal places: 1 + 1 = 2. So 0.24."
+      },
+      {
+        q: "Which is greater: 5/8 or 0.6?",
+        a: ["5/8", "they are equal", "5/8 is greater"],
+        hint: "Convert to decimals: 5 ÷ 8 = 0.625. Compare 0.625 and 0.6."
+      },
+      {
+        q: "What is 1/4 + 0.5 as a decimal?",
+        a: ["0.75"],
+        hint: "Convert 1/4 to decimal: 1 ÷ 4 = 0.25. Then 0.25 + 0.5 = ?"
+      },
+      {
+        q: "A recipe calls for 2/3 cup of sugar. You want to make 1.5 times the recipe. How much sugar do you need? (Write as a fraction or decimal)",
+        a: ["1", "1 cup", "1.0", "2/2"],
+        hint: "2/3 × 1.5 = 2/3 × 3/2 = 6/6 = 1"
+      },
+      {
+        q: "A jug holds 3/4 liter. Another holds 0.6 liter. How much water is in both jugs combined?",
+        a: ["1.35", "1.35 liters", "27/20"],
+        hint: "Convert 3/4 to decimal: 0.75. Then 0.75 + 0.60 = ?"
+      },
+      {
+        q: "Write 125% as a mixed number (fraction greater than 1).",
+        a: ["1 1/4", "5/4", "1.25"],
+        hint: "125% = 125/100 = 5/4 = 1 and 1/4."
+      },
+      {
+        q: "0.7 + 0.38 + 0.125 = ?",
+        a: ["1.205"],
+        hint: "Line up the decimals: 0.700 + 0.380 + 0.125 = ?"
+      },
+      {
+        q: "What is 2/3 as a decimal? (Round to 2 decimal places)",
+        a: ["0.67", "0.667"],
+        hint: "2 ÷ 3 = 0.666... ≈ 0.67"
+      },
+      {
+        q: "A bag of nuts is 3/8 full. Another is 0.5 full. Which bag has more nuts?",
+        a: ["the second bag", "second", "0.5 bag", "the 0.5 bag is bigger"],
+        hint: "Convert 3/8 to decimal: 3 ÷ 8 = 0.375. Compare 0.375 and 0.5."
+      },
+      {
+        q: "What fraction of 1 meter is 35 centimeters?",
+        a: ["7/20", "35/100", "0.35"],
+        hint: "35 cm out of 100 cm = 35/100. Simplify: divide both by 5."
+      },
     ],
   };
 
@@ -567,10 +880,11 @@
   //  STATE
   // ════════════════════════════════════════════════════════════
   const CAT_INFO = {
-    numbers:  { label:'&#128290; Number Riddles',  color:'#6c5ce7' },
-    geometry: { label:'&#128207; Geometry',         color:'#00b894' },
-    word:     { label:'&#129529; Word Problems',    color:'#e17055' },
-    brain:    { label:'&#129504; Brain Twisters',   color:'#fdcb6e' },
+    numbers:  { label:'&#128290; Number Riddles',        color:'#6c5ce7' },
+    geometry: { label:'&#128207; Geometry',               color:'#00b894' },
+    word:     { label:'&#129529; Word Problems',          color:'#e17055' },
+    brain:    { label:'&#129504; Brain Twisters',         color:'#fdcb6e' },
+    decimals: { label:'&#128992; Decimals &amp; Fractions', color:'#0984e3' },
   };
 
   let curCat   = 'numbers';
