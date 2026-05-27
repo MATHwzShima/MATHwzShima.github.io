@@ -244,6 +244,73 @@
     /* 4-column stats on messages tab */
     .stats-row-4 { grid-template-columns:repeat(4,1fr); }
 
+    /* Reply button */
+    .reply-btn {
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      border: none; color: #fff;
+      border-radius: 10px; padding: 5px 14px;
+      font-size: .8em; cursor: pointer;
+      font-family: 'Fredoka One', cursive;
+      transition: all .18s; flex-shrink: 0;
+    }
+    .reply-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(102,126,234,.4); }
+    .reply-btn.replied {
+      background: #d1fae5; color: #059669;
+      border: 2px solid #6bcb77;
+    }
+
+    /* Reply box (inside message card) */
+    .reply-box {
+      margin-top: 14px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .reply-box.open { display: flex; }
+    .reply-box textarea {
+      font-family: 'Comic Neue', cursive;
+      font-size: .95em;
+      border: 2px solid #c7d2fe;
+      border-radius: 12px;
+      padding: 10px 14px;
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .reply-box textarea:focus { border-color: #667eea; }
+    .reply-box-actions { display:flex; gap:8px; justify-content:flex-end; }
+    .reply-send-btn {
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      color:#fff; border:none; border-radius:10px;
+      padding:8px 20px; font-family:'Fredoka One',cursive;
+      font-size:.9em; cursor:pointer; transition:all .18s;
+    }
+    .reply-send-btn:hover { transform:translateY(-1px); }
+    .reply-cancel-btn {
+      background:#f0f0f0; color:#888; border:none;
+      border-radius:10px; padding:8px 16px;
+      font-family:'Fredoka One',cursive; font-size:.9em;
+      cursor:pointer; transition:all .18s;
+    }
+    .reply-cancel-btn:hover { background:#ffe0e0; color:#e17055; }
+
+    /* Existing reply display */
+    .existing-reply {
+      margin-top: 12px;
+      background: #f0fdf4;
+      border: 2px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: .9em;
+      color: #065f46;
+    }
+    .existing-reply .reply-label {
+      font-family:'Fredoka One',cursive;
+      font-size:.85em; color:#059669; margin-bottom:4px;
+    }
+    .existing-reply .reply-text { white-space:pre-wrap; line-height:1.55; }
+
     @media (max-width:600px) {
       .stats-row { grid-template-columns:1fr 1fr; }
       .stats-row .stat-box:last-child { grid-column:span 2; }
@@ -631,16 +698,20 @@
       var total     = allMessages.length;
       var questions = allMessages.filter(function(m){ return (m.messageType||'').includes('Question'); }).length;
       var help      = allMessages.filter(function(m){ return (m.messageType||'').includes('help'); }).length;
+      var replied   = allMessages.filter(function(m){ return !!m.reply; }).length;
 
       document.getElementById('statMsgTotal').textContent     = total;
       document.getElementById('statMsgQuestions').textContent = questions;
       document.getElementById('statMsgHelp').textContent      = help;
 
-      // Update badge on the tab button
-      if (total > 0) {
-        var badge = document.getElementById('msgBadge');
-        badge.textContent = total;
+      // Update badge — only count unreplied messages
+      var unreplied = total - replied;
+      var badge = document.getElementById('msgBadge');
+      if (unreplied > 0) {
+        badge.textContent = unreplied;
         badge.style.display = '';
+      } else {
+        badge.style.display = 'none';
       }
 
       if (total === 0) {
@@ -656,20 +727,89 @@
         var tClass  = '';
         Object.keys(typeClass).forEach(function(k){ if (rawType.toLowerCase().includes(k.toLowerCase())) tClass = typeClass[k]; });
         var date = msg.sentAt ? new Date(msg.sentAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
-        html += '<div class="msg-card ' + tClass + '">';
+        var hasReply = !!msg.reply;
+        var safeKey = msg._fbKey;
+
+        html += '<div class="msg-card ' + tClass + '" id="msgcard-' + safeKey + '">';
         html += '<div class="msg-top">';
         html += '<div><div class="msg-name">&#128100; ' + esc(msg.studentName || 'Anonymous') + '</div>';
         html += '<div class="msg-date">' + date + '</div></div>';
-        html += '<div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">';
+        html += '<div style="display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap;">';
         html += '<span class="msg-type-badge">' + esc(rawType) + '</span>';
-        html += '<button class="del-btn" onclick="deleteMessage(\''+msg._fbKey+'\',\''+esc(msg.studentName||'Anonymous')+'\')">🗑 Delete</button>';
+        if (hasReply) {
+          html += '<button class="reply-btn replied" onclick="toggleReplyBox(\'' + safeKey + '\')">✅ Replied</button>';
+        } else {
+          html += '<button class="reply-btn" onclick="toggleReplyBox(\'' + safeKey + '\')">💬 Reply</button>';
+        }
+        html += '<button class="del-btn" onclick="deleteMessage(\'' + safeKey + '\',\'' + esc(msg.studentName||'Anonymous') + '\')">🗑 Delete</button>';
         html += '</div>';
         html += '</div>';
+
         html += '<div class="msg-body">' + esc(msg.message || '') + '</div>';
+
+        // Show existing reply
+        if (hasReply) {
+          var rDate = msg.repliedAt ? new Date(msg.repliedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+          html += '<div class="existing-reply" id="existing-' + safeKey + '">';
+          html += '<div class="reply-label">✏️ Mrs. Shimaa replied · ' + rDate + '</div>';
+          html += '<div class="reply-text">' + esc(msg.reply) + '</div>';
+          html += '</div>';
+        }
+
+        // Reply box (hidden by default)
+        html += '<div class="reply-box" id="replybox-' + safeKey + '">';
+        html += '<textarea id="replytxt-' + safeKey + '" placeholder="Type your reply to ' + esc(msg.studentName||'this student') + '…" rows="3">' + (hasReply ? esc(msg.reply) : '') + '</textarea>';
+        html += '<div class="reply-box-actions">';
+        html += '<button class="reply-cancel-btn" onclick="toggleReplyBox(\'' + safeKey + '\')">Cancel</button>';
+        html += '<button class="reply-send-btn" onclick="sendReply(\'' + safeKey + '\',\'' + esc(msg.studentName||'Anonymous') + '\')">📨 Send Reply</button>';
+        html += '</div>';
+        html += '</div>';
+
         html += '</div>';
       });
       html += '</div>';
       grid.innerHTML = html;
+    }
+
+    function toggleReplyBox(key) {
+      var box = document.getElementById('replybox-' + key);
+      if (!box) return;
+      box.classList.toggle('open');
+      if (box.classList.contains('open')) {
+        var ta = document.getElementById('replytxt-' + key);
+        if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+      }
+    }
+
+    function sendReply(key, studentName) {
+      var ta = document.getElementById('replytxt-' + key);
+      if (!ta) return;
+      var replyText = ta.value.trim();
+      if (!replyText) { ta.focus(); ta.style.borderColor='#e17055'; setTimeout(function(){ ta.style.borderColor=''; },1500); return; }
+
+      var sendBtn = ta.parentElement.querySelector('.reply-send-btn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = '⏳ Sending…';
+
+      var payload = { reply: replyText, repliedAt: new Date().toISOString() };
+
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages/' + key + '.json', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        // Update local data
+        var msg = allMessages.find(function(m){ return m._fbKey === key; });
+        if (msg) { msg.reply = replyText; msg.repliedAt = payload.repliedAt; }
+        loadMessages(); // re-render
+      })
+      .catch(function(err) {
+        alert('Could not send reply: ' + err.message);
+        sendBtn.disabled = false;
+        sendBtn.textContent = '📨 Send Reply';
+      });
     }
   </script>
 </body>

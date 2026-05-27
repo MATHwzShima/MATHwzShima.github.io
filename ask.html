@@ -249,13 +249,95 @@
     }
     .tip-box strong { font-weight: 700; }
 
+    /* ── Check Replies section ── */
+    .check-replies-section {
+      margin-top: 36px;
+    }
+    .check-replies-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px 32px;
+      box-shadow: 0 8px 32px rgba(108,92,231,0.10);
+      border: 3px solid #d1fae5;
+    }
+    .check-replies-card h3 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5em;
+      color: #059669;
+      margin-bottom: 6px;
+    }
+    .check-replies-card p {
+      color: #888; font-size: .93em; margin-bottom: 18px;
+    }
+    .check-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .check-row input {
+      font-family: 'Comic Neue', cursive;
+      flex: 1; min-width: 180px;
+      padding: 11px 16px;
+      border: 2px solid #e0e0e0; border-radius: 14px;
+      font-size: 1em; outline: none;
+      transition: border-color .2s;
+    }
+    .check-row input:focus { border-color: #6bcb77; }
+    .check-row button {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1em;
+      background: linear-gradient(135deg, #6bcb77, #4d96ff);
+      color: #fff; border: none;
+      padding: 11px 24px; border-radius: 14px;
+      cursor: pointer; white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(107,203,119,.25);
+      transition: transform .18s;
+    }
+    .check-row button:hover { transform: translateY(-2px); }
+    .replies-result { margin-top: 18px; }
+    .reply-item {
+      background: #f0fdf4;
+      border: 2px solid #bbf7d0;
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+    .reply-item .ri-meta {
+      font-size: .82em; color: #aaa; margin-bottom: 8px;
+    }
+    .reply-item .ri-original {
+      background: #faf8ff;
+      border-left: 4px solid #a855f7;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: .92em; color: #555;
+      white-space: pre-wrap; line-height:1.5;
+      margin-bottom: 12px;
+    }
+    .reply-item .ri-reply-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: .95em; color: #059669; margin-bottom: 6px;
+    }
+    .reply-item .ri-reply-text {
+      background: #fff;
+      border: 2px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-size: .97em; color: #065f46;
+      white-space: pre-wrap; line-height: 1.6;
+    }
+    .no-replies-msg {
+      text-align: center; color: #aaa;
+      padding: 24px 10px; font-size: .97em;
+    }
+
     @media (max-width: 600px) {
       .ask-hero h1 { font-size: 2em; }
       .ask-card { padding: 24px 18px; }
       .type-chips { gap: 8px; }
       .type-chip { padding: 8px 14px; font-size: 0.92em; }
       #sendBtn { font-size: 1.2em; padding: 14px 36px; }
+      .check-replies-card { padding: 22px 16px; }
     }
+
   </style>
 </head>
 <body class="ask-page">
@@ -329,6 +411,20 @@
         <h2>Message Sent!</h2>
         <p>Mrs. Shimaa has received your message.<br>She'll see it very soon! 💛</p>
         <button class="send-another" onclick="resetForm()">📬 Send Another Message</button>
+      </div>
+
+      <!-- ── Check Replies ── -->
+      <div class="check-replies-section">
+        <div class="check-replies-card">
+          <h3>💌 Check Mrs. Shimaa's Replies</h3>
+          <p>Type your name below to see if Mrs. Shimaa replied to your message!</p>
+          <div class="check-row">
+            <input type="text" id="checkName" placeholder="Type your name…" maxlength="80"
+                   onkeydown="if(event.key==='Enter') checkReplies()">
+            <button onclick="checkReplies()">🔍 Check Replies</button>
+          </div>
+          <div class="replies-result" id="repliesResult"></div>
+        </div>
       </div>
 
     </div>
@@ -470,6 +566,66 @@
     document.getElementById('senderName').addEventListener('keydown', e => {
       if (e.key === 'Enter') { e.preventDefault(); document.getElementById('messageText').focus(); }
     });
+
+    // ── Check Replies ─────────────────────────────────────────────────────────
+    function checkReplies() {
+      const name   = document.getElementById('checkName').value.trim();
+      const result = document.getElementById('repliesResult');
+      if (!name) {
+        result.innerHTML = '<div class="no-replies-msg">⚠️ Please type your name first!</div>';
+        return;
+      }
+
+      result.innerHTML = '<div class="no-replies-msg">⏳ Looking for replies…</div>';
+
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages.json')
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(data => {
+          if (!data) { showNoReplies(result, name); return; }
+
+          const nameLower = name.toLowerCase();
+          const matched = Object.values(data)
+            .filter(m => m.reply && (m.studentName||'').toLowerCase() === nameLower)
+            .sort((a,b) => new Date(b.repliedAt||0) - new Date(a.repliedAt||0));
+
+          if (matched.length === 0) { showNoReplies(result, name); return; }
+
+          let html = '';
+          matched.forEach(msg => {
+            const sentDate = msg.sentAt
+              ? new Date(msg.sentAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+              : '';
+            const repDate = msg.repliedAt
+              ? new Date(msg.repliedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+              : '';
+            html += `<div class="reply-item">
+              <div class="ri-meta">📅 You sent this on ${sentDate}</div>
+              <div class="ri-original">${escHtml(msg.message||'')}</div>
+              <div class="ri-reply-label">✏️ Mrs. Shimaa replied · ${repDate}</div>
+              <div class="ri-reply-text">${escHtml(msg.reply)}</div>
+            </div>`;
+          });
+          result.innerHTML = html;
+        })
+        .catch(err => {
+          result.innerHTML = '<div class="no-replies-msg">❌ Couldn\'t check right now. Please try again!</div>';
+          console.error(err);
+        });
+    }
+
+    function showNoReplies(result, name) {
+      result.innerHTML = `<div class="no-replies-msg">
+        😊 No replies yet for <strong>${escHtml(name)}</strong>.<br>
+        Make sure your name matches exactly what you typed when you sent the message!
+      </div>`;
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = String(s);
+      return d.innerHTML;
+    }
   </script>
   <script src="js/main.js"></script>
 </body>
