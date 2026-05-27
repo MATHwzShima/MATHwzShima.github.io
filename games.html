@@ -11,11 +11,220 @@
     gtag('config', 'G-H8X3QV5TR0');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Play cool math games and challenge yourself with speed challenges and pattern finders at MATHwzShima.">
+  <meta name="description" content="Play 7 fun math games including speed challenges, fraction wars, and brain teasers at MATHwzShima.">
   <meta name="theme-color" content="#6c5ce7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Games - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Game Selector Grid ── */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 1.5rem 0;
+    }
+    .game-select-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      border: 3px solid transparent;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+    }
+    .game-select-card:hover {
+      border-color: #6c5ce7;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(108,92,231,0.2);
+    }
+    .game-select-card .gs-icon { font-size: 2.6rem; margin-bottom: 0.4rem; }
+    .game-select-card h3 { color: #6c5ce7; font-size: 1.05rem; margin: 0.25rem 0 0.3rem; }
+    .game-select-card p { color: #636e72; font-size: 0.82rem; margin: 0; line-height: 1.3; }
+
+    /* ── Panels ── */
+    .game-panel { display: none; }
+    .game-panel.active { display: block; }
+
+    .back-btn {
+      background: #f1f0ff;
+      color: #6c5ce7;
+      border: 2px solid #6c5ce7;
+      padding: 0.45rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      transition: all 0.15s;
+    }
+    .back-btn:hover { background: #6c5ce7; color: white; }
+
+    /* ── Math Sprint ── */
+    .sprint-timer {
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: #6c5ce7;
+      text-align: center;
+      margin: 0.2rem 0 0.6rem;
+      transition: color 0.3s;
+    }
+    .sprint-timer.warning { color: #e17055; }
+    .sprint-result-screen { text-align: center; padding: 1.5rem 0; }
+    .sprint-result-screen .big-emoji { font-size: 4rem; }
+    .sprint-result-screen .result-score { font-size: 2.5rem; font-weight: 900; color: #6c5ce7; }
+    .sprint-result-screen p { font-size: 1.1rem; color: #636e72; }
+
+    /* ── Fraction War ── */
+    .fraction-arena {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1.4rem 0;
+      flex-wrap: wrap;
+    }
+    .fraction-card {
+      background: white;
+      border: 3px solid #dfe6e9;
+      border-radius: 16px;
+      padding: 1.2rem 1.8rem;
+      text-align: center;
+      min-width: 90px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    }
+    .fraction-card .frac-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #2d3436;
+      border-bottom: 3px solid #2d3436;
+      line-height: 1;
+      padding-bottom: 4px;
+    }
+    .fraction-card .frac-den { font-size: 2.2rem; font-weight: 900; color: #2d3436; padding-top: 4px; }
+    .fraction-vs { font-size: 2rem; font-weight: 900; color: #b2bec3; }
+    .frac-btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0; }
+    .frac-btn {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      padding: 0.65rem 1.3rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+    .frac-btn:hover { background: #5a4bd1; transform: scale(1.05); }
+
+    /* ── True or False ── */
+    .tf-statement {
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin: 1.4rem 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tf-btns { display: flex; gap: 1.2rem; justify-content: center; margin: 0.8rem 0; flex-wrap: wrap; }
+    .tf-true-btn, .tf-false-btn {
+      padding: 0.85rem 2.2rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tf-true-btn { background: #00b894; color: white; }
+    .tf-true-btn:hover { background: #00a381; transform: scale(1.05); }
+    .tf-false-btn { background: #e17055; color: white; }
+    .tf-false-btn:hover { background: #c96045; transform: scale(1.05); }
+    .tf-true-btn:disabled, .tf-false-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── Missing Number ── */
+    .missing-eq {
+      font-size: 2rem;
+      font-weight: 900;
+      text-align: center;
+      background: white;
+      border-radius: 16px;
+      padding: 1.4rem;
+      margin: 1.4rem 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+      color: #2d3436;
+    }
+    .missing-eq .blank {
+      display: inline-block;
+      min-width: 50px;
+      border-bottom: 4px solid #6c5ce7;
+      color: #6c5ce7;
+    }
+
+    /* ── Number Sorter ── */
+    .sorter-prompt { font-size: 1rem; color: #636e72; text-align: center; margin-bottom: 0.8rem; }
+    .sorter-buttons {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .sorter-num-btn {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      width: 68px;
+      height: 68px;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sorter-num-btn:hover:not(:disabled) { background: #5a4bd1; transform: scale(1.08); }
+    .sorter-num-btn:disabled { background: #b2bec3; color: #636e72; cursor: not-allowed; }
+    .sorter-order-label { text-align: center; font-size: 0.9rem; color: #636e72; }
+    .sorter-order-display {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      min-height: 44px;
+      align-items: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #2d3436;
+      flex-wrap: wrap;
+      margin: 0.4rem 0 1rem;
+    }
+    .order-item {
+      background: #f1f0ff;
+      color: #6c5ce7;
+      padding: 0.3rem 0.85rem;
+      border-radius: 8px;
+      border: 2px solid #d3cffe;
+    }
+
+    /* ── Shared score bar ── */
+    .score-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #6c5ce7;
+      margin-bottom: 0.5rem;
+    }
+    .score-row span { color: #2d3436; }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
@@ -41,37 +250,189 @@
 
   <main id="main-content">
     <div class="page-header">
-      <h2>Math Games</h2>
-      <p>Play and learn at the same time!</p>
+      <h2>&#127918; Math Games</h2>
+      <p>Pick a game and play!</p>
     </div>
 
-    <div class="game-container" id="game1">
-      <h3>Multiplication Speed Challenge</h3>
-      <p>How fast can you multiply?</p>
-      <div class="game-score" id="gameScore">Score: 0</div>
-      <div class="game-numbers" id="gameProblem">3 x 7</div>
-      <div class="game-input">
-        <input type="number" id="gameAnswer" placeholder="?" autofocus>
-        <button onclick="checkGameAnswer()">Check</button>
+    <!-- ══ GAME SELECTOR ══ -->
+    <div id="gameSelector">
+      <div class="games-grid">
+        <div class="game-select-card" onclick="openGame('multiply')">
+          <div class="gs-icon">&#127942;</div>
+          <h3>Speed Multiply</h3>
+          <p>How fast can you answer multiplication facts?</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('pattern')">
+          <div class="gs-icon">&#128202;</div>
+          <h3>Pattern Finder</h3>
+          <p>Find the next number in the sequence!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('sprint')">
+          <div class="gs-icon">&#9889;</div>
+          <h3>Math Sprint</h3>
+          <p>Solve as many problems as you can in 60 seconds!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('fraction')">
+          <div class="gs-icon">&#128137;</div>
+          <h3>Fraction War</h3>
+          <p>Which fraction is bigger? Pick fast and score!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('trueFalse')">
+          <div class="gs-icon">&#9989;</div>
+          <h3>True or False</h3>
+          <p>Is the math statement correct? Think quick!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('missing')">
+          <div class="gs-icon">&#127919;</div>
+          <h3>Missing Number</h3>
+          <p>Find the number that completes the equation!</p>
+        </div>
+        <div class="game-select-card" onclick="openGame('sorter')">
+          <div class="gs-icon">&#128290;</div>
+          <h3>Number Sorter</h3>
+          <p>Click the numbers from smallest to biggest!</p>
+        </div>
       </div>
-      <div class="game-message" id="gameMessage" aria-live="polite"></div>
-      <button class="game-btn" onclick="resetGame()">New Game</button>
     </div>
 
-    <div style="height:2rem;"></div>
-
-    <div class="game-container" id="game2">
-      <h3>Number Pattern Finder</h3>
-      <p>What's the next number in the pattern?</p>
-      <div class="game-score" id="patternScore">Score: 0</div>
-      <div class="game-numbers" id="patternProblem" style="font-size:2rem;">2, 4, 6, 8, ?</div>
-      <div class="game-input">
-        <input type="number" id="patternAnswer" placeholder="?">
-        <button onclick="checkPatternAnswer()">Check</button>
+    <!-- ══ GAME 1: Speed Multiply ══ -->
+    <div class="game-panel" id="panel-multiply">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#127942; Speed Multiply</h3>
+        <p>Answer as many as you can! Press Enter or click Check.</p>
+        <div class="score-row">Score: <span id="mulScore">0</span></div>
+        <div class="game-numbers" id="mulProblem">3 × 7</div>
+        <div class="game-input">
+          <input type="number" id="mulAnswer" placeholder="?" autocomplete="off">
+          <button onclick="checkMul()">Check</button>
+        </div>
+        <div class="game-message" id="mulMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetMul()">&#128260; New Game</button>
       </div>
-      <div class="game-message" id="patternMessage" aria-live="polite"></div>
-      <button class="game-btn" onclick="resetPatternGame()">New Pattern</button>
     </div>
+
+    <!-- ══ GAME 2: Pattern Finder ══ -->
+    <div class="game-panel" id="panel-pattern">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128202; Pattern Finder</h3>
+        <p>What comes next in the sequence?</p>
+        <div class="score-row">Score: <span id="patScore">0</span></div>
+        <div class="game-numbers" id="patProblem" style="font-size:1.8rem;">2, 4, 6, 8, ?</div>
+        <div class="game-input">
+          <input type="number" id="patAnswer" placeholder="?">
+          <button onclick="checkPat()">Check</button>
+        </div>
+        <div class="game-message" id="patMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetPat()">&#128260; New Pattern</button>
+      </div>
+    </div>
+
+    <!-- ══ GAME 3: Math Sprint ══ -->
+    <div class="game-panel" id="panel-sprint">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#9889; Math Sprint</h3>
+        <div id="sprintStartScreen" style="text-align:center; padding:1rem 0;">
+          <p>You have <strong>60 seconds</strong> to answer as many problems as possible!</p>
+          <button class="game-btn" onclick="startSprint()" style="font-size:1.2rem;">&#9654; Start!</button>
+        </div>
+        <div id="sprintPlayArea" style="display:none;">
+          <div class="sprint-timer" id="sprintTimer">60</div>
+          <div class="score-row">Correct: <span id="sprintScore">0</span> &nbsp;|&nbsp; Wrong: <span id="sprintWrong">0</span></div>
+          <div class="game-numbers" id="sprintProblem">?</div>
+          <div class="game-input">
+            <input type="number" id="sprintAnswer" placeholder="?" autocomplete="off">
+            <button onclick="checkSprint()">&#9654;</button>
+          </div>
+          <div class="game-message" id="sprintMsg" aria-live="polite"></div>
+        </div>
+        <div class="sprint-result-screen" id="sprintResult" style="display:none;">
+          <div class="big-emoji" id="sprintEmoji">&#127881;</div>
+          <div class="result-score">You got <span id="sprintFinalScore">0</span> correct!</div>
+          <p id="sprintResultMsg"></p>
+          <button class="game-btn" onclick="restartSprint()">&#128260; Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GAME 4: Fraction War ══ -->
+    <div class="game-panel" id="panel-fraction">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128137; Fraction War</h3>
+        <p>Which fraction is <strong>bigger</strong>? Tap your answer!</p>
+        <div class="score-row">Score: <span id="fracScore">0</span> &nbsp;|&nbsp; Streak: <span id="fracStreak">0</span> &#128293;</div>
+        <div class="fraction-arena">
+          <div class="fraction-card" id="fracLeft">
+            <div class="frac-num" id="fracLeftNum">1</div>
+            <div class="frac-den" id="fracLeftDen">2</div>
+          </div>
+          <div class="fraction-vs">vs</div>
+          <div class="fraction-card" id="fracRight">
+            <div class="frac-num" id="fracRightNum">3</div>
+            <div class="frac-den" id="fracRightDen">4</div>
+          </div>
+        </div>
+        <div class="frac-btns">
+          <button class="frac-btn" onclick="checkFrac('left')">&#8592; Left is Bigger</button>
+          <button class="frac-btn" onclick="checkFrac('equal')" style="background:#fdcb6e;color:#2d3436;">They're Equal</button>
+          <button class="frac-btn" onclick="checkFrac('right')">Right is Bigger &#8594;</button>
+        </div>
+        <div class="game-message" id="fracMsg" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- ══ GAME 5: True or False ══ -->
+    <div class="game-panel" id="panel-trueFalse">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#9989; True or False</h3>
+        <p>Is this math statement correct? Answer fast!</p>
+        <div class="score-row">Score: <span id="tfScore">0</span> &nbsp;/&nbsp; <span id="tfTotal">0</span></div>
+        <div class="tf-statement" id="tfStatement">Loading…</div>
+        <div class="tf-btns">
+          <button class="tf-true-btn" id="tfTrueBtn" onclick="checkTF(true)">&#10003; True</button>
+          <button class="tf-false-btn" id="tfFalseBtn" onclick="checkTF(false)">&#10007; False</button>
+        </div>
+        <div class="game-message" id="tfMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetTF()">&#128260; Restart</button>
+      </div>
+    </div>
+
+    <!-- ══ GAME 6: Missing Number ══ -->
+    <div class="game-panel" id="panel-missing">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#127919; Missing Number</h3>
+        <p>Find the missing number that makes the equation true!</p>
+        <div class="score-row">Score: <span id="misScore">0</span></div>
+        <div class="missing-eq" id="misEq">3 × <span class="blank">__</span> = 21</div>
+        <div class="game-input">
+          <input type="number" id="misAnswer" placeholder="?" autocomplete="off">
+          <button onclick="checkMissing()">Check</button>
+        </div>
+        <div class="game-message" id="misMsg" aria-live="polite"></div>
+        <button class="game-btn" onclick="resetMissing()">&#128260; New Problem</button>
+      </div>
+    </div>
+
+    <!-- ══ GAME 7: Number Sorter ══ -->
+    <div class="game-panel" id="panel-sorter">
+      <button class="back-btn" onclick="closeGame()">&#8592; Back to Games</button>
+      <div class="game-container">
+        <h3>&#128290; Number Sorter</h3>
+        <p>Click the numbers in order from <strong>smallest to biggest</strong>!</p>
+        <div class="score-row">Score: <span id="sortScore">0</span></div>
+        <div class="sorter-prompt">Click the numbers in ascending order:</div>
+        <div class="sorter-buttons" id="sortButtons"></div>
+        <div class="sorter-order-label">Your order so far:</div>
+        <div class="sorter-order-display" id="sortOrderDisplay"></div>
+        <div class="game-message" id="sortMsg" aria-live="polite"></div>
+      </div>
+    </div>
+
   </main>
 
   <footer>
@@ -79,118 +440,502 @@
   </footer>
 
   <script>
-    // === Multiplication Game ===
-    let gameScore = 0;
-    let num1 = 0, num2 = 0;
-
-    function newProblem() {
-      num1 = Math.floor(Math.random() * 12) + 1;
-      num2 = Math.floor(Math.random() * 12) + 1;
-      document.getElementById('gameProblem').textContent = `${num1} x ${num2}`;
-      document.getElementById('gameAnswer').value = '';
-      document.getElementById('gameAnswer').focus();
-      document.getElementById('gameMessage').textContent = '';
-      document.getElementById('gameMessage').className = 'game-message';
+  // ════════════════════════════════════════════════════════════
+  //  NAVIGATION
+  // ════════════════════════════════════════════════════════════
+  function openGame(id) {
+    document.getElementById('gameSelector').style.display = 'none';
+    document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + id);
+    if (panel) {
+      panel.classList.add('active');
+      // Auto-init
+      if (id === 'multiply') { resetMul(); }
+      if (id === 'pattern')  { resetPat(); }
+      if (id === 'sprint')   { resetSprintUI(); }
+      if (id === 'fraction') { resetFrac(); }
+      if (id === 'trueFalse'){ resetTF(); }
+      if (id === 'missing')  { resetMissing(); }
+      if (id === 'sorter')   { resetSorter(); }
     }
+  }
 
-    function checkGameAnswer() {
-      const input = document.getElementById('gameAnswer');
-      const userAnswer = parseInt(input.value);
-      const msg = document.getElementById('gameMessage');
-      const correct = num1 * num2;
+  function closeGame() {
+    stopSprint();
+    document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('gameSelector').style.display = '';
+  }
 
-      if (isNaN(userAnswer)) {
-        msg.textContent = 'Please enter a number!';
-        msg.className = 'game-message wrong';
-        return;
+  // ════════════════════════════════════════════════════════════
+  //  GAME 1 — SPEED MULTIPLY
+  // ════════════════════════════════════════════════════════════
+  let mulScore = 0, mulA = 0, mulB = 0;
+
+  function newMul() {
+    mulA = Math.floor(Math.random() * 12) + 1;
+    mulB = Math.floor(Math.random() * 12) + 1;
+    document.getElementById('mulProblem').textContent = mulA + ' × ' + mulB;
+    document.getElementById('mulAnswer').value = '';
+    document.getElementById('mulMsg').textContent = '';
+    document.getElementById('mulMsg').className = 'game-message';
+    document.getElementById('mulAnswer').focus();
+  }
+
+  function checkMul() {
+    const val = parseInt(document.getElementById('mulAnswer').value);
+    const msg = document.getElementById('mulMsg');
+    if (isNaN(val)) { msg.textContent = 'Enter a number!'; msg.className = 'game-message wrong'; return; }
+    if (val === mulA * mulB) {
+      mulScore++;
+      document.getElementById('mulScore').textContent = mulScore;
+      msg.textContent = '✅ Correct!';
+      msg.className = 'game-message correct';
+    } else {
+      msg.textContent = '❌ The answer is ' + (mulA * mulB);
+      msg.className = 'game-message wrong';
+    }
+    setTimeout(newMul, 1100);
+  }
+
+  function resetMul() {
+    mulScore = 0;
+    document.getElementById('mulScore').textContent = '0';
+    newMul();
+  }
+
+  document.getElementById('mulAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkMul(); });
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 2 — PATTERN FINDER
+  // ════════════════════════════════════════════════════════════
+  const PATTERNS = [
+    { seq:[2,4,6,8],   ans:10,  hint:'Add 2' },
+    { seq:[5,10,15,20],ans:25,  hint:'Add 5' },
+    { seq:[10,20,30,40],ans:50, hint:'Add 10' },
+    { seq:[3,6,12,24], ans:48,  hint:'Multiply by 2' },
+    { seq:[50,45,40,35],ans:30, hint:'Subtract 5' },
+    { seq:[1,4,9,16],  ans:25,  hint:'Square numbers' },
+    { seq:[100,90,80,70],ans:60,hint:'Subtract 10' },
+    { seq:[1,1,2,3],   ans:5,   hint:'Add the two before' },
+    { seq:[12,24,36,48],ans:60, hint:'Add 12' },
+    { seq:[1,3,9,27],  ans:81,  hint:'Multiply by 3' },
+    { seq:[7,14,21,28],ans:35,  hint:'Add 7' },
+    { seq:[80,40,20,10],ans:5,  hint:'Divide by 2' },
+    { seq:[2,6,18,54], ans:162, hint:'Multiply by 3' },
+    { seq:[1,8,27,64], ans:125, hint:'Cube numbers' },
+    { seq:[3,5,8,13],  ans:21,  hint:'Add the two before' },
+    { seq:[4,9,16,25], ans:36,  hint:'Square numbers' },
+    { seq:[200,100,50,25],ans:12.5,hint:'Divide by 2'},
+    { seq:[0,1,3,6],   ans:10,  hint:'Add increasing amounts' },
+    { seq:[99,88,77,66],ans:55, hint:'Subtract 11' },
+    { seq:[6,12,24,48],ans:96,  hint:'Multiply by 2' },
+    { seq:[1,2,4,8],   ans:16,  hint:'Multiply by 2' },
+    { seq:[15,30,45,60],ans:75, hint:'Add 15' },
+    { seq:[1000,500,250,125],ans:62.5,hint:'Divide by 2'},
+    { seq:[4,7,10,13], ans:16,  hint:'Add 3' },
+    { seq:[2,5,10,17], ans:26,  hint:'Add 3, 5, 7, 9...' },
+  ];
+
+  let patScore = 0, patAns = 0;
+
+  function newPat() {
+    const p = PATTERNS[Math.floor(Math.random() * PATTERNS.length)];
+    document.getElementById('patProblem').textContent = p.seq.join(', ') + ', ?';
+    document.getElementById('patAnswer').value = '';
+    document.getElementById('patMsg').textContent = '';
+    document.getElementById('patMsg').className = 'game-message';
+    document.getElementById('patAnswer').focus();
+    patAns = p.ans;
+  }
+
+  function checkPat() {
+    const val = parseFloat(document.getElementById('patAnswer').value);
+    const msg = document.getElementById('patMsg');
+    if (isNaN(val)) { msg.textContent = 'Enter a number!'; msg.className = 'game-message wrong'; return; }
+    if (val === patAns) {
+      patScore++;
+      document.getElementById('patScore').textContent = patScore;
+      msg.textContent = '🎉 You found the pattern!';
+      msg.className = 'game-message correct';
+    } else {
+      msg.textContent = '❌ The next number is ' + patAns;
+      msg.className = 'game-message wrong';
+    }
+    setTimeout(newPat, 1300);
+  }
+
+  function resetPat() {
+    patScore = 0;
+    document.getElementById('patScore').textContent = '0';
+    newPat();
+  }
+
+  document.getElementById('patAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkPat(); });
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 3 — MATH SPRINT
+  // ════════════════════════════════════════════════════════════
+  let sprintInterval = null, sprintTimeLeft = 60;
+  let sprintCorrect = 0, sprintWrongCount = 0;
+  let sprintA = 0, sprintB = 0, sprintOp = '+', sprintExpected = 0;
+
+  function newSprintProblem() {
+    const ops = ['+', '-', '×', '÷'];
+    sprintOp = ops[Math.floor(Math.random() * ops.length)];
+    if (sprintOp === '+') {
+      sprintA = Math.floor(Math.random() * 50) + 10;
+      sprintB = Math.floor(Math.random() * 50) + 10;
+      sprintExpected = sprintA + sprintB;
+    } else if (sprintOp === '-') {
+      sprintA = Math.floor(Math.random() * 50) + 25;
+      sprintB = Math.floor(Math.random() * 25) + 1;
+      sprintExpected = sprintA - sprintB;
+    } else if (sprintOp === '×') {
+      sprintA = Math.floor(Math.random() * 10) + 2;
+      sprintB = Math.floor(Math.random() * 10) + 2;
+      sprintExpected = sprintA * sprintB;
+    } else { // ÷
+      sprintB = Math.floor(Math.random() * 8) + 2;
+      sprintExpected = Math.floor(Math.random() * 9) + 2;
+      sprintA = sprintB * sprintExpected;
+    }
+    document.getElementById('sprintProblem').textContent = sprintA + ' ' + sprintOp + ' ' + sprintB + ' = ?';
+    document.getElementById('sprintAnswer').value = '';
+    document.getElementById('sprintMsg').textContent = '';
+    document.getElementById('sprintMsg').className = 'game-message';
+    document.getElementById('sprintAnswer').focus();
+  }
+
+  function checkSprint() {
+    if (sprintTimeLeft <= 0) return;
+    const val = parseInt(document.getElementById('sprintAnswer').value);
+    const msg = document.getElementById('sprintMsg');
+    if (isNaN(val)) return;
+    if (val === sprintExpected) {
+      sprintCorrect++;
+      document.getElementById('sprintScore').textContent = sprintCorrect;
+      msg.textContent = '✅ +1';
+      msg.className = 'game-message correct';
+    } else {
+      sprintWrongCount++;
+      document.getElementById('sprintWrong').textContent = sprintWrongCount;
+      msg.textContent = '❌ ' + sprintExpected;
+      msg.className = 'game-message wrong';
+    }
+    setTimeout(newSprintProblem, 500);
+  }
+
+  document.getElementById('sprintAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkSprint(); });
+
+  function startSprint() {
+    sprintCorrect = 0; sprintWrongCount = 0; sprintTimeLeft = 60;
+    document.getElementById('sprintStartScreen').style.display = 'none';
+    document.getElementById('sprintResult').style.display = 'none';
+    document.getElementById('sprintPlayArea').style.display = '';
+    document.getElementById('sprintScore').textContent = '0';
+    document.getElementById('sprintWrong').textContent = '0';
+    document.getElementById('sprintTimer').textContent = '60';
+    document.getElementById('sprintTimer').className = 'sprint-timer';
+    newSprintProblem();
+    sprintInterval = setInterval(() => {
+      sprintTimeLeft--;
+      document.getElementById('sprintTimer').textContent = sprintTimeLeft;
+      if (sprintTimeLeft <= 10) document.getElementById('sprintTimer').className = 'sprint-timer warning';
+      if (sprintTimeLeft <= 0) endSprint();
+    }, 1000);
+  }
+
+  function endSprint() {
+    clearInterval(sprintInterval); sprintInterval = null;
+    document.getElementById('sprintPlayArea').style.display = 'none';
+    document.getElementById('sprintResult').style.display = '';
+    document.getElementById('sprintFinalScore').textContent = sprintCorrect;
+    let emoji = '&#128533;', msg = "Keep practicing, you'll improve!";
+    if (sprintCorrect >= 30) { emoji = '&#129351;'; msg = 'Amazing! You\'re a math superstar!'; }
+    else if (sprintCorrect >= 20) { emoji = '&#127881;'; msg = 'Great job! Really impressive!'; }
+    else if (sprintCorrect >= 10) { emoji = '&#128522;'; msg = 'Good effort! Try to beat your score!'; }
+    document.getElementById('sprintEmoji').innerHTML = emoji;
+    document.getElementById('sprintResultMsg').textContent = msg;
+  }
+
+  function stopSprint() { if (sprintInterval) { clearInterval(sprintInterval); sprintInterval = null; } }
+
+  function resetSprintUI() {
+    stopSprint();
+    document.getElementById('sprintStartScreen').style.display = '';
+    document.getElementById('sprintPlayArea').style.display = 'none';
+    document.getElementById('sprintResult').style.display = 'none';
+  }
+
+  function restartSprint() { resetSprintUI(); }
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 4 — FRACTION WAR
+  // ════════════════════════════════════════════════════════════
+  let fracScore = 0, fracStreak = 0;
+  let fracLN = 1, fracLD = 2, fracRN = 3, fracRD = 4, fracCorrect = '';
+
+  const DENOMS = [2, 3, 4, 5, 6, 8, 10];
+
+  function newFrac() {
+    fracLD = DENOMS[Math.floor(Math.random() * DENOMS.length)];
+    fracRD = DENOMS[Math.floor(Math.random() * DENOMS.length)];
+    fracLN = Math.floor(Math.random() * (fracLD - 1)) + 1;
+    fracRN = Math.floor(Math.random() * (fracRD - 1)) + 1;
+    document.getElementById('fracLeftNum').textContent  = fracLN;
+    document.getElementById('fracLeftDen').textContent  = fracLD;
+    document.getElementById('fracRightNum').textContent = fracRN;
+    document.getElementById('fracRightDen').textContent = fracRD;
+    document.getElementById('fracMsg').textContent = '';
+    document.getElementById('fracMsg').className = 'game-message';
+    const lv = fracLN * fracRD, rv = fracRN * fracLD;
+    fracCorrect = lv > rv ? 'left' : lv < rv ? 'right' : 'equal';
+  }
+
+  function checkFrac(choice) {
+    const msg = document.getElementById('fracMsg');
+    if (choice === fracCorrect) {
+      fracScore++; fracStreak++;
+      document.getElementById('fracScore').textContent  = fracScore;
+      document.getElementById('fracStreak').textContent = fracStreak;
+      const bonus = fracStreak >= 5 ? ' 🔥 x' + fracStreak + ' streak!' : '';
+      msg.textContent = '✅ Correct!' + bonus;
+      msg.className = 'game-message correct';
+    } else {
+      fracStreak = 0;
+      document.getElementById('fracStreak').textContent = '0';
+      const ans = fracCorrect === 'left' ? fracLN+'/'+fracLD+' is bigger'
+                : fracCorrect === 'right' ? fracRN+'/'+fracRD+' is bigger'
+                : 'They are equal!';
+      msg.textContent = '❌ ' + ans;
+      msg.className = 'game-message wrong';
+    }
+    setTimeout(newFrac, 1300);
+  }
+
+  function resetFrac() {
+    fracScore = 0; fracStreak = 0;
+    document.getElementById('fracScore').textContent  = '0';
+    document.getElementById('fracStreak').textContent = '0';
+    newFrac();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 5 — TRUE OR FALSE
+  // ════════════════════════════════════════════════════════════
+  const TF_POOL = [
+    { s:'7 × 8 = 56',               a:true  },
+    { s:'6 × 7 = 48',               a:false },
+    { s:'1/2 = 0.5',                a:true  },
+    { s:'1/2 + 1/3 = 2/5',          a:false },
+    { s:'100 ÷ 4 = 25',             a:true  },
+    { s:'100 ÷ 5 = 15',             a:false },
+    { s:'3/4 > 2/3',                a:true  },
+    { s:'3/4 < 1/2',                a:false },
+    { s:'0.75 = 3/4',               a:true  },
+    { s:'0.25 = 1/5',               a:false },
+    { s:'5 × 0 = 0',                a:true  },
+    { s:'9 is a multiple of 3',     a:true  },
+    { s:'7 is an even number',      a:false },
+    { s:'15 is a prime number',     a:false },
+    { s:'A right angle = 90°',      a:true  },
+    { s:'The angles in a triangle add up to 180°', a:true  },
+    { s:'The angles in a triangle add up to 360°', a:false },
+    { s:'25% of 80 = 20',           a:true  },
+    { s:'0.3 + 0.7 = 1.0',          a:true  },
+    { s:'0.1 + 0.1 + 0.1 = 0.4',   a:false },
+    { s:'4 + 3 × 2 = 10',          a:true  },
+    { s:'4 + 3 × 2 = 14',          a:false },
+    { s:'12 × 12 = 144',           a:true  },
+    { s:'8 × 9 = 63',              a:false },
+    { s:'Area of a 6×6 square = 36', a:true },
+    { s:'Area of a 5×5 square = 20', a:false },
+    { s:'Perimeter of a 4×6 rectangle = 20', a:true  },
+    { s:'Perimeter of a 4×6 rectangle = 24', a:false },
+    { s:'3.5 × 2 = 7',             a:true  },
+    { s:'3.5 × 2 = 6',             a:false },
+    { s:'1/4 + 1/4 = 1/2',         a:true  },
+    { s:'2/3 + 2/3 = 4/3',         a:true  },
+    { s:'A cube has 8 faces',       a:false },
+    { s:'A cube has 6 faces',       a:true  },
+    { s:'10² = 100',                a:true  },
+    { s:'2³ = 6',                   a:false },
+    { s:'50% of 60 = 30',          a:true  },
+    { s:'10% of 50 = 5',           a:true  },
+    { s:'Volume of a 3×4×5 box = 60', a:true },
+    { s:'Volume of a 2×3×4 box = 18', a:false },
+  ];
+
+  let tfDeck = [], tfIdx = 0, tfScore = 0, tfTotal = 0;
+
+  function shuffleTF() {
+    tfDeck = [...TF_POOL].sort(() => Math.random() - 0.5);
+    tfIdx = 0; tfScore = 0; tfTotal = 0;
+  }
+
+  function showTF() {
+    if (tfIdx >= tfDeck.length) { tfIdx = 0; tfDeck.sort(() => Math.random() - 0.5); }
+    document.getElementById('tfStatement').textContent = tfDeck[tfIdx].s;
+    document.getElementById('tfMsg').textContent = '';
+    document.getElementById('tfMsg').className = 'game-message';
+    document.getElementById('tfTrueBtn').disabled  = false;
+    document.getElementById('tfFalseBtn').disabled = false;
+    document.getElementById('tfScore').textContent = tfScore;
+    document.getElementById('tfTotal').textContent = tfTotal;
+  }
+
+  function checkTF(choice) {
+    const correct = tfDeck[tfIdx].a;
+    const msg = document.getElementById('tfMsg');
+    tfTotal++;
+    document.getElementById('tfTrueBtn').disabled  = true;
+    document.getElementById('tfFalseBtn').disabled = true;
+    if (choice === correct) {
+      tfScore++;
+      msg.textContent = '✅ Correct!';
+      msg.className = 'game-message correct';
+    } else {
+      msg.textContent = '❌ ' + (correct ? 'That was TRUE!' : 'That was FALSE!');
+      msg.className = 'game-message wrong';
+    }
+    document.getElementById('tfScore').textContent = tfScore;
+    document.getElementById('tfTotal').textContent = tfTotal;
+    tfIdx++;
+    setTimeout(showTF, 1200);
+  }
+
+  function resetTF() {
+    shuffleTF();
+    showTF();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 6 — MISSING NUMBER
+  // ════════════════════════════════════════════════════════════
+  const MIS_GEN = [
+    () => { const a=randInt(2,9),b=randInt(2,9); return { eq:`${a} × ___ = ${a*b}`, ans:b }; },
+    () => { const a=randInt(2,9),b=randInt(2,9); return { eq:`___ × ${b} = ${a*b}`, ans:a }; },
+    () => { const b=randInt(2,9),q=randInt(2,9); return { eq:`${b*q} ÷ ${b} = ___`, ans:q }; },
+    () => { const b=randInt(2,9),q=randInt(2,9); return { eq:`${b*q} ÷ ___ = ${q}`, ans:b }; },
+    () => { const a=randInt(10,50),b=randInt(5,30); return { eq:`${a} + ___ = ${a+b}`, ans:b }; },
+    () => { const a=randInt(20,80),b=randInt(5,30); return { eq:`${a} − ___ = ${a-b}`, ans:b }; },
+    () => { const a=randInt(20,80),b=randInt(5,30); return { eq:`___ + ${b} = ${a+b}`, ans:a }; },
+    () => { const a=randInt(20,80),b=randInt(5,30); return { eq:`___ − ${b} = ${a-b}`, ans:a }; },
+    () => { const b=randInt(2,6),q=randInt(3,9); return { eq:`${b*q} = ___ × ${b}`, ans:q }; },
+    () => { const a=randInt(2,9); return { eq:`${a} × ___ = ${a*a}`, ans:a }; },
+  ];
+
+  function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+  let misScore = 0, misExpected = 0;
+
+  function newMissing() {
+    const gen = MIS_GEN[Math.floor(Math.random() * MIS_GEN.length)];
+    const p = gen();
+    misExpected = p.ans;
+    document.getElementById('misEq').textContent = p.eq;
+    document.getElementById('misAnswer').value = '';
+    document.getElementById('misMsg').textContent = '';
+    document.getElementById('misMsg').className = 'game-message';
+    document.getElementById('misAnswer').focus();
+  }
+
+  function checkMissing() {
+    const val = parseFloat(document.getElementById('misAnswer').value);
+    const msg = document.getElementById('misMsg');
+    if (isNaN(val)) { msg.textContent = 'Enter a number!'; msg.className = 'game-message wrong'; return; }
+    if (val === misExpected) {
+      misScore++;
+      document.getElementById('misScore').textContent = misScore;
+      msg.textContent = '✅ Correct! Well done!';
+      msg.className = 'game-message correct';
+    } else {
+      msg.textContent = '❌ The missing number is ' + misExpected;
+      msg.className = 'game-message wrong';
+    }
+    setTimeout(newMissing, 1200);
+  }
+
+  function resetMissing() {
+    misScore = 0;
+    document.getElementById('misScore').textContent = '0';
+    newMissing();
+  }
+
+  document.getElementById('misAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') checkMissing(); });
+
+  // ════════════════════════════════════════════════════════════
+  //  GAME 7 — NUMBER SORTER
+  // ════════════════════════════════════════════════════════════
+  let sortScore = 0, sortNums = [], sortClicked = [];
+
+  function newSorter() {
+    // Randomly choose between integers and decimals
+    const useDecimal = Math.random() < 0.35;
+    sortNums = [];
+    while (sortNums.length < 5) {
+      let n;
+      if (useDecimal) {
+        n = Math.round((Math.random() * 9 + 0.1) * 10) / 10;
+      } else {
+        n = randInt(1, 99);
       }
+      if (!sortNums.includes(n)) sortNums.push(n);
+    }
+    sortClicked = [];
+    renderSorterUI();
+    document.getElementById('sortMsg').textContent = '';
+    document.getElementById('sortMsg').className = 'game-message';
+  }
 
-      if (userAnswer === correct) {
-        gameScore++;
-        msg.textContent = 'Correct! Great job!';
+  function renderSorterUI() {
+    const cont = document.getElementById('sortButtons');
+    cont.innerHTML = '';
+    sortNums.forEach((n, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'sorter-num-btn' + (sortClicked.includes(i) ? ' clicked' : '');
+      btn.textContent = n;
+      btn.disabled = sortClicked.includes(i);
+      btn.onclick = () => sortClick(i);
+      cont.appendChild(btn);
+    });
+    const disp = document.getElementById('sortOrderDisplay');
+    disp.innerHTML = '';
+    sortClicked.forEach(i => {
+      const span = document.createElement('span');
+      span.className = 'order-item';
+      span.textContent = sortNums[i];
+      disp.appendChild(span);
+    });
+  }
+
+  function sortClick(idx) {
+    sortClicked.push(idx);
+    renderSorterUI();
+    if (sortClicked.length === sortNums.length) {
+      const chosen = sortClicked.map(i => sortNums[i]);
+      const isAsc  = chosen.every((v, j) => j === 0 || v >= chosen[j-1]);
+      const msg = document.getElementById('sortMsg');
+      if (isAsc) {
+        sortScore++;
+        document.getElementById('sortScore').textContent = sortScore;
+        msg.textContent = '🎉 Perfect order!';
         msg.className = 'game-message correct';
       } else {
-        msg.textContent = `Not quite! The answer is ${correct}`;
+        const sorted = [...sortNums].sort((a,b) => a - b);
+        msg.textContent = '❌ Correct order: ' + sorted.join(' → ');
         msg.className = 'game-message wrong';
       }
-
-      document.getElementById('gameScore').textContent = `Score: ${gameScore}`;
-      setTimeout(newProblem, 1200);
+      setTimeout(newSorter, 2000);
     }
+  }
 
-    document.getElementById('gameAnswer').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkGameAnswer();
-    });
+  function resetSorter() {
+    sortScore = 0;
+    document.getElementById('sortScore').textContent = '0';
+    newSorter();
+  }
 
-    function resetGame() {
-      gameScore = 0;
-      document.getElementById('gameScore').textContent = 'Score: 0';
-      newProblem();
-    }
-
-    newProblem();
-
-    // === Pattern Game ===
-    let patternScore = 0;
-    let patternAnswer = 0;
-
-    function newPattern() {
-      const patterns = [
-        { seq: [2, 4, 6, 8], ans: 10, desc: "add 2" },
-        { seq: [10, 20, 30, 40], ans: 50, desc: "add 10" },
-        { seq: [1, 4, 9, 16], ans: 25, desc: "square numbers" },
-        { seq: [3, 6, 12, 24], ans: 48, desc: "multiply by 2" },
-        { seq: [50, 45, 40, 35], ans: 30, desc: "subtract 5" },
-        { seq: [1, 3, 6, 10], ans: 15, desc: "add increasing numbers" },
-        { seq: [5, 10, 15, 20], ans: 25, desc: "add 5" },
-        { seq: [100, 90, 80, 70], ans: 60, desc: "subtract 10" },
-        { seq: [1, 1, 2, 3], ans: 5, desc: "Fibonacci sequence" },
-        { seq: [12, 24, 36, 48], ans: 60, desc: "add 12" },
-      ];
-      const p = patterns[Math.floor(Math.random() * patterns.length)];
-      document.getElementById('patternProblem').textContent = p.seq.join(', ') + ', ?';
-      document.getElementById('patternAnswer').value = '';
-      document.getElementById('patternAnswer').focus();
-      document.getElementById('patternMessage').textContent = '';
-      document.getElementById('patternMessage').className = 'game-message';
-      patternAnswer = p.ans;
-    }
-
-    function checkPatternAnswer() {
-      const input = document.getElementById('patternAnswer');
-      const userAnswer = parseInt(input.value);
-      const msg = document.getElementById('patternMessage');
-
-      if (isNaN(userAnswer)) {
-        msg.textContent = 'Please enter a number!';
-        msg.className = 'game-message wrong';
-        return;
-      }
-
-      if (userAnswer === patternAnswer) {
-        patternScore++;
-        msg.textContent = 'Correct! You found the pattern!';
-        msg.className = 'game-message correct';
-      } else {
-        msg.textContent = `Close! The answer is ${patternAnswer}`;
-        msg.className = 'game-message wrong';
-      }
-
-      document.getElementById('patternScore').textContent = `Score: ${patternScore}`;
-      setTimeout(newPattern, 1200);
-    }
-
-    document.getElementById('patternAnswer').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkPatternAnswer();
-    });
-
-    function resetPatternGame() {
-      patternScore = 0;
-      document.getElementById('patternScore').textContent = 'Score: 0';
-      newPattern();
-    }
-
-    newPattern();
   </script>
   <script src="js/main.js"></script>
 </body>

@@ -11,11 +11,210 @@
     gtag('config', 'G-H8X3QV5TR0');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Solve math riddles and brain teasers designed for 5th graders at MATHwzShima.">
+  <meta name="description" content="Solve 50+ math puzzles across 4 categories at MATHwzShima - number riddles, geometry, word problems, and brain twisters!">
   <meta name="theme-color" content="#6c5ce7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Puzzles - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Category Tabs ── */
+    .cat-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1.2rem 0 1.5rem;
+    }
+    .cat-tab {
+      background: white;
+      color: #636e72;
+      border: 2px solid #dfe6e9;
+      padding: 0.5rem 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all 0.18s;
+    }
+    .cat-tab:hover { border-color: #6c5ce7; color: #6c5ce7; }
+    .cat-tab.active {
+      background: #6c5ce7;
+      color: white;
+      border-color: #6c5ce7;
+    }
+
+    /* ── Puzzle Card ── */
+    .puzzle-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .puzzle-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #636e72;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .puzzle-meta .puz-cat-badge {
+      background: #f1f0ff;
+      color: #6c5ce7;
+      border-radius: 8px;
+      padding: 0.25rem 0.8rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .puzzle-progress-bar {
+      height: 8px;
+      background: #dfe6e9;
+      border-radius: 8px;
+      margin-bottom: 1.2rem;
+      overflow: hidden;
+    }
+    .puzzle-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+      border-radius: 8px;
+      transition: width 0.4s ease;
+    }
+
+    .puzzle-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.8rem 1.5rem;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+      margin-bottom: 1rem;
+    }
+    .puzzle-number {
+      font-size: 0.85rem;
+      color: #b2bec3;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.6rem;
+    }
+    .puzzle-question {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #2d3436;
+      line-height: 1.55;
+      margin-bottom: 1.4rem;
+    }
+    .puzzle-input-row {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .puzzle-input-row input {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.7rem 1rem;
+      border: 2px solid #dfe6e9;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .puzzle-input-row input:focus { border-color: #6c5ce7; }
+    .puzzle-input-row button {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .puzzle-input-row button:hover { background: #5a4bd1; }
+
+    .puzzle-feedback {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      display: none;
+    }
+    .puzzle-feedback.correct { background: #d4edda; color: #1a7a3a; display: block; }
+    .puzzle-feedback.wrong   { background: #fdecea; color: #c0392b; display: block; }
+    .puzzle-feedback.revealed { background: #fff3cd; color: #856404; display: block; }
+
+    .puzzle-hint-btn {
+      background: none;
+      border: none;
+      color: #6c5ce7;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.3rem 0;
+      margin-top: 0.6rem;
+      text-decoration: underline dotted;
+    }
+    .puzzle-hint-text {
+      display: none;
+      background: #f1f0ff;
+      color: #6c5ce7;
+      border-radius: 8px;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Puzzle Nav ── */
+    .puzzle-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .puz-nav-btn {
+      background: white;
+      border: 2px solid #dfe6e9;
+      color: #2d3436;
+      padding: 0.55rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.15s;
+    }
+    .puz-nav-btn:hover { border-color: #6c5ce7; color: #6c5ce7; }
+    .puz-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .puz-reveal-btn {
+      background: #fdcb6e;
+      border: none;
+      color: #2d3436;
+      padding: 0.55rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.15s;
+    }
+    .puz-reveal-btn:hover { background: #e8b84b; }
+
+    /* ── Score summary ── */
+    .score-summary {
+      background: white;
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 1rem;
+    }
+    .score-summary .sc { text-align: center; }
+    .score-summary .sc-val { font-size: 1.6rem; font-weight: 900; color: #6c5ce7; }
+    .score-summary .sc-lbl { font-size: 0.78rem; color: #636e72; font-weight: 700; text-transform: uppercase; }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
@@ -41,20 +240,51 @@
 
   <main id="main-content">
     <div class="page-header">
-      <h2>Math Puzzles & Riddles</h2>
-      <p>Stretch your brain with these tricky puzzles!</p>
+      <h2>&#129504; Math Puzzles</h2>
+      <p>50 puzzles across 4 categories — stretch your brain!</p>
     </div>
 
-    <div class="puzzle-container" id="puzzleContainer">
-      <h3 id="puzzleTitle">Riddle</h3>
-      <div class="puzzle-riddle" id="puzzleRiddle">Loading...</div>
-      <div class="puzzle-input" id="puzzleInputArea">
-        <input type="text" id="puzzleAnswer" placeholder="Your answer...">
-        <button onclick="checkPuzzleAnswer()">Check</button>
+    <!-- Score Summary -->
+    <div class="score-summary">
+      <div class="sc"><div class="sc-val" id="totalSolved">0</div><div class="sc-lbl">Solved</div></div>
+      <div class="sc"><div class="sc-val" id="totalAttempted">0</div><div class="sc-lbl">Attempted</div></div>
+      <div class="sc"><div class="sc-val" id="totalScore">0%</div><div class="sc-lbl">Accuracy</div></div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="cat-tabs">
+      <button class="cat-tab active" onclick="switchCat('numbers')">&#128290; Number Riddles <span id="badge-numbers"></span></button>
+      <button class="cat-tab" onclick="switchCat('geometry')">&#128207; Geometry <span id="badge-geometry"></span></button>
+      <button class="cat-tab" onclick="switchCat('word')">&#129529; Word Problems <span id="badge-word"></span></button>
+      <button class="cat-tab" onclick="switchCat('brain')">&#129504; Brain Twisters <span id="badge-brain"></span></button>
+    </div>
+
+    <!-- Puzzle Area -->
+    <div class="puzzle-wrapper">
+      <div class="puzzle-meta">
+        <span id="puzCatBadge" class="puz-cat-badge">&#128290; Number Riddles</span>
+        <span id="puzCounter">Puzzle 1 of 15</span>
       </div>
-      <div class="game-message" id="puzzleMessage" aria-live="polite"></div>
-      <div class="puzzle-reveal">
-        <button onclick="revealPuzzleAnswer()">Show Answer</button>
+      <div class="puzzle-progress-bar">
+        <div class="puzzle-progress-fill" id="puzProgressFill" style="width:0%"></div>
+      </div>
+
+      <div class="puzzle-card">
+        <div class="puzzle-number" id="puzNum">PUZZLE 1</div>
+        <div class="puzzle-question" id="puzQuestion">Loading…</div>
+        <div class="puzzle-input-row">
+          <input type="text" id="puzInput" placeholder="Your answer…" autocomplete="off">
+          <button onclick="checkPuzzle()">Check &#10003;</button>
+        </div>
+        <div class="puzzle-feedback" id="puzFeedback"></div>
+        <button class="puzzle-hint-btn" id="puzHintBtn" onclick="toggleHint()">&#128161; Show Hint</button>
+        <div class="puzzle-hint-text" id="puzHintText"></div>
+      </div>
+
+      <div class="puzzle-nav">
+        <button class="puz-nav-btn" id="prevBtn" onclick="navPuzzle(-1)">&#8592; Previous</button>
+        <button class="puz-reveal-btn" onclick="revealAnswer()">&#128065; Show Answer</button>
+        <button class="puz-nav-btn" id="nextBtn" onclick="navPuzzle(1)">Next &#8594;</button>
       </div>
     </div>
   </main>
@@ -64,78 +294,468 @@
   </footer>
 
   <script>
-    const puzzles = [
-      { riddle: "I am an odd number. Take away one letter and I become even. What number am I?", answer: "seven" },
-      { riddle: "What has a head and a tail but no body?", answer: "coin" },
-      { riddle: "If you multiply me by any number, the answer is always me. What number am I?", answer: "zero" },
-      { riddle: "What goes up and down but never moves?", answer: "stairs" },
-      { riddle: "I am a number. Add me to myself and you get 10. What number am I?", answer: "5" },
-      { riddle: "What has many teeth but cannot bite?", answer: "comb" },
-      { riddle: "I am a three-digit number. My tens digit is five more than my ones digit. My hundreds digit is eight less than my tens digit. What number am I?", answer: "194" },
-      { riddle: "What is full of holes but still holds water?", answer: "sponge" },
-      { riddle: "What can you break even if you never pick it up?", answer: "promise" },
-      { riddle: "I am a number. Double me and add 4, you get 14. What number am I?", answer: "5" },
-      { riddle: "I add 5 to 9 and get 2. How is this possible?", answer: "clock" },
-      { riddle: "I have keys but no locks. I have space but no room. You can enter but can't go inside. What am I?", answer: "keyboard" },
-    ];
+  // ════════════════════════════════════════════════════════════
+  //  PUZZLE DATA
+  //  Each puzzle: { q, a (array of accepted answers, lowercase), hint, cat }
+  //  Answers are matched case-insensitively; numeric answers also parsed.
+  // ════════════════════════════════════════════════════════════
+  const PUZZLES = {
+    numbers: [
+      {
+        q: "I am an odd number. Take away one letter and I become even. What number am I?",
+        a: ["seven", "7"],
+        hint: "Think about how the WORD for a number might contain the word 'even'."
+      },
+      {
+        q: "If you multiply me by any number, the answer is always me. What number am I?",
+        a: ["0", "zero"],
+        hint: "Any number times this gives the same result — itself!"
+      },
+      {
+        q: "I am a three-digit number. My tens digit is 5 more than my ones digit. My hundreds digit is 8 less than my tens digit. What number am I?",
+        a: ["194"],
+        hint: "Start from the ones digit. Try ones=4, then tens=9, then hundreds=9-8=1."
+      },
+      {
+        q: "I am a number. Double me and add 4, and you get 14. What number am I?",
+        a: ["5"],
+        hint: "Work backwards: 14 − 4 = 10, then half of 10 = ?"
+      },
+      {
+        q: "What is half of half of 100?",
+        a: ["25"],
+        hint: "Half of 100 is 50. What is half of that?"
+      },
+      {
+        q: "I am the smallest number that is divisible by both 3 and 5, but not by 10. What am I?",
+        a: ["15"],
+        hint: "A number divisible by both 3 and 5 must be a multiple of 15."
+      },
+      {
+        q: "A 2-digit number: its digits multiply together to make 12, and they add up to 7. What is the number?",
+        a: ["34", "43"],
+        hint: "Find two single digits that multiply to 12 and add to 7."
+      },
+      {
+        q: "I am thinking of a number. Add 8 to it, then multiply by 2, and you get 30. What is the number?",
+        a: ["7"],
+        hint: "Work backwards: 30 ÷ 2 = 15. Then 15 − 8 = ?"
+      },
+      {
+        q: "What number, when multiplied by itself, gives you 144?",
+        a: ["12"],
+        hint: "You are looking for the square root of 144."
+      },
+      {
+        q: "I am an even number. I am greater than 50 but less than 60. My digits add up to 9. What number am I?",
+        a: ["54"],
+        hint: "List even numbers between 50 and 60: 52, 54, 56, 58. Which digits add to 9?"
+      },
+      {
+        q: "I am a number. Add half of me to myself and you get 30. What number am I?",
+        a: ["20"],
+        hint: "x + x/2 = 30 → 1.5x = 30. Divide both sides by 1.5."
+      },
+      {
+        q: "I am a two-digit number that equals exactly 4 times the sum of my digits. What am I?",
+        a: ["24"],
+        hint: "2+4=6 and 6×4=24. Check two-digit numbers!"
+      },
+      {
+        q: "My ones digit is twice my tens digit. The sum of my digits is 9. What 2-digit number am I?",
+        a: ["36"],
+        hint: "If tens digit = t, then ones = 2t, and t + 2t = 9."
+      },
+      {
+        q: "What two positive numbers have a sum of 20 and a product of 75?",
+        a: ["5 and 15", "15 and 5", "5,15", "15,5"],
+        hint: "Think of factor pairs of 75: (1,75), (3,25), (5,15)… which pair adds to 20?"
+      },
+      {
+        q: "What 1-digit number appears in the same position in both 'three' and 'eight'? (Count by position: three=5 letters, eight=5 letters — what digit do both equal when squared?)",
+        a: ["5", "five"],
+        hint: "How many letters are in the words THREE and EIGHT? √25 = ?"
+      },
+    ],
 
-    let currentPuzzle = 0;
-    let puzzleRevealed = false;
+    geometry: [
+      {
+        q: "A rectangle has a perimeter of 24 cm. Its length is twice its width. What is the area of the rectangle in cm²?",
+        a: ["32", "32 cm²", "32cm²"],
+        hint: "Let width = w. Then length = 2w. Perimeter: 2(w + 2w) = 24 → w = 4."
+      },
+      {
+        q: "A square has an area of 64 cm². What is its perimeter in cm?",
+        a: ["32", "32 cm", "32cm"],
+        hint: "Area = side². Find the side length first."
+      },
+      {
+        q: "A triangle has two angles measuring 40° and 75°. What is the measure of the third angle?",
+        a: ["65", "65°", "65 degrees"],
+        hint: "All angles in a triangle add up to 180°."
+      },
+      {
+        q: "What is the volume of a rectangular box that is 5 cm long, 4 cm wide, and 3 cm tall? (in cm³)",
+        a: ["60", "60 cm³", "60cm³"],
+        hint: "Volume = length × width × height"
+      },
+      {
+        q: "A right triangle has legs measuring 3 cm and 4 cm. What is the length of the hypotenuse in cm?",
+        a: ["5", "5 cm", "5cm"],
+        hint: "Use the Pythagorean theorem: a² + b² = c²"
+      },
+      {
+        q: "A rectangle is 9 cm long and 5 cm wide. What is its perimeter in cm?",
+        a: ["28", "28 cm", "28cm"],
+        hint: "Perimeter = 2 × (length + width)"
+      },
+      {
+        q: "How many faces does a cube have?",
+        a: ["6", "six"],
+        hint: "Think of a dice — count the flat sides (top, bottom, front, back, left, right)."
+      },
+      {
+        q: "What 2D shape has 4 equal sides and 4 right angles?",
+        a: ["square"],
+        hint: "It's a very common shape — not a rectangle, something more specific."
+      },
+      {
+        q: "How many degrees are in a straight line (straight angle)?",
+        a: ["180", "180°", "180 degrees"],
+        hint: "A straight line is half of a full 360° rotation."
+      },
+      {
+        q: "A square and a rectangle have the same perimeter of 20 cm. The rectangle is 6 cm long. What is the area of the square in cm²?",
+        a: ["25", "25 cm²", "25cm²"],
+        hint: "Find the side of the square: 4×side = 20 → side = 5. Area = side²."
+      },
+    ],
 
-    function loadPuzzle() {
-      const p = puzzles[currentPuzzle];
-      document.getElementById('puzzleRiddle').textContent = p.riddle;
-      document.getElementById('puzzleAnswer').value = '';
-      document.getElementById('puzzleMessage').textContent = '';
-      document.getElementById('puzzleMessage').className = 'game-message';
-      puzzleRevealed = false;
-    }
+    word: [
+      {
+        q: "Sarah had 48 stickers. She gave ¼ to her sister and ⅓ to her friend. How many stickers does she have left?",
+        a: ["20"],
+        hint: "¼ of 48 = 12. ⅓ of 48 = 16. She gave away 12 + 16 = 28."
+      },
+      {
+        q: "A bag of apples costs $3.75. If you buy 4 bags, how much do you pay in total?",
+        a: ["15", "$15", "15.00", "$15.00"],
+        hint: "$3.75 × 4 = ?"
+      },
+      {
+        q: "A classroom has 32 students. ⅜ of them wear glasses. How many students wear glasses?",
+        a: ["12"],
+        hint: "⅜ of 32 = (32 ÷ 8) × 3 = ?"
+      },
+      {
+        q: "Jake saves $15 each week. How many weeks does it take him to save $120?",
+        a: ["8"],
+        hint: "$120 ÷ $15 = ?"
+      },
+      {
+        q: "A rope is 7.5 meters long. You cut off 2.75 meters. How long is the remaining piece in meters?",
+        a: ["4.75", "4.75 m", "4.75 meters"],
+        hint: "7.5 − 2.75 = ?"
+      },
+      {
+        q: "A store has 144 oranges packed in boxes of 12. How many boxes are there?",
+        a: ["12"],
+        hint: "144 ÷ 12 = ?"
+      },
+      {
+        q: "5 friends share 2.5 liters of juice equally. How many liters does each friend get?",
+        a: ["0.5", "0.5 l", "0.5 liters", "500 ml"],
+        hint: "2.5 ÷ 5 = ?"
+      },
+      {
+        q: "A book has 240 pages. Maya reads 15 pages each day. How many days will it take her to finish the book?",
+        a: ["16"],
+        hint: "240 ÷ 15 = ?"
+      },
+      {
+        q: "Mrs. Smith has 5 dozen eggs. She uses 18 of them. How many eggs are left?",
+        a: ["42"],
+        hint: "5 dozen = 5 × 12 = 60. Then 60 − 18 = ?"
+      },
+      {
+        q: "A store sells apples for $0.45 each. How much do 20 apples cost in total?",
+        a: ["9", "$9", "9.00", "$9.00"],
+        hint: "$0.45 × 20 = ?"
+      },
+      {
+        q: "A car travels at 60 miles per hour. How far does it travel in 2.5 hours?",
+        a: ["150", "150 miles"],
+        hint: "Distance = speed × time. 60 × 2.5 = ?"
+      },
+      {
+        q: "A pizza is cut into 8 equal slices. Tom ate 3 slices and Maria ate 2 slices. What fraction of the pizza is left?",
+        a: ["3/8", "3 / 8", "3 out of 8"],
+        hint: "Total eaten = 3 + 2 = 5 slices. Remaining = 8 − 5 = 3. Write as a fraction."
+      },
+      {
+        q: "A farmer plants 6 rows of corn with 25 plants in each row. How many plants are there in total?",
+        a: ["150"],
+        hint: "6 × 25 = ?"
+      },
+      {
+        q: "A water tank holds 120 liters. It is ¾ full. How many liters of water are in the tank?",
+        a: ["90", "90 liters", "90 l"],
+        hint: "¾ of 120 = (120 ÷ 4) × 3 = ?"
+      },
+      {
+        q: "Three friends each have $12.50. How much money do they have altogether?",
+        a: ["37.5", "37.50", "$37.50", "$37.5", "37 dollars 50 cents"],
+        hint: "$12.50 × 3 = ?"
+      },
+    ],
 
-    function checkPuzzleAnswer() {
-      const input = document.getElementById('puzzleAnswer');
-      const userAnswer = input.value.trim().toLowerCase();
-      const msg = document.getElementById('puzzleMessage');
-      const correct = puzzles[currentPuzzle].answer;
+    brain: [
+      {
+        q: "I add 5 to 9 and get 2. How is this possible?",
+        a: ["clock", "a clock", "time", "on a clock"],
+        hint: "Think about something you look at to tell time."
+      },
+      {
+        q: "If 5 cats catch 5 mice in 5 minutes, how many cats are needed to catch 100 mice in 100 minutes?",
+        a: ["5"],
+        hint: "Each cat catches 1 mouse in 5 minutes. In 100 minutes, each cat catches 20 mice."
+      },
+      {
+        q: "A farmer has 17 sheep. All but 9 run away. How many sheep does the farmer have?",
+        a: ["9", "nine"],
+        hint: "'All but 9' means 9 stay behind."
+      },
+      {
+        q: "What whole number gives the same result whether you multiply it by itself OR add it to itself?",
+        a: ["2", "two"],
+        hint: "2 × 2 = 4 and 2 + 2 = 4. ✓"
+      },
+      {
+        q: "Three consecutive whole numbers add up to 36. What is the middle number?",
+        a: ["12"],
+        hint: "If the middle number is n, then (n−1) + n + (n+1) = 36."
+      },
+      {
+        q: "In a barn there are 50 horses and 50 cows. How many legs are there in total?",
+        a: ["400"],
+        hint: "Each animal has 4 legs. 100 animals × 4 legs = ?"
+      },
+      {
+        q: "How many times can you subtract 5 from 25?",
+        a: ["1", "once", "one time"],
+        hint: "After the first subtraction it is no longer 25!"
+      },
+      {
+        q: "What is the largest 3-digit number whose three digits add up to exactly 9?",
+        a: ["900"],
+        hint: "To make the largest 3-digit number, put the biggest digit in the hundreds place."
+      },
+      {
+        q: "If every month had exactly 30 days, how many days would be in a year?",
+        a: ["360"],
+        hint: "12 months × 30 days = ?"
+      },
+      {
+        q: "What is the smallest 4-digit number that reads the same forwards and backwards (a palindrome)?",
+        a: ["1001"],
+        hint: "The number must look like ABBA. Start with the smallest possible digits: 1__1."
+      },
+    ],
+  };
 
-      if (!userAnswer) {
-        msg.textContent = 'Type your answer first!';
-        msg.className = 'game-message wrong';
-        return;
-      }
+  // ════════════════════════════════════════════════════════════
+  //  STATE
+  // ════════════════════════════════════════════════════════════
+  const CAT_INFO = {
+    numbers:  { label:'&#128290; Number Riddles',  color:'#6c5ce7' },
+    geometry: { label:'&#128207; Geometry',         color:'#00b894' },
+    word:     { label:'&#129529; Word Problems',    color:'#e17055' },
+    brain:    { label:'&#129504; Brain Twisters',   color:'#fdcb6e' },
+  };
 
-      if (userAnswer === correct.toLowerCase()) {
-        msg.textContent = 'Correct! You solved it!';
-        msg.className = 'game-message correct';
-      } else {
-        msg.textContent = 'Not quite! Try again or click "Show Answer".';
-        msg.className = 'game-message wrong';
-      }
-    }
+  let curCat   = 'numbers';
+  let curIdx   = 0;
+  let hintShown = false;
+  let solved   = 0;
+  let attempted = 0;
 
-    document.getElementById('puzzleAnswer').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkPuzzleAnswer();
+  // Track state per puzzle: 'unseen' | 'correct' | 'wrong' | 'revealed'
+  const STATUS = {};
+  Object.keys(PUZZLES).forEach(cat => {
+    PUZZLES[cat].forEach((_, i) => {
+      STATUS[cat + '_' + i] = 'unseen';
     });
+  });
 
-    function revealPuzzleAnswer() {
-      if (puzzleRevealed) {
-        // go to next puzzle
-        currentPuzzle = (currentPuzzle + 1) % puzzles.length;
-        loadPuzzle();
-      } else {
-        const msg = document.getElementById('puzzleMessage');
-        msg.textContent = `Answer: ${puzzles[currentPuzzle].answer}`;
-        msg.className = 'game-message correct';
-        puzzleRevealed = true;
+  // ════════════════════════════════════════════════════════════
+  //  RENDER
+  // ════════════════════════════════════════════════════════════
+  function renderPuzzle() {
+    const puzzles = PUZZLES[curCat];
+    const p = puzzles[curIdx];
+    const key = curCat + '_' + curIdx;
+    hintShown = false;
+
+    // Meta
+    document.getElementById('puzCatBadge').innerHTML = CAT_INFO[curCat].label;
+    document.getElementById('puzCounter').textContent = 'Puzzle ' + (curIdx + 1) + ' of ' + puzzles.length;
+    document.getElementById('puzNum').textContent = 'PUZZLE ' + (curIdx + 1);
+    document.getElementById('puzQuestion').textContent = p.q;
+
+    // Progress bar
+    const pct = ((curIdx + 1) / puzzles.length) * 100;
+    document.getElementById('puzProgressFill').style.width = pct + '%';
+
+    // Input reset
+    document.getElementById('puzInput').value = '';
+    document.getElementById('puzInput').disabled = false;
+    document.getElementById('puzFeedback').className = 'puzzle-feedback';
+    document.getElementById('puzFeedback').textContent = '';
+
+    // Hint
+    document.getElementById('puzHintBtn').style.display = p.hint ? '' : 'none';
+    document.getElementById('puzHintText').style.display = 'none';
+    document.getElementById('puzHintText').textContent = p.hint || '';
+    document.getElementById('puzHintBtn').textContent = '💡 Show Hint';
+
+    // If already answered, restore state
+    const st = STATUS[key];
+    if (st === 'correct') {
+      showFeedback('correct', '✅ Correct! Well done!');
+      document.getElementById('puzInput').disabled = true;
+    } else if (st === 'revealed') {
+      showFeedback('revealed', '👀 Answer: ' + p.a[0]);
+      document.getElementById('puzInput').disabled = true;
+    }
+
+    // Nav buttons
+    document.getElementById('prevBtn').disabled = curIdx === 0;
+    document.getElementById('nextBtn').disabled = curIdx === puzzles.length - 1;
+
+    document.getElementById('puzInput').focus();
+    updateBadges();
+    updateScoreSummary();
+  }
+
+  function showFeedback(type, text) {
+    const fb = document.getElementById('puzFeedback');
+    fb.className = 'puzzle-feedback ' + type;
+    fb.textContent = text;
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  CHECK ANSWER
+  // ════════════════════════════════════════════════════════════
+  function normalize(s) { return String(s).trim().toLowerCase().replace(/\s+/g,' '); }
+
+  function checkPuzzle() {
+    const key = curCat + '_' + curIdx;
+    if (STATUS[key] === 'correct' || STATUS[key] === 'revealed') {
+      navPuzzle(1); return;
+    }
+    const raw = document.getElementById('puzInput').value;
+    if (!raw.trim()) { showFeedback('wrong', '✏️ Type your answer first!'); return; }
+
+    const userNorm = normalize(raw);
+    const puzzle   = PUZZLES[curCat][curIdx];
+    const match    = puzzle.a.some(acc => normalize(acc) === userNorm);
+
+    if (match) {
+      STATUS[key] = 'correct';
+      solved++;
+      attempted++;
+      showFeedback('correct', '🎉 Correct! Excellent work!');
+      document.getElementById('puzInput').disabled = true;
+    } else {
+      if (STATUS[key] !== 'wrong_seen') {
+        attempted++;
+        STATUS[key] = 'wrong_seen';
       }
+      showFeedback('wrong', '❌ Not quite — try again! (Or click "Show Answer")');
     }
+    updateScoreSummary();
+    updateBadges();
+  }
 
-    // Shuffle puzzles
-    for (let i = puzzles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [puzzles[i], puzzles[j]] = [puzzles[j], puzzles[i]];
+  document.getElementById('puzInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPuzzle(); });
+
+  // ════════════════════════════════════════════════════════════
+  //  REVEAL
+  // ════════════════════════════════════════════════════════════
+  function revealAnswer() {
+    const key = curCat + '_' + curIdx;
+    if (STATUS[key] === 'correct') { navPuzzle(1); return; }
+    if (STATUS[key] !== 'revealed') {
+      if (STATUS[key] !== 'wrong_seen') attempted++;
+      STATUS[key] = 'revealed';
+      updateScoreSummary();
+      updateBadges();
     }
+    const ans = PUZZLES[curCat][curIdx].a[0];
+    showFeedback('revealed', '👀 Answer: ' + ans);
+    document.getElementById('puzInput').disabled = true;
+  }
 
-    loadPuzzle();
+  // ════════════════════════════════════════════════════════════
+  //  HINT
+  // ════════════════════════════════════════════════════════════
+  function toggleHint() {
+    hintShown = !hintShown;
+    document.getElementById('puzHintText').style.display = hintShown ? '' : 'none';
+    document.getElementById('puzHintBtn').textContent = hintShown ? '💡 Hide Hint' : '💡 Show Hint';
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  NAVIGATION
+  // ════════════════════════════════════════════════════════════
+  function navPuzzle(dir) {
+    const max = PUZZLES[curCat].length - 1;
+    curIdx = Math.min(max, Math.max(0, curIdx + dir));
+    renderPuzzle();
+  }
+
+  function switchCat(cat) {
+    curCat = cat;
+    curIdx = 0;
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderPuzzle();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  SCORE / BADGES
+  // ════════════════════════════════════════════════════════════
+  function countSolvedInCat(cat) {
+    return PUZZLES[cat].reduce((n, _, i) => n + (STATUS[cat + '_' + i] === 'correct' ? 1 : 0), 0);
+  }
+
+  function updateBadges() {
+    Object.keys(PUZZLES).forEach(cat => {
+      const s = countSolvedInCat(cat);
+      const total = PUZZLES[cat].length;
+      const el = document.getElementById('badge-' + cat);
+      if (el) el.textContent = s > 0 ? ' (' + s + '/' + total + ')' : '';
+    });
+  }
+
+  function updateScoreSummary() {
+    let totalSol = 0, totalAtt = 0;
+    Object.keys(PUZZLES).forEach(cat => {
+      PUZZLES[cat].forEach((_, i) => {
+        const st = STATUS[cat + '_' + i];
+        if (st === 'correct') { totalSol++; totalAtt++; }
+        else if (st === 'wrong_seen' || st === 'revealed') { totalAtt++; }
+      });
+    });
+    document.getElementById('totalSolved').textContent   = totalSol;
+    document.getElementById('totalAttempted').textContent = totalAtt;
+    document.getElementById('totalScore').textContent    = totalAtt ? Math.round((totalSol / totalAtt) * 100) + '%' : '0%';
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  INIT
+  // ════════════════════════════════════════════════════════════
+  renderPuzzle();
   </script>
   <script src="js/main.js"></script>
 </body>
