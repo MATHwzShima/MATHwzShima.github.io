@@ -11,7 +11,7 @@
     gtag('config', 'G-H8X3QV5TR0');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Practice 5th grade math by topic: place value, fractions, decimals, multiplication, division, geometry, and more.">
+  <meta name="description" content="Practice 5th grade math by topic: place value, fractions, decimals, multiplication, division, percentages, geometry, and more — 24 topics!">
   <meta name="theme-color" content="#6c5ce7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Practices - MATHwzShima</title>
@@ -277,7 +277,7 @@
     <div id="lessonSelector">
       <div class="page-header">
         <h2>Practice by Lesson</h2>
-        <p>Choose a topic and practice until you master it!</p>
+        <p>Choose a topic and practice until you master it! (24 topics)</p>
       </div>
       <div class="practice-lessons" id="lessonGrid"></div>
     </div>
@@ -459,18 +459,37 @@
         id: "metric-customary", title: "Metric & Customary", icon: "cm",
         generate: function() {
           const conversions = [
+            // Basic unit facts
             { q: "How many centimeters in 1 meter?", a: "100" },
             { q: "How many millimeters in 1 centimeter?", a: "10" },
+            { q: "How many millimeters in 1 meter?", a: "1000" },
             { q: "How many meters in 1 kilometer?", a: "1000" },
             { q: "How many grams in 1 kilogram?", a: "1000" },
+            { q: "How many milligrams in 1 gram?", a: "1000" },
             { q: "How many milliliters in 1 liter?", a: "1000" },
+            { q: "How many centiliters in 1 liter?", a: "100" },
             { q: "How many inches in 1 foot?", a: "12" },
             { q: "How many feet in 1 yard?", a: "3" },
+            { q: "How many inches in 1 yard?", a: "36" },
             { q: "How many yards in 1 mile?", a: "1760" },
+            { q: "How many feet in 1 mile?", a: "5280" },
             { q: "How many pints in 1 quart?", a: "2" },
             { q: "How many quarts in 1 gallon?", a: "4" },
+            { q: "How many cups in 1 pint?", a: "2" },
+            { q: "How many cups in 1 quart?", a: "4" },
             { q: "How many ounces in 1 pound?", a: "16" },
             { q: "How many pounds in 1 ton?", a: "2000" },
+            // Multi-step conversions
+            { q: "Convert 3 km to meters.", a: "3000" },
+            { q: "Convert 250 cm to meters.", a: "2.5" },
+            { q: "Convert 2 kg to grams.", a: "2000" },
+            { q: "Convert 4500 mL to liters.", a: "4.5" },
+            { q: "Convert 2 feet to inches.", a: "24" },
+            { q: "Convert 48 inches to feet.", a: "4" },
+            { q: "Convert 6 yards to feet.", a: "18" },
+            { q: "Convert 2 gallons to quarts.", a: "8" },
+            { q: "Convert 3 pounds to ounces.", a: "48" },
+            { q: "Convert 5000 m to kilometers.", a: "5" },
           ];
           const c = conversions[Math.floor(Math.random() * conversions.length)];
           return { question: c.q, answer: c.a };
@@ -567,18 +586,47 @@
         id: "numerical-patterns", title: "Numerical Patterns", icon: "1,2,3",
         generate: function() {
           const patterns = [
-            { seq: [2, 4, 6, 8], ans: "10" },
-            { seq: [5, 10, 15, 20], ans: "25" },
-            { seq: [3, 6, 9, 12], ans: "15" },
-            { seq: [10, 20, 30, 40], ans: "50" },
-            { seq: [100, 90, 80, 70], ans: "60" },
-            { seq: [1, 4, 9, 16], ans: "25" },
-            { seq: [2, 4, 8, 16], ans: "32" },
-            { seq: [1, 3, 6, 10], ans: "15" },
-            { seq: [50, 45, 40, 35], ans: "30" },
-            { seq: [12, 24, 36, 48], ans: "60" },
+            { seq: [2, 4, 6, 8],          ans: "10",  rule: "+2" },
+            { seq: [5, 10, 15, 20],        ans: "25",  rule: "+5" },
+            { seq: [3, 6, 9, 12],          ans: "15",  rule: "+3" },
+            { seq: [7, 14, 21, 28],        ans: "35",  rule: "+7" },
+            { seq: [11, 22, 33, 44],       ans: "55",  rule: "+11" },
+            { seq: [10, 20, 30, 40],       ans: "50",  rule: "+10" },
+            { seq: [100, 90, 80, 70],      ans: "60",  rule: "-10" },
+            { seq: [99, 88, 77, 66],       ans: "55",  rule: "-11" },
+            { seq: [50, 45, 40, 35],       ans: "30",  rule: "-5" },
+            { seq: [1, 4, 9, 16],          ans: "25",  rule: "square numbers" },
+            { seq: [4, 9, 16, 25],         ans: "36",  rule: "square numbers" },
+            { seq: [2, 4, 8, 16],          ans: "32",  rule: "×2" },
+            { seq: [3, 6, 12, 24],         ans: "48",  rule: "×2" },
+            { seq: [1, 3, 9, 27],          ans: "81",  rule: "×3" },
+            { seq: [2, 6, 18, 54],         ans: "162", rule: "×3" },
+            { seq: [1, 3, 6, 10],          ans: "15",  rule: "triangular numbers" },
+            { seq: [12, 24, 36, 48],       ans: "60",  rule: "+12" },
+            { seq: [1, 1, 2, 3, 5],        ans: "8",   rule: "Fibonacci" },
+            { seq: [80, 40, 20, 10],       ans: "5",   rule: "÷2" },
+            { seq: [243, 81, 27, 9],       ans: "3",   rule: "÷3" },
+            { seq: [4, 7, 10, 13],         ans: "16",  rule: "+3" },
+            { seq: [1, 5, 25, 125],        ans: "625", rule: "×5" },
+            { seq: [0, 1, 3, 6, 10],       ans: "15",  rule: "+1,+2,+3,..." },
+            { seq: [2, 5, 11, 23],         ans: "47",  rule: "×2+1" },
+            { seq: [200, 100, 50, 25],     ans: "12.5",rule: "÷2" },
+            { seq: [1000, 500, 250, 125],  ans: "62.5",rule: "÷2" },
+            { seq: [6, 11, 16, 21],        ans: "26",  rule: "+5" },
+            { seq: [48, 24, 12, 6],        ans: "3",   rule: "÷2" },
+            { seq: [3, 5, 9, 17],          ans: "33",  rule: "×2-1" },
+            { seq: [1, 8, 27, 64],         ans: "125", rule: "cube numbers" },
           ];
           const p = patterns[Math.floor(Math.random() * patterns.length)];
+          const qType = Math.random() < 0.5 ? 'next' : 'rule';
+          if (qType === 'rule') {
+            const ruleOpts = [p.rule, "+2", "×3", "-5", "÷2"].filter((v,i,a) => a.indexOf(v)===i);
+            while (ruleOpts.length < 4) { const extras=["+4","×2","-3","+6","÷3","×5"]; ruleOpts.push(extras[Math.floor(Math.random()*extras.length)]); }
+            const opts = ruleOpts.slice(0,4).sort(()=>Math.random()-0.5);
+            const a = opts.indexOf(p.rule);
+            if (a === -1) return { question: `What comes next? ${p.seq.join(", ")}, ?`, answer: p.ans };
+            return { question: `What is the rule for the pattern: ${p.seq.join(", ")}...?`, answer: p.rule, opts, a };
+          }
           return { question: `What comes next? ${p.seq.join(", ")}, ?`, answer: p.ans };
         }
       },
@@ -653,6 +701,265 @@
           const others = shuffled.slice(1);
           const qt = qTypes[Math.floor(Math.random() * qTypes.length)];
           return qt.make(s, others);
+        }
+      },
+      // ── 7 NEW LESSONS ────────────────────────────────────────
+      {
+        id: "percentages", title: "Percentages", icon: "%",
+        generate: function() {
+          const type = Math.floor(Math.random() * 4);
+          if (type === 0) {
+            // Find X% of Y → whole-number answer
+            const percOpts = [10, 20, 25, 50, 75, 5];
+            const pct = percOpts[Math.floor(Math.random() * percOpts.length)];
+            const ans = Math.floor(Math.random() * 20) + 1;
+            const base = ans * (100 / pct);
+            return { question: `What is ${pct}% of ${base}?`, answer: ans.toString() };
+          } else if (type === 1) {
+            // Convert fraction → percent
+            const fracs = [
+              {n:1,d:2,pct:'50%'},{n:1,d:4,pct:'25%'},{n:3,d:4,pct:'75%'},
+              {n:1,d:5,pct:'20%'},{n:2,d:5,pct:'40%'},{n:3,d:5,pct:'60%'},
+              {n:4,d:5,pct:'80%'},{n:1,d:10,pct:'10%'},{n:3,d:10,pct:'30%'},
+              {n:7,d:10,pct:'70%'},{n:1,d:8,pct:'12.5%'},{n:2,d:8,pct:'25%'},
+            ];
+            const f = fracs[Math.floor(Math.random() * fracs.length)];
+            return { question: `Convert ${f.n}/${f.d} to a percent.`, answer: f.pct };
+          } else if (type === 2) {
+            // Convert percent → decimal
+            const pcts = [
+              [25,'0.25'],[50,'0.5'],[75,'0.75'],[10,'0.1'],[20,'0.2'],
+              [30,'0.3'],[40,'0.4'],[60,'0.6'],[80,'0.8'],[90,'0.9'],
+              [5,'0.05'],[15,'0.15'],[35,'0.35'],[45,'0.45'],[65,'0.65'],
+            ];
+            const p = pcts[Math.floor(Math.random() * pcts.length)];
+            return { question: `Write ${p[0]}% as a decimal.`, answer: p[1] };
+          } else {
+            // What percent of X is Y?
+            const percOpts = [25, 50, 10, 20, 75, 40, 60];
+            const pct = percOpts[Math.floor(Math.random() * percOpts.length)];
+            const ans = Math.floor(Math.random() * 15) + 1;
+            const base = ans * (100 / pct);
+            return { question: `What percent of ${base} is ${ans}?\n(Write your answer with the % sign, e.g. 25%)`, answer: pct + '%' };
+          }
+        }
+      },
+      {
+        id: "prime-composite", title: "Prime & Composite", icon: "🔑",
+        generate: function() {
+          const isPrime = n => { if(n<2) return false; for(let i=2;i<=Math.sqrt(n);i++) if(n%i===0) return false; return true; };
+          const type = Math.floor(Math.random() * 4);
+          if (type === 0) {
+            // Prime or composite? — multiple choice
+            const num = Math.floor(Math.random() * 48) + 2; // 2–49
+            return {
+              question: `Is ${num} a prime or composite number?`,
+              answer: isPrime(num) ? 'prime' : 'composite',
+              opts: ['prime', 'composite'],
+              a: isPrime(num) ? 0 : 1
+            };
+          } else if (type === 1) {
+            // How many factors?
+            const pool = [4,6,8,9,10,12,15,16,18,20,24,25,30,36];
+            const num = pool[Math.floor(Math.random() * pool.length)];
+            let count = 0;
+            for (let i=1; i<=num; i++) if(num%i===0) count++;
+            return { question: `How many factors does ${num} have?`, answer: count.toString() };
+          } else if (type === 2) {
+            // List the factors — smallest non-1 factor (prime factor)
+            const pool = [12,15,18,20,24,28,30,36,42,45,50];
+            const num = pool[Math.floor(Math.random() * pool.length)];
+            let smallest = num;
+            for (let i=2; i<=num; i++) { if(num%i===0){ smallest=i; break; } }
+            return { question: `What is the smallest prime factor of ${num}?`, answer: smallest.toString() };
+          } else {
+            // Which from a list is prime?
+            const primes = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47];
+            const composites = [4,6,8,9,10,12,14,15,16,18,20,21,22,24,25];
+            const prime = primes[Math.floor(Math.random() * primes.length)];
+            const comps = composites.sort(()=>Math.random()-0.5).slice(0,3);
+            const opts = [prime, ...comps].sort(()=>Math.random()-0.5);
+            return {
+              question: `Which of these numbers is PRIME?`,
+              answer: prime.toString(),
+              opts: opts.map(n=>n.toString()),
+              a: opts.indexOf(prime)
+            };
+          }
+        }
+      },
+      {
+        id: "mean-median-mode", title: "Mean, Median, Mode & Range", icon: "avg",
+        generate: function() {
+          const type = Math.floor(Math.random() * 4);
+          // Build a dataset with a guaranteed mode
+          const makeMode = () => {
+            const mode = Math.floor(Math.random() * 10) + 2;
+            const extras = [];
+            const size = Math.floor(Math.random() * 3) + 3; // 3–5 extra
+            while (extras.length < size) {
+              const n = Math.floor(Math.random() * 15) + 1;
+              if (n !== mode) extras.push(n);
+            }
+            return [mode, mode, ...extras].sort(() => Math.random() - 0.5);
+          };
+          // Build general dataset
+          const size = Math.floor(Math.random() * 3) + 5; // 5–7
+          const data = Array.from({length: size}, () => Math.floor(Math.random() * 14) + 2);
+          const sorted = [...data].sort((a, b) => a - b);
+
+          if (type === 0) {
+            // Mean
+            const sum = data.reduce((a, b) => a + b, 0);
+            const mean = sum / data.length;
+            const ans = mean === Math.floor(mean) ? mean.toString() : mean.toFixed(1);
+            return { question: `Data: ${data.join(', ')}\n\nFind the MEAN (average).`, answer: ans };
+          } else if (type === 1) {
+            // Median
+            const mid = Math.floor(sorted.length / 2);
+            const median = sorted.length % 2 !== 0
+              ? sorted[mid]
+              : (sorted[mid - 1] + sorted[mid]) / 2;
+            const ans = median === Math.floor(median) ? median.toString() : median.toFixed(1);
+            return { question: `Data: ${data.join(', ')}\n\nFind the MEDIAN.\n(Hint: put numbers in order first)`, answer: ans };
+          } else if (type === 2) {
+            // Mode — use dataset with clear mode
+            const modeData = makeMode();
+            return { question: `Data: ${modeData.join(', ')}\n\nFind the MODE (most frequent value).`, answer: modeData[0].toString() };
+          } else {
+            // Range
+            const range = sorted[sorted.length - 1] - sorted[0];
+            return { question: `Data: ${data.join(', ')}\n\nFind the RANGE (largest − smallest).`, answer: range.toString() };
+          }
+        }
+      },
+      {
+        id: "elapsed-time", title: "Elapsed Time", icon: "⏰",
+        generate: function() {
+          const pool = [
+            { q:"A movie starts at 2:00 PM and ends at 4:30 PM. How long is it?",           opts:["2 h 15 min","2 h 30 min","2 h 45 min","3 h"],            a:1 },
+            { q:"School starts at 8:00 AM and lunch is at 11:30 AM. How long until lunch?", opts:["2 h 30 min","3 h","3 h 30 min","4 h"],                    a:2 },
+            { q:"A train leaves at 9:45 AM and arrives at 1:15 PM. How long is the trip?",  opts:["3 h","3 h 15 min","3 h 30 min","4 h"],                    a:2 },
+            { q:"It is 7:20 AM. What time will it be in 3 hours and 45 minutes?",           opts:["10:05 AM","11:05 AM","11:15 AM","10:55 AM"],               a:1 },
+            { q:"A game starts at 4:30 PM and lasts 1 hour 45 minutes. When does it end?",  opts:["5:45 PM","6:15 PM","6:30 PM","6:45 PM"],                  a:1 },
+            { q:"From 10:50 AM to 2:30 PM is how long?",                                    opts:["3 h 20 min","3 h 30 min","3 h 40 min","4 h"],              a:2 },
+            { q:"A TV show starts at 6:45 PM and lasts 35 minutes. When does it end?",      opts:["7:10 PM","7:15 PM","7:20 PM","7:25 PM"],                  a:2 },
+            { q:"How many minutes are in 2.5 hours?",                                       opts:["100","120","150","160"],                                   a:2 },
+            { q:"A class starts at 2:05 PM and ends at 3:30 PM. How long is it?",           opts:["1 h 15 min","1 h 20 min","1 h 25 min","1 h 30 min"],      a:2 },
+            { q:"Ahmed practices piano from 4:15 PM to 5:40 PM. How long?",                opts:["1 h 15 min","1 h 20 min","1 h 25 min","1 h 30 min"],      a:2 },
+            { q:"A party starts at 3:00 PM and ends at 7:45 PM. How long did it last?",     opts:["3 h 45 min","4 h","4 h 30 min","4 h 45 min"],             a:3 },
+            { q:"If it is 11:15 AM, what time was it 2 hours and 20 minutes ago?",          opts:["8:55 AM","9:05 AM","8:45 AM","9:15 AM"],                  a:0 },
+            { q:"A flight departs at 8:40 AM and lands at 1:10 PM. How long is the flight?",opts:["4 h 10 min","4 h 20 min","4 h 30 min","5 h"],            a:2 },
+            { q:"How many seconds are in 3 minutes?",                                       opts:["60","120","180","240"],                                    a:2 },
+            { q:"How many hours are in 3 days?",                                            opts:["36","48","72","96"],                                       a:2 },
+            { q:"A library opens at 9:00 AM and closes at 8:30 PM. How long is it open?",   opts:["10 h 30 min","11 h","11 h 30 min","12 h"],               a:2 },
+            { q:"It is 4:50 PM. What time will it be in 2 hours and 25 minutes?",           opts:["6:50 PM","7:00 PM","7:05 PM","7:15 PM"],                  a:3 },
+            { q:"From midnight to 6:45 AM is how long?",                                    opts:["5 h 45 min","6 h","6 h 30 min","6 h 45 min"],             a:3 },
+          ];
+          const p = pool[Math.floor(Math.random() * pool.length)];
+          return { question: p.q, answer: p.opts[p.a], opts: p.opts, a: p.a };
+        }
+      },
+      {
+        id: "expressions-equations", title: "Expressions & Equations", icon: "n=?",
+        generate: function() {
+          const type = Math.floor(Math.random() * 5);
+          if (type === 0) {
+            // n + a = b
+            const a = Math.floor(Math.random() * 30) + 5;
+            const n = Math.floor(Math.random() * 30) + 3;
+            return { question: `Solve for n:\nn + ${a} = ${n + a}`, answer: n.toString() };
+          } else if (type === 1) {
+            // n − a = b
+            const a = Math.floor(Math.random() * 25) + 5;
+            const n = a + Math.floor(Math.random() * 30) + 1;
+            return { question: `Solve for n:\nn − ${a} = ${n - a}`, answer: n.toString() };
+          } else if (type === 2) {
+            // a × n = b
+            const a = Math.floor(Math.random() * 9) + 2;
+            const n = Math.floor(Math.random() * 12) + 2;
+            return { question: `Solve for n:\n${a} × n = ${a * n}`, answer: n.toString() };
+          } else if (type === 3) {
+            // n ÷ a = b
+            const a = Math.floor(Math.random() * 8) + 2;
+            const b = Math.floor(Math.random() * 12) + 2;
+            return { question: `Solve for n:\nn ÷ ${a} = ${b}`, answer: (a * b).toString() };
+          } else {
+            // Evaluate: given x = ?, find expression value
+            const x = Math.floor(Math.random() * 8) + 2;
+            const a = Math.floor(Math.random() * 6) + 2;
+            const b = Math.floor(Math.random() * 10) + 1;
+            const val = a * x + b;
+            return { question: `If x = ${x}, what is ${a}x + ${b}?`, answer: val.toString() };
+          }
+        }
+      },
+      {
+        id: "area-perimeter", title: "Area & Perimeter", icon: "A=",
+        generate: function() {
+          const type = Math.floor(Math.random() * 5);
+          if (type === 0) {
+            // Area of rectangle
+            const l = Math.floor(Math.random() * 14) + 2;
+            const w = Math.floor(Math.random() * 10) + 2;
+            return { question: `Find the AREA of a rectangle:\nLength = ${l} cm, Width = ${w} cm`, answer: (l * w).toString() };
+          } else if (type === 1) {
+            // Perimeter of rectangle
+            const l = Math.floor(Math.random() * 14) + 2;
+            const w = Math.floor(Math.random() * 10) + 2;
+            return { question: `Find the PERIMETER of a rectangle:\nLength = ${l} cm, Width = ${w} cm`, answer: (2*(l+w)).toString() };
+          } else if (type === 2) {
+            // Area of square
+            const s = Math.floor(Math.random() * 12) + 2;
+            return { question: `Find the AREA of a square:\nSide = ${s} cm`, answer: (s*s).toString() };
+          } else if (type === 3) {
+            // Area of triangle
+            const b = Math.floor(Math.random() * 14) + 2;
+            const h = Math.floor(Math.random() * 10) + 2;
+            const area = (b * h) / 2;
+            const ans = area === Math.floor(area) ? area.toString() : area.toFixed(1);
+            return { question: `Find the AREA of a triangle:\nBase = ${b} cm, Height = ${h} cm\n(Area = ½ × base × height)`, answer: ans };
+          } else {
+            // Find missing side from area/perimeter
+            const l = Math.floor(Math.random() * 12) + 3;
+            const w = Math.floor(Math.random() * 8) + 2;
+            const area = l * w;
+            return { question: `A rectangle has an area of ${area} cm².\nOne side is ${l} cm. What is the other side?`, answer: w.toString() };
+          }
+        }
+      },
+      {
+        id: "rounding", title: "Rounding Numbers", icon: "≈",
+        generate: function() {
+          const type = Math.floor(Math.random() * 4);
+          if (type === 0) {
+            // Round to nearest 10
+            const n = Math.floor(Math.random() * 980) + 10;
+            const rounded = Math.round(n / 10) * 10;
+            return { question: `Round ${n} to the nearest 10.`, answer: rounded.toString() };
+          } else if (type === 1) {
+            // Round to nearest 100
+            const n = Math.floor(Math.random() * 9800) + 100;
+            const rounded = Math.round(n / 100) * 100;
+            return { question: `Round ${n} to the nearest 100.`, answer: rounded.toString() };
+          } else if (type === 2) {
+            // Round to nearest 1000
+            const n = Math.floor(Math.random() * 98000) + 1000;
+            const rounded = Math.round(n / 1000) * 1000;
+            return { question: `Round ${n} to the nearest 1,000.`, answer: rounded.toLocaleString() };
+          } else {
+            // Round decimal to nearest whole / tenth
+            const subType = Math.random() < 0.5;
+            if (subType) {
+              const n = (Math.random() * 100 + 1).toFixed(1);
+              const rounded = Math.round(parseFloat(n));
+              return { question: `Round ${n} to the nearest whole number.`, answer: rounded.toString() };
+            } else {
+              const n = (Math.random() * 100 + 1).toFixed(2);
+              const rounded = parseFloat(n).toFixed(1);
+              return { question: `Round ${n} to the nearest tenth.`, answer: rounded };
+            }
+          }
         }
       },
     ];
