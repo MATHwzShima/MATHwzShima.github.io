@@ -94,6 +94,95 @@
       text-align:center; padding:14px; color:#bbb; font-size:.9em;
     }
 
+    /* My Progress button */
+    .my-progress-btn {
+      display:flex; align-items:center; gap:7px;
+      background:linear-gradient(135deg,#6c5ce7,#4d96ff);
+      color:#fff; border:none; border-radius:12px;
+      padding:9px 18px; font-family:'Fredoka One',cursive;
+      font-size:.9em; cursor:pointer; flex-shrink:0;
+      transition:all .18s;
+    }
+    .my-progress-btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(108,92,231,.35); }
+
+    /* ── Progress panel ────────────────────────────────── */
+    .progress-panel {
+      display:none;
+      max-width:900px; margin:0 auto 28px; padding:0 20px;
+    }
+    .progress-panel.open { display:block; }
+    .progress-panel-inner {
+      background:#fff; border-radius:24px;
+      box-shadow:0 8px 36px rgba(108,92,231,.10);
+      border:2.5px solid #ede9fe; overflow:hidden;
+    }
+    .pp-header {
+      background:linear-gradient(135deg,#6c5ce7,#4d96ff);
+      color:#fff; padding:18px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .pp-header h3 {
+      font-family:'Fredoka One',cursive; font-size:1.25em; margin:0;
+    }
+    .pp-header .pp-subtitle { font-size:.85em; opacity:.85; margin-top:2px; }
+    .pp-close {
+      background:rgba(255,255,255,.2); border:none; color:#fff;
+      width:34px; height:34px; border-radius:50%; font-size:1.1em;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:background .18s;
+    }
+    .pp-close:hover { background:rgba(255,255,255,.35); }
+
+    /* Summary cards row */
+    .pp-summary {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:0; border-bottom:2px solid #f0f0f0;
+    }
+    .pp-sum-box {
+      padding:18px 20px; text-align:center;
+      border-right:2px solid #f0f0f0;
+    }
+    .pp-sum-box:last-child { border-right:none; }
+    .pp-sum-num {
+      font-family:'Fredoka One',cursive; font-size:2em; color:#6c5ce7;
+    }
+    .pp-sum-lbl { font-size:.8em; color:#aaa; margin-top:2px; }
+
+    /* Lesson rows */
+    .pp-lessons { padding:20px 24px; }
+    .pp-row {
+      display:flex; align-items:center; gap:14px;
+      padding:12px 0; border-bottom:1px solid #f5f5f5; flex-wrap:wrap;
+    }
+    .pp-row:last-child { border-bottom:none; }
+    .pp-lesson-name {
+      width:170px; font-weight:700; color:#444;
+      font-size:.92em; flex-shrink:0;
+    }
+    .pp-bar-wrap {
+      flex:1; min-width:80px; height:12px;
+      background:#f0f0f0; border-radius:6px; overflow:hidden;
+    }
+    .pp-bar-fill {
+      height:100%; border-radius:6px;
+      transition:width .6s cubic-bezier(.4,0,.2,1);
+    }
+    .pp-pct {
+      font-family:'Fredoka One',cursive; font-size:1.05em;
+      min-width:46px; text-align:right; flex-shrink:0;
+    }
+    .pp-meta { font-size:.76em; color:#bbb; min-width:80px; flex-shrink:0; }
+
+    /* Not started row */
+    .pp-row-empty .pp-lesson-name { color:#ccc; }
+    .pp-row-empty .pp-meta { color:#e0e0e0; }
+
+    /* Empty / loading states */
+    .pp-empty {
+      text-align:center; padding:40px 20px; color:#bbb;
+    }
+    .pp-empty .big { font-size:3em; margin-bottom:10px; }
+
     /* ── Progress badge on lesson cards ───────────────── */
     .lesson-badge {
       margin-top:7px; font-size:.78em; font-weight:700;
@@ -103,6 +192,13 @@
     .badge-yellow { background:#fef9c3; color:#92400e; }
     .badge-red    { background:#fee2e2; color:#991b1b; }
     .badge-none   { background:#f3f4f6; color:#9ca3af; }
+
+    @media (max-width:600px) {
+      .pp-summary { grid-template-columns:1fr 1fr; }
+      .pp-sum-box:nth-child(3) { grid-column:span 2; border-right:none; border-top:2px solid #f0f0f0; }
+      .pp-lesson-name { width:120px; font-size:.85em; }
+      .pp-meta { display:none; }
+    }
   </style>
 </head>
 <body>
@@ -155,9 +251,27 @@
           <h3>Hey <span id="pwName"></span>! Ready to practice? 💪</h3>
           <div class="pw-pills" id="pwPills"><span class="pw-pill">Loading…</span></div>
         </div>
+        <button class="my-progress-btn" onclick="toggleProgressPanel()">📊 My Progress</button>
         <button class="pw-signout" onclick="handleSignOut()">Sign Out</button>
       </div>
 
+    </div>
+
+    <!-- ── My Progress Panel ──────────────────────────────────── -->
+    <div class="progress-panel" id="progressPanel">
+      <div class="progress-panel-inner">
+        <div class="pp-header">
+          <div>
+            <h3>📊 My Progress</h3>
+            <div class="pp-subtitle" id="ppSubtitle">Your practice history</div>
+          </div>
+          <button class="pp-close" onclick="toggleProgressPanel()">✕</button>
+        </div>
+        <div class="pp-summary" id="ppSummary"></div>
+        <div class="pp-lessons" id="ppLessons">
+          <div class="pp-empty"><div class="big">⏳</div>Loading…</div>
+        </div>
+      </div>
     </div>
 
     <div id="lessonSelector">
@@ -594,10 +708,11 @@
         const lesson = lessons[currentLesson];
         saveSessionProgress(lesson.id, lesson.title, score, total)
           .then(function() {
-            // Refresh badges after saving
+            // Refresh badges and progress panel after saving
             loadMyProgress().then(function(data) {
               _myProgress = data;
               renderLessonGrid();
+              if (_panelOpen) renderProgressPanel();
             });
           })
           .catch(function() {}); // silently fail if not signed in
@@ -779,6 +894,100 @@
           '<span class="pw-pill">📚 ' + keys.length + ' topic' + (keys.length!==1?'s':'') + '</span>' +
           '<span class="pw-pill">✅ ' + pct + '% overall</span>';
       });
+    }
+
+    // ── Progress Panel ────────────────────────────────────────────────────────
+    var _panelOpen = false;
+
+    function toggleProgressPanel() {
+      _panelOpen = !_panelOpen;
+      var panel = document.getElementById('progressPanel');
+      if (_panelOpen) {
+        panel.classList.add('open');
+        renderProgressPanel();
+        panel.scrollIntoView({ behavior:'smooth', block:'start' });
+      } else {
+        panel.classList.remove('open');
+      }
+    }
+
+    function renderProgressPanel() {
+      var user = getCurrentUser();
+      if (!user) return;
+
+      var summaryEl = document.getElementById('ppSummary');
+      var lessonsEl = document.getElementById('ppLessons');
+      var subtitleEl = document.getElementById('ppSubtitle');
+
+      lessonsEl.innerHTML = '<div class="pp-empty"><div class="big">⏳</div>Loading…</div>';
+
+      loadMyProgress().then(function(data) {
+        if (!data) {
+          summaryEl.innerHTML = '';
+          subtitleEl.textContent = 'No practice sessions yet';
+          lessonsEl.innerHTML = '<div class="pp-empty"><div class="big">📝</div><p>You haven\'t practiced yet!<br>Pick a topic below and get started 🚀</p></div>';
+          return;
+        }
+
+        var keys     = Object.keys(data);
+        var totAns   = keys.reduce(function(s,k){ return s+(data[k].totalAnswered||0); }, 0);
+        var totCorr  = keys.reduce(function(s,k){ return s+(data[k].totalCorrect||0); }, 0);
+        var overall  = totAns > 0 ? Math.round((totCorr/totAns)*100) : 0;
+        var sessions = keys.reduce(function(s,k){ return s+(data[k].sessions||0); }, 0);
+
+        subtitleEl.textContent = (user.displayName||'Student').split(' ')[0] + '\'s practice history';
+
+        // Summary boxes
+        summaryEl.innerHTML =
+          '<div class="pp-sum-box"><div class="pp-sum-num">' + keys.length + '</div><div class="pp-sum-lbl">Topics Practiced</div></div>' +
+          '<div class="pp-sum-box"><div class="pp-sum-num">' + overall + '%</div><div class="pp-sum-lbl">Overall Score</div></div>' +
+          '<div class="pp-sum-box"><div class="pp-sum-num">' + sessions + '</div><div class="pp-sum-lbl">Sessions Done</div></div>';
+
+        // Sort lessons: practiced ones by best score desc, then unpracticed
+        var practiced   = keys.slice().sort(function(a,b){ return (data[b].bestScore||0)-(data[a].bestScore||0); });
+        var unpracticed = lessons.map(function(l){ return l.id; }).filter(function(id){ return !data[id]; });
+
+        var html = '';
+
+        practiced.forEach(function(id) {
+          var l    = data[id];
+          var pct  = l.bestScore || 0;
+          var color = pct >= 80 ? '#6bcb77' : pct >= 50 ? '#fbbf24' : '#f87171';
+          var emoji = pct >= 80 ? '🌟' : pct >= 50 ? '📈' : '💪';
+          var lastDate = l.lastPlayed
+            ? new Date(l.lastPlayed).toLocaleDateString('en-US',{month:'short',day:'numeric'})
+            : '';
+          html +=
+            '<div class="pp-row">' +
+              '<div class="pp-lesson-name">' + emoji + ' ' + escHtml(l.title||id) + '</div>' +
+              '<div class="pp-bar-wrap"><div class="pp-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>' +
+              '<div class="pp-pct" style="color:'+color+'">' + pct + '%</div>' +
+              '<div class="pp-meta">' + (l.sessions||1) + ' session' + ((l.sessions||1)!==1?'s':'') + ' · ' + lastDate + '</div>' +
+            '</div>';
+        });
+
+        // Show unpracticed topics grayed out
+        unpracticed.forEach(function(id) {
+          var lesson = lessons.find(function(l){ return l.id === id; });
+          if (!lesson) return;
+          html +=
+            '<div class="pp-row pp-row-empty">' +
+              '<div class="pp-lesson-name">⬜ ' + escHtml(lesson.title) + '</div>' +
+              '<div class="pp-bar-wrap"><div class="pp-bar-fill" style="width:0%;background:#e0e0e0"></div></div>' +
+              '<div class="pp-pct" style="color:#ddd">—</div>' +
+              '<div class="pp-meta">Not started</div>' +
+            '</div>';
+        });
+
+        lessonsEl.innerHTML = html;
+      });
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      var d = document.createElement('div');
+      d.textContent = String(s);
+      return d.innerHTML;
     }
   </script>
 </body>
