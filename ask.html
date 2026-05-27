@@ -329,6 +329,36 @@
       padding: 24px 10px; font-size: .97em;
     }
 
+    /* ── Secret code box (shown on success) ── */
+    .secret-code-box {
+      background: linear-gradient(135deg, #fef9c3, #fefce8);
+      border: 3px solid #fde68a;
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin: 20px 0 16px;
+      text-align: center;
+    }
+    .sc-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1em; color: #92400e; margin-bottom: 8px;
+    }
+    .sc-code {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.6em;
+      color: #b45309;
+      letter-spacing: 8px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 20px;
+      display: inline-block;
+      border: 2px dashed #fcd34d;
+      margin-bottom: 10px;
+      user-select: all;
+    }
+    .sc-tip {
+      font-size: .85em; color: #92400e; line-height: 1.5;
+    }
+
     @media (max-width: 600px) {
       .ask-hero h1 { font-size: 2em; }
       .ask-card { padding: 24px 18px; }
@@ -410,6 +440,14 @@
         <div class="s-emoji">🎉</div>
         <h2>Message Sent!</h2>
         <p>Mrs. Shimaa has received your message.<br>She'll see it very soon! 💛</p>
+
+        <!-- Secret code display -->
+        <div class="secret-code-box" id="secretCodeBox">
+          <div class="sc-label">🔑 Your Secret Code</div>
+          <div class="sc-code" id="secretCodeDisplay">——</div>
+          <div class="sc-tip">Save this code! You need it to check Mrs. Shimaa's reply.<br>Nobody else can see your reply without this code 🔒</div>
+        </div>
+
         <button class="send-another" onclick="resetForm()">📬 Send Another Message</button>
       </div>
 
@@ -417,11 +455,14 @@
       <div class="check-replies-section">
         <div class="check-replies-card">
           <h3>💌 Check Mrs. Shimaa's Replies</h3>
-          <p>Type your name below to see if Mrs. Shimaa replied to your message!</p>
+          <p>Enter your name and your secret code to see Mrs. Shimaa's reply. Only you know your code! 🔒</p>
           <div class="check-row">
-            <input type="text" id="checkName" placeholder="Type your name…" maxlength="80"
+            <input type="text" id="checkName" placeholder="Your name…" maxlength="80"
+                   onkeydown="if(event.key==='Enter') document.getElementById('checkCode').focus()">
+            <input type="text" id="checkCode" placeholder="Secret code…" maxlength="8"
+                   style="text-transform:uppercase;letter-spacing:3px;font-weight:700;max-width:160px;"
                    onkeydown="if(event.key==='Enter') checkReplies()">
-            <button onclick="checkReplies()">🔍 Check Replies</button>
+            <button onclick="checkReplies()">🔍 Check</button>
           </div>
           <div class="replies-result" id="repliesResult"></div>
         </div>
@@ -447,6 +488,14 @@
         selectedType = this.dataset.type;
       });
     });
+
+    // ── Generate secret code ─────────────────────────────────────────────────
+    function generateCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I confusion
+      let code = '';
+      for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      return code;
+    }
 
     // ── Send ─────────────────────────────────────────────────────────────────
     function sendMessage() {
@@ -482,12 +531,15 @@
         compliment: '💛 Compliment',
       };
 
+      const secretCode = generateCode();
+
       const payload = {
         studentName:  name,
         messageType:  typeLabels[selectedType] || '💬 General',
         message:      message,
         sentAt:       new Date().toISOString(),
-        source:       'ask-page'
+        source:       'ask-page',
+        checkCode:    secretCode          // 🔑 stored in Firebase
       };
 
       // Save to Firebase
@@ -508,12 +560,13 @@
               _subject: '💬 New Message from ' + name,
               student_name: name,
               message_type: typeLabels[selectedType] || 'General',
-              message: message
+              message: message,
+              secret_code: secretCode
             })
           }).catch(() => {});
         }
 
-        showSuccess();
+        showSuccess(secretCode);
       })
       .catch(err => {
         status.style.color = '#e17055';
@@ -524,7 +577,8 @@
       });
     }
 
-    function showSuccess() {
+    function showSuccess(code) {
+      document.getElementById('secretCodeDisplay').textContent = code || '——';
       document.getElementById('formCard').style.display    = 'none';
       document.getElementById('successCard').style.display = 'block';
       launchConfetti();
@@ -540,6 +594,7 @@
       document.getElementById('sendBtn').textContent = '📨 Send to Mrs. Shimaa!';
       document.getElementById('formCard').style.display    = 'block';
       document.getElementById('successCard').style.display = 'none';
+      document.getElementById('secretCodeDisplay').textContent = '——';
     }
 
     function launchConfetti() {
@@ -570,9 +625,17 @@
     // ── Check Replies ─────────────────────────────────────────────────────────
     function checkReplies() {
       const name   = document.getElementById('checkName').value.trim();
+      const code   = document.getElementById('checkCode').value.trim().toUpperCase();
       const result = document.getElementById('repliesResult');
+
       if (!name) {
-        result.innerHTML = '<div class="no-replies-msg">⚠️ Please type your name first!</div>';
+        result.innerHTML = '<div class="no-replies-msg">⚠️ Please type your name!</div>';
+        document.getElementById('checkName').focus();
+        return;
+      }
+      if (!code) {
+        result.innerHTML = '<div class="no-replies-msg">⚠️ Please enter your secret code!</div>';
+        document.getElementById('checkCode').focus();
         return;
       }
 
@@ -581,14 +644,26 @@
       fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages.json')
         .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(data => {
-          if (!data) { showNoReplies(result, name); return; }
+          if (!data) { showNoReplies(result); return; }
 
           const nameLower = name.toLowerCase();
+          // Must match both name AND secret code
           const matched = Object.values(data)
-            .filter(m => m.reply && (m.studentName||'').toLowerCase() === nameLower)
+            .filter(m =>
+              m.reply &&
+              (m.studentName||'').toLowerCase() === nameLower &&
+              (m.checkCode||'').toUpperCase() === code
+            )
             .sort((a,b) => new Date(b.repliedAt||0) - new Date(a.repliedAt||0));
 
-          if (matched.length === 0) { showNoReplies(result, name); return; }
+          if (matched.length === 0) {
+            // Don't reveal whether name exists — always show same message
+            result.innerHTML = `<div class="no-replies-msg">
+              🔒 No reply found for that name and code.<br>
+              <small>Check your name spelling and secret code, or maybe Mrs. Shimaa hasn't replied yet! 😊</small>
+            </div>`;
+            return;
+          }
 
           let html = '';
           matched.forEach(msg => {
@@ -613,10 +688,10 @@
         });
     }
 
-    function showNoReplies(result, name) {
+    function showNoReplies(result) {
       result.innerHTML = `<div class="no-replies-msg">
-        😊 No replies yet for <strong>${escHtml(name)}</strong>.<br>
-        Make sure your name matches exactly what you typed when you sent the message!
+        🔒 No reply found for that name and code.<br>
+        <small>Check your name spelling and secret code, or maybe Mrs. Shimaa hasn't replied yet! 😊</small>
       </div>`;
     }
 

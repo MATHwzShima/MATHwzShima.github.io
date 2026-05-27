@@ -746,6 +746,9 @@
         html += '</div>';
 
         html += '<div class="msg-body">' + esc(msg.message || '') + '</div>';
+        if (msg.checkCode) {
+          html += '<div style="margin-top:8px;font-size:.8em;color:#bbb;">🔑 Code: <span style="font-family:monospace;letter-spacing:2px;color:#a78bfa;font-weight:700;">' + esc(msg.checkCode) + '</span></div>';
+        }
 
         // Show existing reply
         if (hasReply) {
