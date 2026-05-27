@@ -17,24 +17,87 @@
   <title>Practices - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ── Sign-in prompt banner ─────────────────────────── */
-    .signin-banner {
-      max-width:860px; margin:0 auto 16px;
-      padding:13px 22px;
-      background:#fef9c3; border:2px solid #fde68a;
-      border-radius:16px; font-size:.92em; color:#92400e;
-      display:none; align-items:center; gap:10px; flex-wrap:wrap;
+    /* ── Auth area ─────────────────────────────────────── */
+    .practices-auth {
+      max-width:900px; margin:0 auto 22px; padding:0 20px;
     }
-    .signin-banner a {
-      color:#b45309; font-weight:700; text-decoration:underline;
+
+    /* Sign-in card */
+    .practices-signin-card {
+      display:none;
+      align-items:center; gap:18px; flex-wrap:wrap;
+      background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+      border:2.5px solid #ddd6fe; border-radius:22px;
+      padding:22px 28px;
+      box-shadow:0 6px 24px rgba(108,92,231,.10);
+    }
+    .psc-emoji { font-size:2.4em; flex-shrink:0; }
+    .psc-text  { flex:1; min-width:180px; }
+    .psc-text h3 {
+      font-family:'Fredoka One',cursive;
+      font-size:1.2em; color:#4c1d95; margin-bottom:4px;
+    }
+    .psc-text p { color:#6d28d9; font-size:.9em; margin:0; }
+
+    /* Google button */
+    .google-btn {
+      display:flex; align-items:center; gap:10px;
+      background:#fff; border:2px solid #e0e0e0;
+      border-radius:14px; padding:11px 22px;
+      font-family:'Fredoka One',cursive; font-size:1em;
+      color:#444; cursor:pointer; white-space:nowrap;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      transition:all .18s; flex-shrink:0;
+    }
+    .google-btn:hover { box-shadow:0 4px 16px rgba(0,0,0,.14); transform:translateY(-1px); }
+
+    /* Welcome strip (shown when signed in) */
+    .practices-welcome-strip {
+      display:none;
+      align-items:center; gap:14px; flex-wrap:wrap;
+      background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+      border:2.5px solid #bbf7d0; border-radius:22px;
+      padding:16px 24px;
+      box-shadow:0 4px 16px rgba(107,203,119,.12);
+    }
+    .pw-avatar {
+      width:46px; height:46px; border-radius:50%;
+      object-fit:cover; border:2.5px solid #6bcb77; flex-shrink:0;
+    }
+    .pw-avatar-ph {
+      width:46px; height:46px; border-radius:50%;
+      background:#6bcb77; color:#fff; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Fredoka One',cursive; font-size:1.3em;
+    }
+    .pw-text { flex:1; min-width:140px; }
+    .pw-text h3 {
+      font-family:'Fredoka One',cursive;
+      font-size:1.1em; color:#065f46; margin-bottom:3px;
+    }
+    .pw-pills { display:flex; gap:7px; flex-wrap:wrap; }
+    .pw-pill {
+      background:#fff; border-radius:20px;
+      padding:2px 11px; font-size:.78em; font-weight:700;
+      color:#059669; border:1.5px solid #bbf7d0;
+    }
+    .pw-signout {
+      background:#f0f0f0; border:none; border-radius:12px;
+      padding:9px 16px; font-family:'Fredoka One',cursive;
+      font-size:.88em; color:#888; cursor:pointer;
+      transition:all .18s; flex-shrink:0;
+    }
+    .pw-signout:hover { background:#fee2e2; color:#e17055; }
+
+    /* Auth loading */
+    .auth-loading-strip {
+      text-align:center; padding:14px; color:#bbb; font-size:.9em;
     }
 
     /* ── Progress badge on lesson cards ───────────────── */
     .lesson-badge {
-      margin-top:7px;
-      font-size:.78em; font-weight:700;
-      padding:3px 10px; border-radius:20px;
-      display:inline-block;
+      margin-top:7px; font-size:.78em; font-weight:700;
+      padding:3px 10px; border-radius:20px; display:inline-block;
     }
     .badge-green  { background:#d1fae5; color:#065f46; }
     .badge-yellow { background:#fef9c3; color:#92400e; }
@@ -66,10 +129,35 @@
 
   <main id="main-content">
 
-    <!-- Sign-in prompt (shown when not logged in) -->
-    <div class="signin-banner" id="signinBanner">
-      📊 <strong>Want to save your scores?</strong>
-      <a href="index.html">Sign in from the homepage</a> — it only takes one click!
+    <!-- ── Auth area ──────────────────────────────────────────── -->
+    <div class="practices-auth">
+
+      <!-- Loading -->
+      <div id="authLoading" class="auth-loading-strip">⏳ Checking sign-in…</div>
+
+      <!-- Not signed in → Sign-in card -->
+      <div class="practices-signin-card" id="signinCard">
+        <div class="psc-emoji">🎯</div>
+        <div class="psc-text">
+          <h3>Sign in to track your progress!</h3>
+          <p>Use your school Google account to save your scores and see how much you improve over time.</p>
+        </div>
+        <button class="google-btn" onclick="handleSignIn()">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign in with Google
+        </button>
+      </div>
+
+      <!-- Signed in → Welcome strip -->
+      <div class="practices-welcome-strip" id="welcomeStrip">
+        <div id="pwAvatarWrap"></div>
+        <div class="pw-text">
+          <h3>Hey <span id="pwName"></span>! Ready to practice? 💪</h3>
+          <div class="pw-pills" id="pwPills"><span class="pw-pill">Loading…</span></div>
+        </div>
+        <button class="pw-signout" onclick="handleSignOut()">Sign Out</button>
+      </div>
+
     </div>
 
     <div id="lessonSelector">
@@ -633,19 +721,65 @@
   <script src="js/auth.js"></script>
 
   <script>
-    // ── Auth state: show/hide banner, load progress badges ───────────────────
+    // ── Auth state ────────────────────────────────────────────────────────────
     _auth.onAuthStateChanged(function(user) {
+      document.getElementById('authLoading').style.display = 'none';
       if (user) {
-        document.getElementById('signinBanner').style.display = 'none';
-        // Load progress and re-render cards with badges
+        showWelcomeStrip(user);
         loadMyProgress().then(function(data) {
           _myProgress = data;
           renderLessonGrid();
         });
       } else {
-        document.getElementById('signinBanner').style.display = 'flex';
+        document.getElementById('signinCard').style.display    = 'flex';
+        document.getElementById('welcomeStrip').style.display  = 'none';
       }
     });
+
+    function handleSignIn() {
+      signInWithGoogle().catch(function(err) {
+        alert('Sign-in failed: ' + err.message);
+      });
+    }
+
+    function handleSignOut() {
+      signOutUser().then(function() {
+        _myProgress = null;
+        renderLessonGrid();
+        document.getElementById('welcomeStrip').style.display = 'none';
+        document.getElementById('signinCard').style.display   = 'flex';
+      });
+    }
+
+    function showWelcomeStrip(user) {
+      document.getElementById('signinCard').style.display   = 'none';
+      document.getElementById('welcomeStrip').style.display = 'flex';
+
+      var firstName = (user.displayName || 'Student').split(' ')[0];
+      document.getElementById('pwName').textContent = firstName;
+
+      var wrap = document.getElementById('pwAvatarWrap');
+      if (user.photoURL) {
+        wrap.innerHTML = '<img class="pw-avatar" src="' + user.photoURL + '" alt="' + firstName + '">';
+      } else {
+        wrap.innerHTML = '<div class="pw-avatar-ph">' + firstName.charAt(0).toUpperCase() + '</div>';
+      }
+
+      loadMyProgress().then(function(lessons) {
+        var pills = document.getElementById('pwPills');
+        if (!lessons) {
+          pills.innerHTML = '<span class="pw-pill">🆕 No sessions yet — start below!</span>';
+          return;
+        }
+        var keys    = Object.keys(lessons);
+        var totAns  = keys.reduce(function(s,k){ return s+(lessons[k].totalAnswered||0); }, 0);
+        var totCorr = keys.reduce(function(s,k){ return s+(lessons[k].totalCorrect||0); }, 0);
+        var pct     = totAns > 0 ? Math.round((totCorr/totAns)*100) : 0;
+        pills.innerHTML =
+          '<span class="pw-pill">📚 ' + keys.length + ' topic' + (keys.length!==1?'s':'') + '</span>' +
+          '<span class="pw-pill">✅ ' + pct + '% overall</span>';
+      });
+    }
   </script>
 </body>
 </html>
