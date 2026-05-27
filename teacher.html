@@ -311,6 +311,69 @@
     }
     .existing-reply .reply-text { white-space:pre-wrap; line-height:1.55; }
 
+    /* ── Progress tab ──────────────────────────────────── */
+    .progress-student-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;
+    }
+    .ps-card {
+      background:#fff; border-radius:18px; padding:20px 22px;
+      box-shadow:0 4px 16px rgba(0,0,0,.07); cursor:pointer;
+      border:3px solid transparent; transition:all .2s;
+    }
+    .ps-card:hover { border-color:#6bcb77; transform:translateY(-2px); }
+    .ps-card.active { border-color:#6bcb77; background:#f0fdf4; }
+    .ps-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .ps-avatar {
+      width:42px; height:42px; border-radius:50%;
+      object-fit:cover; border:2px solid #6bcb77; flex-shrink:0;
+    }
+    .ps-avatar-ph {
+      width:42px; height:42px; border-radius:50%;
+      background:#6bcb77; color:#fff; display:flex;
+      align-items:center; justify-content:center;
+      font-family:'Fredoka One',cursive; font-size:1.2em; flex-shrink:0;
+    }
+    .ps-name { font-family:'Fredoka One',cursive; font-size:1.1em; color:#333; }
+    .ps-email { font-size:.78em; color:#aaa; margin-top:2px; }
+    .ps-stats { display:flex; gap:10px; font-size:.82em; color:#888; flex-wrap:wrap; }
+    .ps-stat-val { font-family:'Fredoka One',cursive; color:#333; font-size:1.2em; }
+    .ps-lessons { margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; }
+    .ps-lesson-chip {
+      font-size:.75em; padding:3px 10px; border-radius:20px; font-weight:700;
+    }
+    .chip-green  { background:#d1fae5; color:#065f46; }
+    .chip-yellow { background:#fef9c3; color:#92400e; }
+    .chip-red    { background:#fee2e2; color:#991b1b; }
+
+    /* Student detail panel */
+    #progressViewer {
+      display:none; background:#fff; border-radius:24px;
+      box-shadow:0 8px 40px rgba(0,0,0,.10); margin-top:20px; overflow:hidden;
+    }
+    #progressViewer.show { display:block; }
+    .pv-hdr {
+      background:linear-gradient(135deg,#6bcb77,#4d96ff);
+      color:#fff; padding:18px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .pv-hdr h3 { font-family:'Fredoka One',cursive; font-size:1.25em; margin:0; }
+    .pv-close {
+      background:rgba(255,255,255,.25); border:none; color:#fff;
+      width:34px; height:34px; border-radius:50%; font-size:1.1em;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+    }
+    .pv-body { padding:22px; }
+    .pv-lesson-row {
+      display:flex; align-items:center; gap:14px;
+      padding:12px 0; border-bottom:1px solid #f0f0f0; flex-wrap:wrap;
+    }
+    .pv-lesson-row:last-child { border-bottom:none; }
+    .pv-lesson-title { font-weight:700; color:#333; flex:1; min-width:140px; font-size:.95em; }
+    .pv-bar-wrap { flex:2; min-width:100px; height:10px; background:#f0f0f0; border-radius:5px; overflow:hidden; }
+    .pv-bar-fill { height:100%; border-radius:5px; transition:width .5s ease; }
+    .pv-pct { font-family:'Fredoka One',cursive; font-size:1em; min-width:44px; text-align:right; }
+    .pv-meta { font-size:.78em; color:#bbb; white-space:nowrap; }
+
     @media (max-width:600px) {
       .stats-row { grid-template-columns:1fr 1fr; }
       .stats-row .stat-box:last-child { grid-column:span 2; }
@@ -368,8 +431,9 @@
 
         <!-- Section tabs -->
         <div class="dash-tabs">
-          <button class="dash-tab-btn active" id="tabBtnBooks" onclick="switchDashTab('books')">&#128214; Memory Books</button>
-          <button class="dash-tab-btn" id="tabBtnMsgs" onclick="switchDashTab('messages')">&#128236; Messages <span class="badge" id="msgBadge" style="display:none">0</span></button>
+          <button class="dash-tab-btn active" id="tabBtnBooks"    onclick="switchDashTab('books')">&#128214; Memory Books</button>
+          <button class="dash-tab-btn"         id="tabBtnMsgs"    onclick="switchDashTab('messages')">&#128236; Messages <span class="badge" id="msgBadge" style="display:none">0</span></button>
+          <button class="dash-tab-btn"         id="tabBtnProgress" onclick="switchDashTab('progress')">&#128200; Progress</button>
         </div>
 
         <!-- ── MEMORY BOOKS SECTION ── -->
@@ -401,6 +465,17 @@
             <button class="logout-btn" onclick="logout()">&#128274; Lock</button>
           </div>
           <div id="messagesGrid"></div>
+        </div>
+
+        <!-- ── PROGRESS SECTION ── -->
+        <div class="dash-section" id="section-progress">
+          <div class="toolbar">
+            <h3>&#128200; Student Practice Progress</h3>
+            <button class="refresh-btn" onclick="loadProgress()">&#128260; Refresh</button>
+            <button class="logout-btn"  onclick="logout()">&#128274; Lock</button>
+          </div>
+          <div id="progressGrid"></div>
+          <div id="progressViewer"></div>
         </div>
 
       </div>
@@ -446,10 +521,14 @@
       if (tab === 'books') {
         document.getElementById('tabBtnBooks').classList.add('active');
         document.getElementById('section-books').classList.add('active');
-      } else {
+      } else if (tab === 'messages') {
         document.getElementById('tabBtnMsgs').classList.add('active');
         document.getElementById('section-messages').classList.add('active');
         document.getElementById('msgBadge').style.display = 'none';
+      } else if (tab === 'progress') {
+        document.getElementById('tabBtnProgress').classList.add('active');
+        document.getElementById('section-progress').classList.add('active');
+        loadProgress();
       }
     }
     function logout() {
@@ -747,7 +826,9 @@
 
         html += '<div class="msg-body">' + esc(msg.message || '') + '</div>';
         if (msg.checkCode) {
-          html += '<div style="margin-top:8px;font-size:.8em;color:#bbb;">🔑 Code: <span style="font-family:monospace;letter-spacing:2px;color:#a78bfa;font-weight:700;">' + esc(msg.checkCode) + '</span></div>';
+          html += '<div style="margin-top:8px;font-size:.82em;color:#bbb;">🔑 Student\'s code: <span style="font-family:monospace;letter-spacing:3px;color:#a78bfa;font-weight:700;font-size:1.1em;">' + esc(msg.checkCode) + '</span></div>';
+        } else {
+          html += '<div style="margin-top:8px;font-size:.8em;background:#fef9c3;border:1px solid #fde68a;border-radius:8px;padding:6px 10px;color:#92400e;">⚠️ No code — sent before the code system. Tell the student your reply in person, or ask them to send a new message.</div>';
         }
 
         // Show existing reply
@@ -813,6 +894,111 @@
         sendBtn.disabled = false;
         sendBtn.textContent = '📨 Send Reply';
       });
+    }
+    /* ── Progress loader ── */
+    function loadProgress() {
+      var grid = document.getElementById('progressGrid');
+      grid.innerHTML = '<div class="loading">⏳ Loading student progress…</div>';
+      document.getElementById('progressViewer').classList.remove('show');
+
+      fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/progress.json')
+        .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+        .then(function(data) { renderProgress(data); })
+        .catch(function(err) {
+          grid.innerHTML = '<div class="empty-state"><div class="big">😕</div><h3>Could not load progress</h3><p><small>' + err.message + '</small></p></div>';
+        });
+    }
+
+    function renderProgress(data) {
+      var grid = document.getElementById('progressGrid');
+      if (!data) {
+        grid.innerHTML = '<div class="empty-state"><div class="big">📊</div><h3>No progress data yet</h3><p>Students need to sign in and practice first!</p></div>';
+        return;
+      }
+
+      var students = Object.entries(data).map(function(entry) {
+        var uid = entry[0], d = entry[1];
+        var lessons  = d.lessons  || {};
+        var profile  = d.profile  || {};
+        var keys     = Object.keys(lessons);
+        var totAns   = keys.reduce(function(s,k){ return s+(lessons[k].totalAnswered||0); }, 0);
+        var totCorr  = keys.reduce(function(s,k){ return s+(lessons[k].totalCorrect||0); }, 0);
+        var overall  = totAns > 0 ? Math.round((totCorr/totAns)*100) : 0;
+        return { uid:uid, profile:profile, lessons:lessons, keys:keys, totAns:totAns, totCorr:totCorr, overall:overall };
+      });
+
+      // Sort by overall % desc
+      students.sort(function(a,b){ return b.overall - a.overall; });
+
+      var html = '<div class="progress-student-grid">';
+      students.forEach(function(s, idx) {
+        var firstName = (s.profile.name || 'Student').split(' ')[0];
+        var avatarHtml = s.profile.photo
+          ? '<img class="ps-avatar" src="' + esc(s.profile.photo) + '" alt="' + esc(firstName) + '">'
+          : '<div class="ps-avatar-ph">' + esc(firstName.charAt(0).toUpperCase()) + '</div>';
+
+        // Lesson chips (top 4)
+        var chipsHtml = '';
+        s.keys.slice(0,4).forEach(function(k) {
+          var p = s.lessons[k].bestScore || 0;
+          var cls = p >= 80 ? 'chip-green' : p >= 50 ? 'chip-yellow' : 'chip-red';
+          chipsHtml += '<span class="ps-lesson-chip ' + cls + '">' + esc(s.lessons[k].title||k) + ' ' + p + '%</span>';
+        });
+        if (s.keys.length > 4) chipsHtml += '<span class="ps-lesson-chip badge-none">+' + (s.keys.length-4) + ' more</span>';
+
+        html += '<div class="ps-card" id="psc'+idx+'" onclick="showStudentProgress('+idx+')">';
+        html += '<div class="ps-top">' + avatarHtml + '<div><div class="ps-name">' + esc(s.profile.name||'Student') + '</div><div class="ps-email">' + esc(s.profile.email||'') + '</div></div></div>';
+        html += '<div class="ps-stats">';
+        html += '<div><div class="ps-stat-val">' + s.keys.length + '</div>Topics</div>';
+        html += '<div><div class="ps-stat-val">' + s.totAns + '</div>Answered</div>';
+        html += '<div><div class="ps-stat-val">' + s.overall + '%</div>Overall</div>';
+        html += '</div>';
+        html += '<div class="ps-lessons">' + chipsHtml + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+      grid.innerHTML = html;
+      grid._students = students; // store for detail view
+    }
+
+    function showStudentProgress(idx) {
+      var grid = document.getElementById('progressGrid');
+      var students = grid._students;
+      if (!students) return;
+      var s = students[idx];
+      var viewer = document.getElementById('progressViewer');
+
+      document.querySelectorAll('.ps-card').forEach(function(c){ c.classList.remove('active'); });
+      var card = document.getElementById('psc'+idx);
+      if (card) { card.classList.add('active'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+
+      var firstName = (s.profile.name || 'Student').split(' ')[0];
+      var html = '<div class="pv-hdr"><h3>📊 ' + esc(s.profile.name||'Student') + '\'s Progress</h3>';
+      html += '<button class="pv-close" onclick="document.getElementById(\'progressViewer\').classList.remove(\'show\')">✕</button></div>';
+      html += '<div class="pv-body">';
+
+      if (s.keys.length === 0) {
+        html += '<div class="v-none">No lessons practiced yet.</div>';
+      } else {
+        // Sort lessons by best score desc
+        var sorted = s.keys.slice().sort(function(a,b){ return (s.lessons[b].bestScore||0)-(s.lessons[a].bestScore||0); });
+        sorted.forEach(function(k) {
+          var l   = s.lessons[k];
+          var pct = l.bestScore || 0;
+          var color = pct >= 80 ? '#6bcb77' : pct >= 50 ? '#fbbf24' : '#f87171';
+          var lastDate = l.lastPlayed ? new Date(l.lastPlayed).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+          html += '<div class="pv-lesson-row">';
+          html += '<div class="pv-lesson-title">' + esc(l.title||k) + '</div>';
+          html += '<div class="pv-bar-wrap"><div class="pv-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
+          html += '<div class="pv-pct" style="color:'+color+'">' + pct + '%</div>';
+          html += '<div class="pv-meta">'+esc(l.sessions||1)+' session'+(l.sessions!==1?'s':'')+' · '+lastDate+'</div>';
+          html += '</div>';
+        });
+      }
+      html += '</div>';
+      viewer.innerHTML = html;
+      viewer.classList.add('show');
+      viewer.scrollIntoView({behavior:'smooth', block:'start'});
     }
   </script>
 </body>

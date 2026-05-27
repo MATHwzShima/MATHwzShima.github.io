@@ -16,6 +16,31 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Practices - MATHwzShima</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Sign-in prompt banner ─────────────────────────── */
+    .signin-banner {
+      max-width:860px; margin:0 auto 16px;
+      padding:13px 22px;
+      background:#fef9c3; border:2px solid #fde68a;
+      border-radius:16px; font-size:.92em; color:#92400e;
+      display:none; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .signin-banner a {
+      color:#b45309; font-weight:700; text-decoration:underline;
+    }
+
+    /* ── Progress badge on lesson cards ───────────────── */
+    .lesson-badge {
+      margin-top:7px;
+      font-size:.78em; font-weight:700;
+      padding:3px 10px; border-radius:20px;
+      display:inline-block;
+    }
+    .badge-green  { background:#d1fae5; color:#065f46; }
+    .badge-yellow { background:#fef9c3; color:#92400e; }
+    .badge-red    { background:#fee2e2; color:#991b1b; }
+    .badge-none   { background:#f3f4f6; color:#9ca3af; }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
@@ -40,6 +65,13 @@
   </nav>
 
   <main id="main-content">
+
+    <!-- Sign-in prompt (shown when not logged in) -->
+    <div class="signin-banner" id="signinBanner">
+      📊 <strong>Want to save your scores?</strong>
+      <a href="index.html">Sign in from the homepage</a> — it only takes one click!
+    </div>
+
     <div id="lessonSelector">
       <div class="page-header">
         <h2>Practice by Lesson</h2>
@@ -430,16 +462,32 @@
     let answered = false;
     let isMultipleChoice = false;
 
+    // progress data loaded once per page visit
+    var _myProgress = null;
+
     function renderLessonGrid() {
       const grid = document.getElementById('lessonGrid');
       grid.innerHTML = '';
       lessons.forEach((lesson, i) => {
         const card = document.createElement('div');
         card.className = 'lesson-card';
-        card.innerHTML = `<div class="lesson-icon" aria-hidden="true">${lesson.icon}</div><h4>${lesson.title}</h4>`;
+        const badge = _myProgress && _myProgress[lesson.id]
+          ? makeBadge(_myProgress[lesson.id].bestScore)
+          : '<span class="lesson-badge badge-none">Not started</span>';
+        card.innerHTML =
+          `<div class="lesson-icon" aria-hidden="true">${lesson.icon}</div>` +
+          `<h4>${lesson.title}</h4>` +
+          badge;
         card.onclick = () => startLesson(i);
         grid.appendChild(card);
       });
+    }
+
+    function makeBadge(pct) {
+      if (pct === undefined || pct === null) return '<span class="lesson-badge badge-none">Not started</span>';
+      const cls = pct >= 80 ? 'badge-green' : pct >= 50 ? 'badge-yellow' : 'badge-red';
+      const emoji = pct >= 80 ? '🌟' : pct >= 50 ? '📈' : '💪';
+      return `<span class="lesson-badge ${cls}">${emoji} Best: ${pct}%</span>`;
     }
 
     function startLesson(index) {
@@ -453,6 +501,19 @@
     }
 
     function backToLessons() {
+      // Save progress before leaving the lesson
+      if (currentLesson !== null && total > 0) {
+        const lesson = lessons[currentLesson];
+        saveSessionProgress(lesson.id, lesson.title, score, total)
+          .then(function() {
+            // Refresh badges after saving
+            loadMyProgress().then(function(data) {
+              _myProgress = data;
+              renderLessonGrid();
+            });
+          })
+          .catch(function() {}); // silently fail if not signed in
+      }
       document.getElementById('lessonSelector').style.display = 'block';
       document.getElementById('practiceArea').style.display = 'none';
       currentLesson = null;
@@ -564,5 +625,27 @@
     renderLessonGrid();
   </script>
   <script src="js/main.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    // ── Auth state: show/hide banner, load progress badges ───────────────────
+    _auth.onAuthStateChanged(function(user) {
+      if (user) {
+        document.getElementById('signinBanner').style.display = 'none';
+        // Load progress and re-render cards with badges
+        loadMyProgress().then(function(data) {
+          _myProgress = data;
+          renderLessonGrid();
+        });
+      } else {
+        document.getElementById('signinBanner').style.display = 'flex';
+      }
+    });
+  </script>
 </body>
 </html>
