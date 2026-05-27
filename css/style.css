@@ -906,3 +906,353 @@ footer {
   .cards { grid-template-columns: 1fr; }
   .game-numbers { font-size: 2.2rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   NEW: Site-wide Design System Enhancements
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* ── Font System ── */
+h1, h2, h3, h4, h5, h6, .page-header h2, .card h3, .cta-btn, .download-btn, .game-btn, nav ul li a {
+  font-family: 'Fredoka One', cursive;
+}
+body {
+  font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── Section Color Themes ── */
+header[data-section="home"]     { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+header[data-section="materials"]{ background: linear-gradient(135deg, #4d96ff, #6bc5ff); }
+header[data-section="practices"]{ background: linear-gradient(135deg, #00b894, #55efc4); }
+header[data-section="quizzes"]  { background: linear-gradient(135deg, #6c5ce7, #4d96ff); }
+header[data-section="games"]    { background: linear-gradient(135deg, #ffa94d, #ffd43b); }
+header[data-section="puzzles"]  { background: linear-gradient(135deg, #ff6b9d, #ff9ff3); }
+header[data-section="gallery"]  { background: linear-gradient(135deg, #a855f7, #d8b4fe); }
+header[data-section="memory"]   { background: linear-gradient(135deg, #f59e0b, #fcd34d); }
+header[data-section="ask"]      { background: linear-gradient(135deg, #a855f7, #6c5ce7); }
+header[data-section="teacher"]  { background: linear-gradient(135deg, #667eea, #764ba2); }
+header[data-section="about"]    { background: linear-gradient(135deg, #ec4899, #f472b6); }
+
+/* ── Hero Search Bar ── */
+.hero-search {
+  max-width: 520px;
+  margin: 1.5rem auto 0;
+  position: relative;
+}
+.hero-search input {
+  width: 100%;
+  padding: 14px 24px 14px 52px;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-radius: 50px;
+  font-size: 1.05rem;
+  font-family: 'Nunito', sans-serif;
+  outline: none;
+  background: rgba(255,255,255,0.9);
+  transition: all 0.3s;
+  color: #333;
+}
+.hero-search input:focus {
+  background: #fff;
+  border-color: #6c5ce7;
+  box-shadow: 0 4px 20px rgba(108,92,231,0.2);
+}
+.hero-search .search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  padding: 8px 0;
+  z-index: 50;
+  display: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.search-dropdown.active { display: block; }
+.search-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+  transition: background 0.15s;
+}
+.search-dropdown a:hover { background: #f3f0ff; }
+.search-dropdown a .res-icon { font-size: 1.4rem; }
+.search-dropdown a .res-meta { font-size: 0.78em; color: #aaa; }
+.search-dropdown .no-res { padding: 20px; text-align: center; color: #bbb; }
+
+/* ── Difficulty Badges ── */
+.diff-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 6px;
+}
+.diff-easy   { background: #d1fae5; color: #065f46; }
+.diff-medium { background: #fef9c3; color: #92400e; }
+.diff-hard   { background: #fee2e2; color: #991b1b; }
+
+/* ── Achievement System ── */
+.achievements-panel {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 90;
+  max-width: 320px;
+}
+.achievements-toggle {
+  background: linear-gradient(135deg, #ffd93d, #ffa94d);
+  color: #333;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 22px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 171, 77, 0.35);
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.achievements-toggle:hover { transform: scale(1.05); }
+.achievements-popup {
+  display: none;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  margin-bottom: 12px;
+  border: 3px solid #ffd93d;
+}
+.achievements-popup.open { display: block; }
+.achievements-popup h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  color: #333;
+}
+.achievement-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  opacity: 0.45;
+}
+.achievement-item.unlocked { opacity: 1; }
+.achievement-item:last-child { border-bottom: none; }
+.achievement-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.achievement-item.unlocked .achievement-icon { background: #ffd93d; }
+.achievement-name { font-weight: 800; font-size: 0.95rem; }
+.achievement-desc { font-size: 0.82rem; color: #888; }
+
+/* ── Toast Notifications ── */
+.toast-container {
+  position: fixed;
+  top: 100px;
+  right: 24px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 22px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 280px;
+  animation: toastIn 0.4s ease forwards;
+  border-left: 5px solid #6c5ce7;
+}
+.toast.success { border-left-color: #6bcb77; }
+.toast.achievement { border-left-color: #ffd93d; }
+@keyframes toastIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+.toast-out { animation: toastOut 0.4s ease forwards; }
+@keyframes toastOut {
+  to { transform: translateX(120%); opacity: 0; }
+}
+.toast-icon { font-size: 1.8rem; }
+.toast-text { font-weight: 700; font-size: 0.95rem; }
+
+/* ── Skeleton Loaders ── */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite;
+  border-radius: 12px;
+}
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-text { height: 16px; margin-bottom: 10px; }
+.skeleton-title { height: 24px; width: 60%; margin-bottom: 16px; }
+.skeleton-card { height: 120px; margin-bottom: 16px; }
+.skeleton-circle { width: 48px; height: 48px; border-radius: 50%; }
+
+/* ── Mascot Empty States ── */
+.mascot-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #bbb;
+}
+.mascot-empty .mascot-emoji {
+  font-size: 5rem;
+  margin-bottom: 16px;
+  animation: mascotBounce 2s ease-in-out infinite;
+}
+@keyframes mascotBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.mascot-empty h3 {
+  font-family: 'Fredoka One', cursive;
+  color: #ccc;
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+/* ── Daily Challenge Widget ── */
+.daily-challenge {
+  background: linear-gradient(135deg, #ff6b9d, #ffa94d);
+  border-radius: 20px;
+  padding: 24px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.daily-challenge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.08) 20px, rgba(255,255,255,0.08) 40px);
+}
+.daily-challenge h3 {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  position: relative;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+.daily-challenge .dc-problem {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 14px 0;
+  position: relative;
+}
+.daily-challenge .dc-input {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  position: relative;
+}
+.daily-challenge input {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.9);
+  font-size: 1.1rem;
+  text-align: center;
+  width: 140px;
+  outline: none;
+}
+.daily-challenge button {
+  background: #fff;
+  color: #ff6b9d;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 22px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.daily-challenge button:hover { transform: scale(1.05); }
+
+/* ── Featured Student / Spotlight ── */
+.spotlight-banner {
+  background: linear-gradient(135deg, #6bcb77, #4d96ff);
+  border-radius: 20px;
+  padding: 20px 28px;
+  color: #fff;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.spotlight-banner .spot-emoji { font-size: 3rem; }
+.spotlight-banner .spot-text { flex: 1; min-width: 200px; }
+.spotlight-banner h3 { font-size: 1.2rem; margin-bottom: 4px; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+.spotlight-banner p { font-size: 0.95rem; opacity: 0.9; }
+
+/* ── Continue Banner ── */
+.continue-banner {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  border: 2px solid #ede9fe;
+}
+.continue-banner .cb-icon { font-size: 2.2rem; }
+.continue-banner .cb-text { flex: 1; min-width: 200px; }
+.continue-banner h4 { color: #6c5ce7; font-size: 1.1rem; margin-bottom: 2px; }
+.continue-banner p { color: #888; font-size: 0.9rem; }
+.continue-banner a {
+  background: #6c5ce7;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.continue-banner a:hover { background: #5a4bd1; }
+
+/* ── Confetti Canvas ── */
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+}

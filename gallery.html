@@ -35,6 +35,72 @@
       margin-bottom: 1.2rem;
       border-radius: 2px;
     }
+
+    /* ── Skeleton shimmer ── */
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      background: #ede9fe;
+      border-radius: 12px;
+    }
+    .gallery-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        #ede9fe 25%, #d8d0fc 50%, #ede9fe 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 12px;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    .gallery-item.loaded::before {
+      opacity: 0;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Image fade-in ── */
+    .gallery-item img {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: relative;
+      z-index: 2;
+    }
+    .gallery-item.loaded img {
+      opacity: 1;
+    }
+
+    /* ── Loading counter badge ── */
+    .gallery-loading-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f0ff;
+      color: #6c5ce7;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .gallery-loading-badge .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #6c5ce7;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
@@ -196,6 +262,21 @@
       return arr;
     }
 
+    /* ── Shared IntersectionObserver — loads images only when near viewport ── */
+    const imgObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const item = entry.target;
+        const img = item.querySelector('img[data-src]');
+        if (img) {
+          img.src = img.dataset.src;
+          img.addEventListener('load',  () => item.classList.add('loaded'), { once: true });
+          img.addEventListener('error', () => item.classList.add('loaded'), { once: true });
+        }
+        obs.unobserve(item);
+      });
+    }, { rootMargin: '300px' }); // start fetching 300 px before image scrolls into view
+
     function renderGrid(containerId, images, label) {
       const grid = document.getElementById(containerId);
       const shuffled = shuffleArray([...images]);
@@ -203,9 +284,20 @@
         const item = document.createElement('div');
         item.className = 'gallery-item';
         const img = document.createElement('img');
-        img.src = src;
-        img.loading = 'lazy';
+        img.decoding = 'async';
         img.alt = label + ' photo';
+
+        if (idx < 6) {
+          // First 6 are above the fold — load immediately
+          img.src = src;
+          img.addEventListener('load',  () => item.classList.add('loaded'), { once: true });
+          img.addEventListener('error', () => item.classList.add('loaded'), { once: true });
+        } else {
+          // Everything else: defer until near the viewport
+          img.dataset.src = src;
+          imgObserver.observe(item);
+        }
+
         item.appendChild(img);
         item.addEventListener('click', () => openLightbox(shuffled, idx));
         grid.appendChild(item);
