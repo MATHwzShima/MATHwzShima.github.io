@@ -12,9 +12,16 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Practice 5th grade math by topic: place value, fractions, decimals, multiplication, division, percentages, geometry, and more — 24 topics!">
+  <meta property="og:title" content="MATHwzShima - Fun Math for 5th Graders">
+  <meta property="og:description" content="Free math materials, quizzes, games, puzzles, and memory book for 5th graders with Mrs. Shimaa.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#6c5ce7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>Practices - MATHwzShima</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
     /* ── Auth area ─────────────────────────────────────── */
@@ -37,7 +44,7 @@
       font-family:'Fredoka One',cursive;
       font-size:1.2em; color:#4c1d95; margin-bottom:4px;
     }
-    .psc-text p { color:#6d28d9; font-size:.9em; margin:0; }
+    .psc-text p { color:#6d28d9; font-size:.9em; margin:0; font-family:'Nunito', sans-serif; font-style:normal; }
 
     /* Google button */
     .google-btn {
@@ -203,7 +210,7 @@
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
-  <header>
+  <header data-section="practices">
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
   </header>
@@ -211,6 +218,7 @@
   <nav>
     <ul>
       <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
       <li><a href="materials.html">Materials</a></li>
       <li><a href="practices.html" class="active">Practices</a></li>
       <li><a href="quizzes.html">Quizzes</a></li>
@@ -229,7 +237,15 @@
     <div class="practices-auth">
 
       <!-- Loading -->
-      <div id="authLoading" class="auth-loading-strip">⏳ Checking sign-in…</div>
+      <div id="authLoading" class="auth-loading-strip">
+        <div style="display:flex;align-items:center;gap:12px;justify-content:center;">
+          <div class="skeleton skeleton-circle"></div>
+          <div style="flex:1;max-width:200px;">
+            <div class="skeleton skeleton-text" style="width:80%;"></div>
+            <div class="skeleton skeleton-text" style="width:60%;"></div>
+          </div>
+        </div>
+      </div>
 
       <!-- Not signed in → Sign-in card -->
       <div class="practices-signin-card" id="signinCard">
@@ -267,7 +283,11 @@
           </div>
           <button class="pp-close" onclick="toggleProgressPanel()">✕</button>
         </div>
-        <div class="pp-summary" id="ppSummary"></div>
+        <div class="pp-summary" id="ppSummary">
+          <div class="pp-sum-box"><div class="skeleton" style="height:32px;width:50px;margin:0 auto;"></div><div class="skeleton" style="height:12px;width:80px;margin:8px auto 0;"></div></div>
+          <div class="pp-sum-box"><div class="skeleton" style="height:32px;width:50px;margin:0 auto;"></div><div class="skeleton" style="height:12px;width:80px;margin:8px auto 0;"></div></div>
+          <div class="pp-sum-box"><div class="skeleton" style="height:32px;width:50px;margin:0 auto;"></div><div class="skeleton" style="height:12px;width:80px;margin:8px auto 0;"></div></div>
+        </div>
         <div class="pp-lessons" id="ppLessons">
           <div class="pp-empty"><div class="big">⏳</div>Loading…</div>
         </div>
@@ -1366,6 +1386,7 @@
       currentLesson = index;
       score = 0;
       total = 0;
+      if (typeof saveProgress === 'function') saveProgress('practice', lessons[index].id, lessons[index].title);
       document.getElementById('lessonSelector').style.display = 'none';
       document.getElementById('practiceArea').style.display = 'block';
       document.getElementById('practiceTitle').textContent = lessons[index].title;
