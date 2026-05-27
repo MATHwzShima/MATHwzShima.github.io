@@ -455,12 +455,12 @@
       <div class="check-replies-section">
         <div class="check-replies-card">
           <h3>💌 Check Mrs. Shimaa's Replies</h3>
-          <p>Type your name to check for a reply. If you have a secret code, enter it too for extra privacy 🔒</p>
+          <p>Enter your name and your secret code to see Mrs. Shimaa's reply. Only you know your code! 🔒</p>
           <div class="check-row">
             <input type="text" id="checkName" placeholder="Your name…" maxlength="80"
                    onkeydown="if(event.key==='Enter') document.getElementById('checkCode').focus()">
-            <input type="text" id="checkCode" placeholder="Secret code (optional)…" maxlength="8"
-                   style="text-transform:uppercase;letter-spacing:3px;font-weight:700;max-width:200px;"
+            <input type="text" id="checkCode" placeholder="Secret code…" maxlength="8"
+                   style="text-transform:uppercase;letter-spacing:3px;font-weight:700;max-width:160px;"
                    onkeydown="if(event.key==='Enter') checkReplies()">
             <button onclick="checkReplies()">🔍 Check</button>
           </div>
@@ -633,6 +633,11 @@
         document.getElementById('checkName').focus();
         return;
       }
+      if (!code) {
+        result.innerHTML = '<div class="no-replies-msg">⚠️ Please enter your secret code!</div>';
+        document.getElementById('checkCode').focus();
+        return;
+      }
 
       result.innerHTML = '<div class="no-replies-msg">⏳ Looking for replies…</div>';
 
@@ -643,23 +648,19 @@
 
           const nameLower = name.toLowerCase();
 
+          // Must match name AND secret code — always, no exceptions
           const matched = Object.values(data)
-            .filter(m => {
-              if (!m.reply) return false;
-              if ((m.studentName||'').toLowerCase() !== nameLower) return false;
-              // New messages have a checkCode — require it if present
-              if (m.checkCode) {
-                return code && m.checkCode.toUpperCase() === code;
-              }
-              // Old messages (no checkCode) — name alone is enough
-              return true;
-            })
+            .filter(m =>
+              m.reply &&
+              (m.studentName||'').toLowerCase() === nameLower &&
+              (m.checkCode||'').toUpperCase() === code
+            )
             .sort((a,b) => new Date(b.repliedAt||0) - new Date(a.repliedAt||0));
 
           if (matched.length === 0) {
             result.innerHTML = `<div class="no-replies-msg">
-              😊 No reply found yet for <strong>${escHtml(name)}</strong>.<br>
-              <small>If your message has a secret code, make sure to enter it too. Or maybe Mrs. Shimaa hasn't replied yet!</small>
+              🔒 No reply found for that name and code.<br>
+              <small>Check your name spelling and secret code, or maybe Mrs. Shimaa hasn't replied yet! 😊</small>
             </div>`;
             return;
           }
@@ -689,7 +690,8 @@
 
     function showNoReplies(result) {
       result.innerHTML = `<div class="no-replies-msg">
-        😊 No replies found yet. Maybe Mrs. Shimaa hasn't replied yet!
+        🔒 No reply found for that name and code.<br>
+        <small>Check your name spelling and secret code, or maybe Mrs. Shimaa hasn't replied yet! 😊</small>
       </div>`;
     }
 
