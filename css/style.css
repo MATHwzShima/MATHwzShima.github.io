@@ -10,7 +10,10 @@ html {
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f4ff;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255, 214, 102, 0.35), transparent 22rem),
+    radial-gradient(circle at 88% 12%, rgba(0, 184, 148, 0.18), transparent 20rem),
+    linear-gradient(180deg, #f8fbff 0%, #f0f4ff 45%, #fff7ed 100%);
   color: #333;
   line-height: 1.6;
   min-height: 100vh;
@@ -161,16 +164,61 @@ main {
 
 .hero {
   text-align: center;
-  padding: 3rem 1rem;
-  background: linear-gradient(135deg, #ffecd2, #fcb69f);
-  border-radius: 20px;
+  padding: 2.5rem 1rem 2rem;
+  background:
+    linear-gradient(135deg, rgba(255, 236, 210, 0.92), rgba(252, 182, 159, 0.9)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.35) 0 10px, transparent 10px 20px);
+  border: 3px solid rgba(255, 255, 255, 0.75);
+  border-radius: 18px;
   margin-bottom: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 35px rgba(225, 112, 85, 0.14);
+}
+
+.hero::after {
+  content: "× ÷ + -";
+  position: absolute;
+  right: 1rem;
+  bottom: 0.4rem;
+  color: rgba(45, 52, 54, 0.1);
+  font-size: 3rem;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.hero-mascot {
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 0.8rem;
+  display: grid;
+  place-items: center;
+  background: #2d3436;
+  color: #ffd166;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  font-size: 2.4rem;
+  font-weight: 900;
+  box-shadow: 0 8px 20px rgba(45, 52, 54, 0.18);
+}
+
+.hero-kicker {
+  margin: 0 auto 0.4rem;
+  color: #6c5ce7;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
 .hero h2 {
-  font-size: 2.2rem;
+  font-size: 2.35rem;
   color: #2d3436;
   margin-bottom: 1rem;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.15;
 }
 
 .hero p {
@@ -196,6 +244,275 @@ main {
   background: #5a4bd1;
 }
 
+.cta-btn.secondary {
+  background: #00b894;
+}
+
+.cta-btn.secondary:hover {
+  background: #009f80;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.hero-search {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.hero-search input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  border: 3px solid rgba(108, 92, 231, 0.22);
+  border-radius: 999px;
+  font-size: 1rem;
+  outline: none;
+  background: rgba(255,255,255,0.94);
+  box-shadow: 0 6px 18px rgba(45, 52, 54, 0.08);
+}
+
+.hero-search input:focus {
+  border-color: #6c5ce7;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.search-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 2px solid #ede9fe;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(45,52,54,0.16);
+  text-align: left;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.search-dropdown.active {
+  display: block;
+}
+
+.search-result {
+  display: block;
+  padding: 0.85rem 1rem;
+  color: #2d3436;
+  text-decoration: none;
+  border-bottom: 1px solid #f1f0ff;
+}
+
+.search-result:last-child {
+  border-bottom: none;
+}
+
+.search-result:hover,
+.search-result:focus {
+  background: #f8f7ff;
+}
+
+.search-result strong {
+  display: block;
+  color: #6c5ce7;
+}
+
+.search-empty {
+  padding: 0.9rem 1rem;
+  color: #777;
+}
+
+.continue-banner,
+.daily-challenge,
+.spotlight-banner,
+.mission-strip {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.continue-banner {
+  background: #fff;
+  border: 2px solid #d1fae5;
+  border-left: 8px solid #00b894;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 6px 18px rgba(0,184,148,0.12);
+}
+
+.continue-banner a {
+  color: #006d5b;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.daily-challenge {
+  background: #fff;
+  border: 3px solid #ffeaa7;
+  border-radius: 16px;
+  padding: 1.2rem;
+  margin-bottom: 1.4rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(253, 203, 110, 0.18);
+}
+
+.daily-challenge .challenge-icon {
+  font-size: 2rem;
+}
+
+.daily-challenge h3 {
+  color: #2d3436;
+  margin-bottom: 0.15rem;
+}
+
+.daily-challenge p {
+  color: #636e72;
+}
+
+.daily-challenge .challenge-link {
+  background: #fdcb6e;
+  color: #2d3436;
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.mission-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.mission-strip article {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: 0 4px 18px rgba(45,52,54,0.07);
+  border-top: 5px solid #6c5ce7;
+}
+
+.mission-strip article:nth-child(2) {
+  border-top-color: #00b894;
+}
+
+.mission-strip article:nth-child(3) {
+  border-top-color: #e17055;
+}
+
+.mission-strip span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f1f0ff;
+  color: #6c5ce7;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.mission-strip h3 {
+  color: #2d3436;
+  margin-bottom: 0.25rem;
+}
+
+.mission-strip p {
+  color: #636e72;
+  font-size: 0.94rem;
+}
+
+.spotlight-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #fff, #f8f7ff);
+  border: 2px solid #ede9fe;
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.spot-emoji {
+  font-size: 2rem;
+}
+
+.spot-text h3 {
+  color: #6c5ce7;
+}
+
+.diff-badge {
+  display: inline-block;
+  margin-top: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.diff-easy { background: #d1fae5; color: #065f46; }
+.diff-medium { background: #fef3c7; color: #92400e; }
+.diff-hard { background: #fee2e2; color: #991b1b; }
+
+.achievement-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 18px);
+  background: #2d3436;
+  color: #fff;
+  border: 3px solid #ffd166;
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  font-weight: 800;
+  box-shadow: 0 12px 30px rgba(45, 52, 54, 0.28);
+  opacity: 0;
+  z-index: 300;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.achievement-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.confetti-piece {
+  position: fixed;
+  top: -12px;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  z-index: 400;
+  pointer-events: none;
+  animation: sharedConfettiFall 1.4s linear forwards;
+}
+
+@keyframes sharedConfettiFall {
+  to {
+    transform: translateY(105vh) rotate(480deg);
+    opacity: 0;
+  }
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -205,18 +522,20 @@ main {
 
 .card {
   background: white;
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 2rem 1.5rem;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   transition: transform 0.3s, box-shadow 0.3s;
   text-decoration: none;
   color: #333;
+  border: 2px solid transparent;
 }
 
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 30px rgba(108, 92, 231, 0.15);
+  border-color: #d3cffe;
 }
 
 .card .icon {
@@ -903,6 +1222,11 @@ footer {
 @media (max-width: 600px) {
   header h1 { font-size: 1.8rem; }
   .hero h2 { font-size: 1.6rem; }
+  .hero { padding: 2rem 1rem 1.6rem; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .daily-challenge { grid-template-columns: 1fr; text-align: center; }
+  .mission-strip { grid-template-columns: 1fr; }
+  .spotlight-banner { align-items: flex-start; }
   .cards { grid-template-columns: 1fr; }
   .game-numbers { font-size: 2.2rem; }
 }

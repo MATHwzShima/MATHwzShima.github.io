@@ -13,13 +13,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="MATHwzShima - Fun math materials, quizzes, games, puzzles, and memory book for 5th graders with Mrs. Shimaa.">
   <meta name="theme-color" content="#6c5ce7">
+  <meta property="og:title" content="MATHwzShima - Fun Math for 5th Graders">
+  <meta property="og:description" content="Free math materials, quizzes, games, puzzles, and memory book for 5th graders with Mrs. Shimaa.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mathwzshima.com">
+  <meta property="og:image" content="assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
   <title>MATHwzShima - Fun Math for 5th Graders</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
-  <header>
+  <header data-section="home">
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
   </header>
@@ -27,6 +33,7 @@
   <nav>
     <ul>
       <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
       <li><a href="materials.html">Materials</a></li>
       <li><a href="practices.html">Practices</a></li>
       <li><a href="quizzes.html">Quizzes</a></li>
@@ -40,37 +47,77 @@
   </nav>
 
   <main id="main-content">
+    <div id="continueBanner" class="continue-banner" style="display:none;"></div>
+
     <section class="hero">
-      <h2>Welcome to MATHwzShima!</h2>
-      <p>Your place for fun math materials, exciting quizzes, brain-teasing puzzles, and cool games. Let's make math awesome!</p>
-      <a href="quizzes.html" class="cta-btn">Try a Quiz</a>
+      <div class="hero-mascot" aria-hidden="true">5</div>
+      <p class="hero-kicker">Today's math mission</p>
+      <h2>Train your brain. Beat your score. Have fun with math.</h2>
+      <p>Pick a quick challenge, collect wins, and build confidence with 5th grade skills like fractions, decimals, volume, patterns, and problem solving.</p>
+      <div class="hero-actions">
+        <a href="practices.html" class="cta-btn">Start Practice</a>
+        <a href="games.html" class="cta-btn secondary">Play a Game</a>
+      </div>
+      <div class="hero-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="globalSearch" aria-label="Search quizzes, games, and math topics" placeholder="Search quizzes, games, topics..." autocomplete="off">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
     </section>
+
+    <div id="dailyChallenge" class="daily-challenge"></div>
+
+    <section class="mission-strip" aria-label="Student math missions">
+      <article>
+        <span>1</span>
+        <h3>Warm Up</h3>
+        <p>Try 5 practice problems and check your accuracy.</p>
+      </article>
+      <article>
+        <span>2</span>
+        <h3>Level Up</h3>
+        <p>Take a topic quiz and learn from each answer.</p>
+      </article>
+      <article>
+        <span>3</span>
+        <h3>Challenge Mode</h3>
+        <p>Play a timed game or solve a puzzle for a streak.</p>
+      </article>
+    </section>
+
+    <div class="spotlight-banner">
+      <div class="spot-emoji">🌟</div>
+      <div class="spot-text">
+        <h3>Student Spotlight</h3>
+        <p>Feature effort, strategy, and improvement too: most improved, kind helper, puzzle solver, and brave mistake fixer.</p>
+      </div>
+    </div>
 
     <div class="cards">
       <a href="materials.html" class="card">
         <div class="icon" aria-hidden="true">&#128218;</div>
         <h3>Materials</h3>
-        <p>Download study guides, worksheets, and helpful resources</p>
+        <p>Use study guides, anchor charts, and worksheets when you need a refresher.</p>
       </a>
       <a href="practices.html" class="card">
         <div class="icon" aria-hidden="true">&#9997;</div>
         <h3>Practices</h3>
-        <p>Practice each lesson with interactive problems</p>
+        <p>Build skills one problem at a time and track your best scores.</p>
       </a>
       <a href="quizzes.html" class="card">
         <div class="icon" aria-hidden="true">&#128221;</div>
         <h3>Quizzes</h3>
-        <p>Test your skills with fun interactive math quizzes</p>
+        <p>Choose a topic, answer 10 questions, and see what to review next.</p>
       </a>
       <a href="games.html" class="card">
         <div class="icon" aria-hidden="true">&#127918;</div>
         <h3>Games</h3>
-        <p>Play cool math games and challenge yourself</p>
+        <p>Race the clock with fractions, decimals, area, primes, and patterns.</p>
       </a>
       <a href="puzzles.html" class="card">
         <div class="icon" aria-hidden="true">&#129504;</div>
         <h3>Puzzles</h3>
-        <p>Solve riddles and brain teasers</p>
+        <p>Use clues, hints, and logic to solve brain teasers.</p>
       </a>
       <a href="gallery.html" class="card">
         <div class="icon" aria-hidden="true">&#128247;</div>
@@ -89,5 +136,31 @@
     &copy; 2026 MATHwzShima - Made with love for 5th grade mathematicians
   </footer>
   <script src="js/main.js"></script>
+  <script>
+    (function() {
+      renderDailyChallenge();
+      renderContinueBanner();
+
+      var searchInput = document.getElementById('globalSearch');
+      var dropdown = document.getElementById('searchDropdown');
+      if (searchInput && dropdown) {
+        searchInput.addEventListener('input', function() {
+          var results = performSearch(this.value);
+          renderSearchResults(results, dropdown);
+        });
+        searchInput.addEventListener('focus', function() {
+          if (this.value.trim()) {
+            var results = performSearch(this.value);
+            renderSearchResults(results, dropdown);
+          }
+        });
+        document.addEventListener('click', function(e) {
+          if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
