@@ -142,7 +142,7 @@
 
     /* Summary cards row */
     .pp-summary {
-      display:grid; grid-template-columns:repeat(3,1fr);
+      display:grid; grid-template-columns:repeat(4,1fr);
       gap:0; border-bottom:2px solid #f0f0f0;
     }
     .pp-sum-box {
@@ -156,6 +156,13 @@
     .pp-sum-lbl { font-size:.8em; color:#aaa; margin-top:2px; }
 
     /* Lesson rows */
+    .pp-achievements {
+      display:flex; flex-wrap:wrap; gap:8px; padding:16px 24px 0;
+    }
+    .pp-achievement {
+      background:#f8f7ff; color:#4c1d95; border:1.5px solid #ddd6fe;
+      border-radius:20px; padding:5px 12px; font-weight:800; font-size:.82em;
+    }
     .pp-lessons { padding:20px 24px; }
     .pp-row {
       display:flex; align-items:center; gap:14px;
@@ -179,6 +186,7 @@
       min-width:46px; text-align:right; flex-shrink:0;
     }
     .pp-meta { font-size:.76em; color:#bbb; min-width:80px; flex-shrink:0; }
+    .pp-stars { min-width:42px; color:#f59e0b; font-size:.95em; letter-spacing:1px; }
 
     /* Not started row */
     .pp-row-empty .pp-lesson-name { color:#ccc; }
@@ -200,11 +208,124 @@
     .badge-red    { background:#fee2e2; color:#991b1b; }
     .badge-none   { background:#f3f4f6; color:#9ca3af; }
 
+    /* ── Student dashboard ───────────────────────────────── */
+    .student-dashboard {
+      display:none;
+      max-width:900px; margin:0 auto 26px; padding:0 20px;
+    }
+    .student-dashboard.show { display:block; }
+    .sd-grid {
+      display:grid; grid-template-columns:1.2fr .8fr; gap:16px;
+    }
+    .sd-panel {
+      background:#fff; border:2px solid #ede9fe; border-radius:22px;
+      box-shadow:0 6px 24px rgba(108,92,231,.08);
+      padding:18px 20px;
+    }
+    .sd-panel h3 {
+      font-family:'Fredoka One',cursive; font-size:1.1em;
+      color:#4c1d95; margin:0 0 12px;
+    }
+    .sd-reco {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+    }
+    .sd-reco-title { font-family:'Fredoka One',cursive; color:#2d3436; font-size:1.15em; }
+    .sd-reco-sub { color:#6b7280; font-size:.9em; margin-top:3px; }
+    .sd-reco-btn {
+      border:none; border-radius:14px; padding:10px 18px;
+      background:linear-gradient(135deg,#ff9f43,#ff6b9d);
+      color:#fff; font-family:'Fredoka One',cursive; cursor:pointer;
+      box-shadow:0 4px 14px rgba(255,107,157,.22);
+    }
+    .sd-goal-track {
+      height:12px; background:#f0f0f0; border-radius:8px;
+      overflow:hidden; margin:10px 0 8px;
+    }
+    .sd-goal-fill { height:100%; background:linear-gradient(90deg,#6bcb77,#4d96ff); border-radius:8px; }
+    .sd-goal-text { color:#6b7280; font-size:.9em; }
+    .sd-badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .sd-badge {
+      background:#f8f7ff; border:1.5px solid #ddd6fe;
+      color:#4c1d95; border-radius:20px; padding:5px 12px;
+      font-size:.82em; font-weight:800;
+    }
+    .lesson-card-button {
+      width:100%; font:inherit;
+    }
+    .lesson-card.next-topic {
+      border-color:#ff9f43;
+      box-shadow:0 7px 24px rgba(255,159,67,.20);
+    }
+    .lesson-stars {
+      color:#f59e0b; letter-spacing:1px; font-size:1.05em;
+      margin:6px 0 2px; min-height:1.2em;
+    }
+    .lesson-next-tag {
+      display:inline-block; margin-top:8px; padding:3px 10px;
+      border-radius:20px; background:#ffedd5; color:#9a3412;
+      font-size:.75em; font-weight:800;
+    }
+    .hint-btn {
+      background:#f8f7ff; color:#6c5ce7; border:2px solid #ddd6fe;
+      border-radius:12px; padding:9px 14px; font-weight:800;
+      cursor:pointer;
+    }
+    .hint-btn:hover { background:#ede9fe; }
+    .practice-hint {
+      display:none; max-width:520px; margin:0 auto 12px;
+      background:#fffbeb; border:2px solid #fde68a;
+      color:#92400e; border-radius:14px; padding:11px 14px;
+      font-weight:700;
+    }
+    .practice-hint.show { display:block; }
+    .session-summary {
+      display:none; position:fixed; inset:0; z-index:9998;
+      background:rgba(45,52,54,.48); align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .session-summary.show { display:flex; }
+    .session-card {
+      width:min(520px,100%); background:#fff; border-radius:24px;
+      box-shadow:0 24px 70px rgba(0,0,0,.22); overflow:hidden;
+    }
+    .session-head {
+      background:linear-gradient(135deg,#6bcb77,#4d96ff);
+      color:#fff; padding:22px 24px; text-align:center;
+    }
+    .session-head h3 { font-family:'Fredoka One',cursive; margin:0; font-size:1.35em; }
+    .session-body { padding:22px 24px; }
+    .session-score {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px;
+    }
+    .session-stat {
+      background:#f8f9ff; border-radius:14px; padding:12px 8px; text-align:center;
+    }
+    .session-stat b {
+      display:block; font-family:'Fredoka One',cursive; color:#6c5ce7; font-size:1.35em;
+    }
+    .session-stat span { color:#6b7280; font-size:.78em; font-weight:800; }
+    .session-message {
+      background:#f0fdf4; border:2px solid #bbf7d0;
+      color:#065f46; border-radius:14px; padding:13px 14px;
+      font-weight:800; line-height:1.45;
+    }
+    .session-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; flex-wrap:wrap; }
+    .session-actions button {
+      border:none; border-radius:12px; padding:10px 16px;
+      font-family:'Fredoka One',cursive; cursor:pointer;
+    }
+    .session-primary { background:#6c5ce7; color:#fff; }
+    .session-secondary { background:#f0f0f0; color:#555; }
+
     @media (max-width:600px) {
       .pp-summary { grid-template-columns:1fr 1fr; }
-      .pp-sum-box:nth-child(3) { grid-column:span 2; border-right:none; border-top:2px solid #f0f0f0; }
+      .pp-sum-box:nth-child(3), .pp-sum-box:nth-child(4) { border-top:2px solid #f0f0f0; }
+      .pp-sum-box:nth-child(2), .pp-sum-box:nth-child(4) { border-right:none; }
       .pp-lesson-name { width:120px; font-size:.85em; }
       .pp-meta { display:none; }
+      .sd-grid { grid-template-columns:1fr; }
+      .session-score { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -273,6 +394,8 @@
 
     </div>
 
+    <section class="student-dashboard" id="studentDashboard" aria-label="Student practice dashboard"></section>
+
     <!-- ── My Progress Panel ──────────────────────────────────── -->
     <div class="progress-panel" id="progressPanel">
       <div class="progress-panel-inner">
@@ -315,9 +438,19 @@
           <button onclick="checkPracticeAnswer()">Check</button>
         </div>
       </div>
+      <div class="practice-hint" id="practiceHint" aria-live="polite"></div>
       <div class="game-message" id="practiceMessage" aria-live="polite"></div>
       <button class="game-btn" onclick="nextPracticeProblem()">Next Problem</button>
       <div class="practice-score" id="practiceScore">Score: 0 / 0</div>
+    </div>
+
+    <div class="session-summary" id="sessionSummary" role="dialog" aria-modal="true" aria-labelledby="sessionTitle">
+      <div class="session-card">
+        <div class="session-head">
+          <h3 id="sessionTitle">Practice complete!</h3>
+        </div>
+        <div class="session-body" id="sessionBody"></div>
+      </div>
     </div>
   </main>
 
@@ -1353,23 +1486,173 @@
     let total = 0;
     let answered = false;
     let isMultipleChoice = false;
+    let _activeSessionStartBest = 0;
+    let _recommendedLessonIndex = 0;
 
     // progress data loaded once per page visit
     var _myProgress = null;
+
+    function getProgressStats(data) {
+      data = data || {};
+      var keys = Object.keys(data);
+      var totAns = keys.reduce(function(s,k){ return s + (data[k].totalAnswered || 0); }, 0);
+      var totCorr = keys.reduce(function(s,k){ return s + (data[k].totalCorrect || 0); }, 0);
+      var sessions = keys.reduce(function(s,k){ return s + (data[k].sessions || 0); }, 0);
+      var mastered = keys.filter(function(k){ return (data[k].bestScore || 0) >= 90; }).length;
+      var strong = keys.filter(function(k){ return (data[k].bestScore || 0) >= 80; }).length;
+      var overall = totAns > 0 ? Math.round((totCorr / totAns) * 100) : 0;
+      return { keys:keys, totAns:totAns, totCorr:totCorr, sessions:sessions, mastered:mastered, strong:strong, overall:overall };
+    }
+
+    function getLessonStars(pct) {
+      if (!pct) return 0;
+      if (pct >= 90) return 3;
+      if (pct >= 70) return 2;
+      if (pct >= 40) return 1;
+      return 0;
+    }
+
+    function renderStars(pct) {
+      var earned = getLessonStars(pct);
+      var html = '';
+      for (var i = 0; i < 3; i++) html += i < earned ? '★' : '☆';
+      return html;
+    }
+
+    function getStreakDays(data) {
+      var days = {};
+      Object.keys(data || {}).forEach(function(k) {
+        var l = data[k] || {};
+        if (Array.isArray(l.recentSessions)) {
+          l.recentSessions.forEach(function(s) {
+            if (s.playedAt) days[new Date(s.playedAt).toDateString()] = true;
+          });
+        } else if (l.lastPlayed) {
+          days[new Date(l.lastPlayed).toDateString()] = true;
+        }
+      });
+      var streak = 0;
+      var cursor = new Date();
+      cursor.setHours(0,0,0,0);
+      while (days[cursor.toDateString()]) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function getWeeklyAnswered(data) {
+      var start = new Date();
+      start.setHours(0,0,0,0);
+      start.setDate(start.getDate() - 6);
+      var count = 0;
+      Object.keys(data || {}).forEach(function(k) {
+        var l = data[k] || {};
+        if (Array.isArray(l.recentSessions)) {
+          l.recentSessions.forEach(function(s) {
+            if (s.playedAt && new Date(s.playedAt) >= start) count += s.total || 0;
+          });
+        } else if (l.lastPlayed && new Date(l.lastPlayed) >= start) {
+          count += l.totalAnswered || 0;
+        }
+      });
+      return count;
+    }
+
+    function getRecommendedLesson(data) {
+      data = data || {};
+      var needsBoost = lessons
+        .map(function(lesson, idx) {
+          var p = data[lesson.id];
+          return { lesson:lesson, idx:idx, score:p ? (p.bestScore || 0) : -1, last:p && p.lastPlayed ? new Date(p.lastPlayed).getTime() : 0 };
+        })
+        .sort(function(a,b) {
+          if (a.score !== b.score) return a.score - b.score;
+          return a.last - b.last;
+        });
+      return needsBoost[0] || { lesson:lessons[0], idx:0, score:-1 };
+    }
+
+    function getStudentBadges(data) {
+      var stats = getProgressStats(data);
+      var streak = getStreakDays(data);
+      var badges = [];
+      if (stats.totAns >= 20) badges.push('Question Starter');
+      if (stats.totAns >= 100) badges.push('100 Answers');
+      if (stats.strong >= 3) badges.push('Skill Builder');
+      if (stats.mastered >= 1) badges.push('Topic Master');
+      if (streak >= 3) badges.push(streak + '-Day Streak');
+      if (stats.overall >= 85 && stats.totAns >= 20) badges.push('Accuracy Star');
+      if (!badges.length) badges.push('First badge is close');
+      return badges.slice(0, 5);
+    }
+
+    function renderStudentDashboard() {
+      var dash = document.getElementById('studentDashboard');
+      if (!dash) return;
+      var user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+      if (!user) {
+        dash.classList.remove('show');
+        dash.innerHTML = '';
+        return;
+      }
+      var data = _myProgress || {};
+      var stats = getProgressStats(data);
+      var weeklyAnswered = getWeeklyAnswered(data);
+      var goal = 20;
+      var goalPct = Math.min(100, Math.round((weeklyAnswered / goal) * 100));
+      var streak = getStreakDays(data);
+      var recommended = getRecommendedLesson(data);
+      _recommendedLessonIndex = recommended.idx;
+      var firstName = (user.displayName || 'Student').split(' ')[0];
+      var badges = getStudentBadges(data).map(function(b){ return '<span class="sd-badge">' + escHtml(b) + '</span>'; }).join('');
+      var reason = recommended.score < 0 ? 'Start here for your next math win.' :
+        recommended.score < 70 ? 'This topic is ready for a boost.' :
+        'Keep your skills fresh with this topic.';
+
+      dash.innerHTML =
+        '<div class="sd-grid">' +
+          '<div class="sd-panel">' +
+            '<h3>Welcome back, ' + escHtml(firstName) + '</h3>' +
+            '<div class="sd-reco">' +
+              '<div><div class="sd-reco-title">' + escHtml(recommended.lesson.title) + '</div>' +
+              '<div class="sd-reco-sub">' + reason + '</div></div>' +
+              '<button class="sd-reco-btn" onclick="startRecommendedLesson()">Start</button>' +
+            '</div>' +
+            '<div class="sd-badges" aria-label="Badges">' + badges + '</div>' +
+          '</div>' +
+          '<div class="sd-panel">' +
+            '<h3>This week</h3>' +
+            '<div class="sd-goal-text"><b>' + weeklyAnswered + '</b> of ' + goal + ' questions answered</div>' +
+            '<div class="sd-goal-track" aria-hidden="true"><div class="sd-goal-fill" style="width:' + goalPct + '%"></div></div>' +
+            '<div class="sd-goal-text">' + stats.keys.length + ' topics practiced · ' + stats.overall + '% overall · ' + streak + '-day streak</div>' +
+          '</div>' +
+        '</div>';
+      dash.classList.add('show');
+    }
+
+    function startRecommendedLesson() {
+      startLesson(_recommendedLessonIndex || 0);
+    }
 
     function renderLessonGrid() {
       const grid = document.getElementById('lessonGrid');
       grid.innerHTML = '';
       lessons.forEach((lesson, i) => {
-        const card = document.createElement('div');
-        card.className = 'lesson-card';
+        const card = document.createElement('button');
+        card.type = 'button';
+        const progress = _myProgress && _myProgress[lesson.id] ? _myProgress[lesson.id] : null;
+        const isNext = i === _recommendedLessonIndex;
+        card.className = 'lesson-card lesson-card-button' + (isNext ? ' next-topic' : '');
         const badge = _myProgress && _myProgress[lesson.id]
           ? makeBadge(_myProgress[lesson.id].bestScore)
           : '<span class="lesson-badge badge-none">Not started</span>';
         card.innerHTML =
           `<div class="lesson-icon" aria-hidden="true">${lesson.icon}</div>` +
           `<h4>${lesson.title}</h4>` +
-          badge;
+          `<div class="lesson-stars" aria-label="${getLessonStars(progress ? progress.bestScore : 0)} stars">${renderStars(progress ? progress.bestScore : 0)}</div>` +
+          badge +
+          (isNext ? '<span class="lesson-next-tag">Recommended</span>' : '');
         card.onclick = () => startLesson(i);
         grid.appendChild(card);
       });
@@ -1386,9 +1669,11 @@
       currentLesson = index;
       score = 0;
       total = 0;
+      _activeSessionStartBest = _myProgress && _myProgress[lessons[index].id] ? (_myProgress[lessons[index].id].bestScore || 0) : 0;
       if (typeof saveProgress === 'function') saveProgress('practice', lessons[index].id, lessons[index].title);
       document.getElementById('lessonSelector').style.display = 'none';
       document.getElementById('practiceArea').style.display = 'block';
+      document.getElementById('studentDashboard').classList.remove('show');
       document.getElementById('practiceTitle').textContent = lessons[index].title;
       nextPracticeProblem();
     }
@@ -1402,14 +1687,17 @@
             // Refresh badges and progress panel after saving
             loadMyProgress().then(function(data) {
               _myProgress = data;
+              renderStudentDashboard();
               renderLessonGrid();
               if (_panelOpen) renderProgressPanel();
             });
           })
           .catch(function() {}); // silently fail if not signed in
+        showSessionSummary(lesson, score, total, _activeSessionStartBest);
       }
       document.getElementById('lessonSelector').style.display = 'block';
       document.getElementById('practiceArea').style.display = 'none';
+      renderStudentDashboard();
       currentLesson = null;
     }
 
@@ -1420,6 +1708,9 @@
       document.getElementById('practiceMessage').textContent = '';
       document.getElementById('practiceMessage').className = 'game-message';
       document.getElementById('practiceVisual').innerHTML = '';
+      var hint = document.getElementById('practiceHint');
+      hint.textContent = '';
+      hint.classList.remove('show');
 
       if (currentProblem.render) {
         currentProblem.render(document.getElementById('practiceVisual'));
@@ -1429,6 +1720,7 @@
         isMultipleChoice = true;
         document.getElementById('practiceInputArea').innerHTML = `
           <div class="practice-options" id="mcOptions"></div>
+          <button class="hint-btn" type="button" onclick="showPracticeHint()">Show Hint</button>
         `;
         const container = document.getElementById('mcOptions');
         currentProblem.opts.forEach((opt, i) => {
@@ -1445,6 +1737,7 @@
           <div class="practice-input-area">
             <input type="text" id="practiceAnswer" placeholder="Your answer...">
             <button onclick="checkPracticeAnswer()">Check</button>
+            <button class="hint-btn" type="button" onclick="showPracticeHint()">Show Hint</button>
           </div>
         `;
         const input = document.getElementById('practiceAnswer');
@@ -1458,6 +1751,24 @@
 
       document.getElementById('practiceQuestion').textContent = currentProblem.question;
       updateScore();
+    }
+
+    function showPracticeHint() {
+      if (!currentLesson && currentLesson !== 0) return;
+      var hint = document.getElementById('practiceHint');
+      var title = lessons[currentLesson].title;
+      var hints = {
+        "Place Value": "Look at the position of the digit first, then count the place value from right to left.",
+        "Add & Subtract Decimals": "Line up the decimal points before you add or subtract.",
+        "Multiply Decimals": "Multiply like whole numbers first, then place the decimal.",
+        "Divide Decimals": "Make the divisor a whole number first, then divide.",
+        "Fractions": "Find common denominators when the bottoms are different.",
+        "Geometry": "Draw or imagine the shape, then label the given measurements.",
+        "Area & Perimeter": "Area covers the inside. Perimeter goes around the outside.",
+        "Rounding Numbers": "Find the place you are rounding to, then look at the digit right after it."
+      };
+      hint.textContent = hints[title] || "Read the question carefully, underline what it asks for, and solve one step at a time.";
+      hint.classList.add('show');
     }
 
     function checkPracticeAnswer() {
@@ -1482,7 +1793,7 @@
         msg.textContent = 'Correct! Great work!';
         msg.className = 'game-message correct';
       } else {
-        msg.textContent = `Not quite! The answer is: ${currentProblem.answer}`;
+        msg.textContent = `Almost. The answer is: ${currentProblem.answer}. Try the hint on the next one if you want a clue.`;
         msg.className = 'game-message wrong';
       }
       updateScore();
@@ -1506,10 +1817,43 @@
         msg.textContent = 'Correct! Great job!';
         msg.className = 'game-message correct';
       } else {
-        msg.textContent = `Not quite! The answer is: ${currentProblem.opts[currentProblem.a]}`;
+        msg.textContent = `Almost. The answer is: ${currentProblem.opts[currentProblem.a]}. Try the hint on the next one if you want a clue.`;
         msg.className = 'game-message wrong';
       }
       updateScore();
+    }
+
+    function showSessionSummary(lesson, correct, answeredCount, previousBest) {
+      var modal = document.getElementById('sessionSummary');
+      var body = document.getElementById('sessionBody');
+      if (!modal || !body || answeredCount === 0) return;
+      var pct = Math.round((correct / answeredCount) * 100);
+      var stars = renderStars(pct);
+      var improvement = pct - (previousBest || 0);
+      var message = improvement > 0
+        ? 'You improved your best score by ' + improvement + ' points in ' + lesson.title + '.'
+        : pct >= 90
+          ? 'Excellent accuracy. This topic is looking strong.'
+          : pct >= 70
+            ? 'Nice practice. One more round can push this toward mastery.'
+            : 'Good effort. Try another short round and use the hint when you need it.';
+      body.innerHTML =
+        '<div class="session-score">' +
+          '<div class="session-stat"><b>' + pct + '%</b><span>Score</span></div>' +
+          '<div class="session-stat"><b>' + correct + '/' + answeredCount + '</b><span>Correct</span></div>' +
+          '<div class="session-stat"><b>' + stars + '</b><span>Stars</span></div>' +
+        '</div>' +
+        '<div class="session-message">' + escHtml(message) + '</div>' +
+        '<div class="session-actions">' +
+          '<button class="session-secondary" onclick="closeSessionSummary()">All Lessons</button>' +
+          '<button class="session-primary" onclick="closeSessionSummary(); startLesson(' + _recommendedLessonIndex + ')">Next Topic</button>' +
+        '</div>';
+      modal.classList.add('show');
+    }
+
+    function closeSessionSummary() {
+      var modal = document.getElementById('sessionSummary');
+      if (modal) modal.classList.remove('show');
     }
 
     function updateScore() {
@@ -1534,23 +1878,35 @@
         showWelcomeStrip(user);
         loadMyProgress().then(function(data) {
           _myProgress = data;
+          renderStudentDashboard();
           renderLessonGrid();
         });
       } else {
         document.getElementById('signinCard').style.display    = 'flex';
         document.getElementById('welcomeStrip').style.display  = 'none';
+        renderStudentDashboard();
       }
     });
 
     function handleSignIn() {
       signInWithGoogle().catch(function(err) {
-        alert('Sign-in failed: ' + err.message);
+        console.error('Sign-in error:', err);
+        var msg = 'Sign-in failed. Please try again later.';
+        if (err.code === 'auth/configuration-not-found') {
+          msg = 'Sign-in is temporarily unavailable (server config missing). Please tell Mrs. Shimaa!';
+        } else if (err.code === 'auth/popup-blocked') {
+          msg = 'The sign-in popup was blocked. Please allow popups for this site and try again.';
+        } else if (err.code === 'auth/cancelled-popup-request' || err.code === 'auth/popup-closed-by-user') {
+          msg = 'Sign-in was cancelled. You can try again whenever you\'re ready!';
+        }
+        alert(msg);
       });
     }
 
     function handleSignOut() {
       signOutUser().then(function() {
         _myProgress = null;
+        renderStudentDashboard();
         renderLessonGrid();
         document.getElementById('welcomeStrip').style.display = 'none';
         document.getElementById('signinCard').style.display   = 'flex';
@@ -1574,16 +1930,18 @@
       loadMyProgress().then(function(lessons) {
         var pills = document.getElementById('pwPills');
         if (!lessons) {
-          pills.innerHTML = '<span class="pw-pill">🆕 No sessions yet — start below!</span>';
+          pills.innerHTML = '<span class="pw-pill">New start below!</span>';
           return;
         }
         var keys    = Object.keys(lessons);
         var totAns  = keys.reduce(function(s,k){ return s+(lessons[k].totalAnswered||0); }, 0);
         var totCorr = keys.reduce(function(s,k){ return s+(lessons[k].totalCorrect||0); }, 0);
         var pct     = totAns > 0 ? Math.round((totCorr/totAns)*100) : 0;
+        var streak  = getStreakDays(lessons);
         pills.innerHTML =
-          '<span class="pw-pill">📚 ' + keys.length + ' topic' + (keys.length!==1?'s':'') + '</span>' +
-          '<span class="pw-pill">✅ ' + pct + '% overall</span>';
+          '<span class="pw-pill">' + keys.length + ' topic' + (keys.length!==1?'s':'') + '</span>' +
+          '<span class="pw-pill">' + pct + '% overall</span>' +
+          '<span class="pw-pill">' + streak + '-day streak</span>';
       });
     }
 
@@ -1620,25 +1978,26 @@
           return;
         }
 
-        var keys     = Object.keys(data);
-        var totAns   = keys.reduce(function(s,k){ return s+(data[k].totalAnswered||0); }, 0);
-        var totCorr  = keys.reduce(function(s,k){ return s+(data[k].totalCorrect||0); }, 0);
-        var overall  = totAns > 0 ? Math.round((totCorr/totAns)*100) : 0;
-        var sessions = keys.reduce(function(s,k){ return s+(data[k].sessions||0); }, 0);
+        var stats = getProgressStats(data);
+        var keys = stats.keys;
+        var streak = getStreakDays(data);
 
         subtitleEl.textContent = (user.displayName||'Student').split(' ')[0] + '\'s practice history';
 
         // Summary boxes
         summaryEl.innerHTML =
           '<div class="pp-sum-box"><div class="pp-sum-num">' + keys.length + '</div><div class="pp-sum-lbl">Topics Practiced</div></div>' +
-          '<div class="pp-sum-box"><div class="pp-sum-num">' + overall + '%</div><div class="pp-sum-lbl">Overall Score</div></div>' +
-          '<div class="pp-sum-box"><div class="pp-sum-num">' + sessions + '</div><div class="pp-sum-lbl">Sessions Done</div></div>';
+          '<div class="pp-sum-box"><div class="pp-sum-num">' + stats.overall + '%</div><div class="pp-sum-lbl">Overall Score</div></div>' +
+          '<div class="pp-sum-box"><div class="pp-sum-num">' + stats.sessions + '</div><div class="pp-sum-lbl">Sessions Done</div></div>' +
+          '<div class="pp-sum-box"><div class="pp-sum-num">' + streak + '</div><div class="pp-sum-lbl">Day Streak</div></div>';
 
         // Sort lessons: practiced ones by best score desc, then unpracticed
         var practiced   = keys.slice().sort(function(a,b){ return (data[b].bestScore||0)-(data[a].bestScore||0); });
         var unpracticed = lessons.map(function(l){ return l.id; }).filter(function(id){ return !data[id]; });
 
-        var html = '';
+        var html = '<div class="pp-achievements">' + getStudentBadges(data).map(function(b) {
+          return '<span class="pp-achievement">' + escHtml(b) + '</span>';
+        }).join('') + '</div>';
 
         practiced.forEach(function(id) {
           var l    = data[id];
@@ -1653,6 +2012,7 @@
               '<div class="pp-lesson-name">' + emoji + ' ' + escHtml(l.title||id) + '</div>' +
               '<div class="pp-bar-wrap"><div class="pp-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>' +
               '<div class="pp-pct" style="color:'+color+'">' + pct + '%</div>' +
+              '<div class="pp-stars">' + renderStars(pct) + '</div>' +
               '<div class="pp-meta">' + (l.sessions||1) + ' session' + ((l.sessions||1)!==1?'s':'') + ' · ' + lastDate + '</div>' +
             '</div>';
         });
@@ -1666,6 +2026,7 @@
               '<div class="pp-lesson-name">⬜ ' + escHtml(lesson.title) + '</div>' +
               '<div class="pp-bar-wrap"><div class="pp-bar-fill" style="width:0%;background:#e0e0e0"></div></div>' +
               '<div class="pp-pct" style="color:#ddd">—</div>' +
+              '<div class="pp-stars">☆☆☆</div>' +
               '<div class="pp-meta">Not started</div>' +
             '</div>';
         });

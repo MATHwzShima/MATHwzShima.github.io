@@ -12,6 +12,10 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Teacher dashboard for viewing student memory book submissions.">
+  <meta property="og:title" content="MATHwzShima - Fun Math for 5th Graders">
+  <meta property="og:description" content="Free math materials, quizzes, games, puzzles, and memory book for 5th graders with Mrs. Shimaa.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#667eea">
   <title>Teacher Dashboard - MATHwzShima</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128466;</text></svg>">
@@ -344,6 +348,30 @@
     .chip-green  { background:#d1fae5; color:#065f46; }
     .chip-yellow { background:#fef9c3; color:#92400e; }
     .chip-red    { background:#fee2e2; color:#991b1b; }
+    .progress-insights {
+      display:none; grid-template-columns:repeat(4,1fr); gap:12px;
+      margin-bottom:18px;
+    }
+    .progress-insights.show { display:grid; }
+    .pi-card {
+      background:#fff; border-radius:16px; padding:16px;
+      box-shadow:0 4px 16px rgba(0,0,0,.06);
+      border-left:5px solid #6bcb77;
+    }
+    .pi-card:nth-child(2) { border-left-color:#fbbf24; }
+    .pi-card:nth-child(3) { border-left-color:#ff6b9d; }
+    .pi-card:nth-child(4) { border-left-color:#4d96ff; }
+    .pi-num { font-family:'Fredoka One',cursive; font-size:1.65em; color:#333; }
+    .pi-label { color:#888; font-size:.78em; font-weight:700; margin-top:2px; }
+    .pi-sub { color:#aaa; font-size:.75em; margin-top:4px; }
+    .ps-attention {
+      display:inline-block; margin-top:8px; padding:4px 10px;
+      border-radius:20px; background:#fee2e2; color:#991b1b;
+      font-size:.74em; font-weight:800;
+    }
+    .ps-attention.ok { background:#d1fae5; color:#065f46; }
+    .ps-attention.watch { background:#fef9c3; color:#92400e; }
+    .ps-last-seen { color:#aaa; font-size:.76em; margin-top:2px; }
 
     /* Student detail panel */
     #progressViewer {
@@ -373,11 +401,27 @@
     .pv-bar-fill { height:100%; border-radius:5px; transition:width .5s ease; }
     .pv-pct { font-family:'Fredoka One',cursive; font-size:1em; min-width:44px; text-align:right; }
     .pv-meta { font-size:.78em; color:#bbb; white-space:nowrap; }
+    .pv-summary {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+      margin-bottom:16px;
+    }
+    .pv-sum {
+      background:#f8f9ff; border-radius:14px; padding:12px; text-align:center;
+    }
+    .pv-sum b { display:block; font-family:'Fredoka One',cursive; color:#6c5ce7; font-size:1.25em; }
+    .pv-sum span { color:#888; font-size:.76em; font-weight:700; }
+    .pv-note {
+      background:#fffbeb; border:2px solid #fde68a; color:#92400e;
+      border-radius:14px; padding:12px 14px; margin-bottom:16px;
+      font-weight:700; line-height:1.45;
+    }
 
     @media (max-width:600px) {
       .stats-row { grid-template-columns:1fr 1fr; }
       .stats-row .stat-box:last-child { grid-column:span 2; }
       .stats-row-4 { grid-template-columns:1fr 1fr; }
+      .progress-insights, .progress-insights.show { grid-template-columns:1fr 1fr; }
+      .pv-summary { grid-template-columns:1fr 1fr; }
       .dash-wrap { padding:0 12px 40px; }
       .dash-tab-btn { padding:11px 16px; font-size:.95em; }
     }
@@ -402,13 +446,14 @@
   <!-- ─── MAIN DASHBOARD ────────────────────────────────────── -->
   <div id="dashboard">
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <header>
+    <header data-section="teacher">
       <h1>MATHwzShima</h1>
       <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
     </header>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
         <li><a href="materials.html">Materials</a></li>
         <li><a href="practices.html">Practices</a></li>
         <li><a href="quizzes.html">Quizzes</a></li>
@@ -474,6 +519,7 @@
             <button class="refresh-btn" onclick="loadProgress()">&#128260; Refresh</button>
             <button class="logout-btn"  onclick="logout()">&#128274; Lock</button>
           </div>
+          <div class="progress-insights" id="progressInsights"></div>
           <div id="progressGrid"></div>
           <div id="progressViewer"></div>
         </div>
@@ -554,7 +600,7 @@
         return;
       }
 
-      grid.innerHTML = '<div class="loading">&#9203; Loading submissions…</div>';
+      grid.innerHTML = '<div class="students-grid">' + Array(6).fill('<div class="s-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text" style="width:40%;"></div><div class="skeleton" style="height:8px;margin-top:12px;"></div></div>').join('') + '</div>';
       closeViewer();
 
       fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/submissions.json')
@@ -747,7 +793,7 @@
         grid.innerHTML = '<div class="empty-state"><div class="big">&#9888;</div><h3>Firebase not configured yet</h3></div>';
         return;
       }
-      grid.innerHTML = '<div class="loading">&#9203; Loading messages…</div>';
+      grid.innerHTML = '<div class="msgs-list">' + Array(4).fill('<div class="msg-card" style="opacity:0.5;"><div class="skeleton skeleton-title" style="width:30%;"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:70%;"></div></div>').join('') + '</div>';
 
       fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages.json')
         .then(function(res) {
@@ -898,7 +944,9 @@
     /* ── Progress loader ── */
     function loadProgress() {
       var grid = document.getElementById('progressGrid');
-      grid.innerHTML = '<div class="loading">⏳ Loading student progress…</div>';
+      var insights = document.getElementById('progressInsights');
+      if (insights) { insights.classList.remove('show'); insights.innerHTML = ''; }
+      grid.innerHTML = '<div class="progress-student-grid">' + Array(6).fill('<div class="ps-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text" style="width:50%;"></div><div class="skeleton" style="height:8px;margin-top:10px;"></div></div>').join('') + '</div>';
       document.getElementById('progressViewer').classList.remove('show');
 
       fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/progress.json')
@@ -907,6 +955,67 @@
         .catch(function(err) {
           grid.innerHTML = '<div class="empty-state"><div class="big">😕</div><h3>Could not load progress</h3><p><small>' + err.message + '</small></p></div>';
         });
+    }
+
+    function progressStats(lessons) {
+      var keys = Object.keys(lessons || {});
+      var totAns = keys.reduce(function(s,k){ return s + (lessons[k].totalAnswered || 0); }, 0);
+      var totCorr = keys.reduce(function(s,k){ return s + (lessons[k].totalCorrect || 0); }, 0);
+      var sessions = keys.reduce(function(s,k){ return s + (lessons[k].sessions || 0); }, 0);
+      var overall = totAns > 0 ? Math.round((totCorr / totAns) * 100) : 0;
+      var lowTopics = keys.filter(function(k){ return (lessons[k].bestScore || 0) < 70; }).length;
+      var mastered = keys.filter(function(k){ return (lessons[k].bestScore || 0) >= 90; }).length;
+      var lastPlayed = keys.reduce(function(latest,k) {
+        var t = lessons[k].lastPlayed ? new Date(lessons[k].lastPlayed).getTime() : 0;
+        return Math.max(latest, t);
+      }, 0);
+      return { keys:keys, totAns:totAns, totCorr:totCorr, sessions:sessions, overall:overall, lowTopics:lowTopics, mastered:mastered, lastPlayed:lastPlayed };
+    }
+
+    function daysSince(timestamp) {
+      if (!timestamp) return 999;
+      var now = new Date();
+      var then = new Date(timestamp);
+      return Math.floor((now - then) / 86400000);
+    }
+
+    function attentionLabel(student) {
+      var inactive = daysSince(student.lastPlayed) >= 7;
+      if (student.totAns === 0) return { text:'No practice yet', cls:'' };
+      if (student.overall < 60 || student.lowTopics >= 2) return { text:'Needs help', cls:'' };
+      if (inactive || student.overall < 75) return { text:'Watch', cls:'watch' };
+      return { text:'On track', cls:'ok' };
+    }
+
+    function renderProgressInsights(students) {
+      var el = document.getElementById('progressInsights');
+      if (!el) return;
+      var total = students.length;
+      var activeWeek = students.filter(function(s){ return daysSince(s.lastPlayed) <= 6; }).length;
+      var needsHelp = students.filter(function(s){ return attentionLabel(s).text === 'Needs help'; }).length;
+      var totalAnswered = students.reduce(function(sum,s){ return sum + s.totAns; }, 0);
+      var topicTotals = {};
+      students.forEach(function(s) {
+        Object.keys(s.lessons).forEach(function(k) {
+          var l = s.lessons[k];
+          topicTotals[k] = topicTotals[k] || { title:l.title || k, attempts:0, correct:0 };
+          topicTotals[k].attempts += l.totalAnswered || 0;
+          topicTotals[k].correct += l.totalCorrect || 0;
+        });
+      });
+      var weakest = Object.keys(topicTotals)
+        .filter(function(k){ return topicTotals[k].attempts >= 5; })
+        .map(function(k) {
+          var t = topicTotals[k];
+          return { title:t.title, pct:t.attempts ? Math.round((t.correct / t.attempts) * 100) : 0 };
+        })
+        .sort(function(a,b){ return a.pct - b.pct; })[0];
+      el.innerHTML =
+        '<div class="pi-card"><div class="pi-num">' + total + '</div><div class="pi-label">Students</div><div class="pi-sub">with practice data</div></div>' +
+        '<div class="pi-card"><div class="pi-num">' + activeWeek + '</div><div class="pi-label">Active This Week</div><div class="pi-sub">signed in and practiced</div></div>' +
+        '<div class="pi-card"><div class="pi-num">' + needsHelp + '</div><div class="pi-label">Need Help</div><div class="pi-sub">low accuracy or multiple weak topics</div></div>' +
+        '<div class="pi-card"><div class="pi-num">' + totalAnswered + '</div><div class="pi-label">Questions Answered</div><div class="pi-sub">' + (weakest ? 'Review: ' + esc(weakest.title) + ' (' + weakest.pct + '%)' : 'No topic trend yet') + '</div></div>';
+      el.classList.add('show');
     }
 
     function renderProgress(data) {
@@ -920,19 +1029,31 @@
         var uid = entry[0], d = entry[1];
         var lessons  = d.lessons  || {};
         var profile  = d.profile  || {};
-        var keys     = Object.keys(lessons);
-        var totAns   = keys.reduce(function(s,k){ return s+(lessons[k].totalAnswered||0); }, 0);
-        var totCorr  = keys.reduce(function(s,k){ return s+(lessons[k].totalCorrect||0); }, 0);
-        var overall  = totAns > 0 ? Math.round((totCorr/totAns)*100) : 0;
-        return { uid:uid, profile:profile, lessons:lessons, keys:keys, totAns:totAns, totCorr:totCorr, overall:overall };
+        var stats = progressStats(lessons);
+        return {
+          uid:uid, profile:profile, lessons:lessons, keys:stats.keys,
+          totAns:stats.totAns, totCorr:stats.totCorr, sessions:stats.sessions,
+          overall:stats.overall, lowTopics:stats.lowTopics, mastered:stats.mastered,
+          lastPlayed:stats.lastPlayed
+        };
       });
 
-      // Sort by overall % desc
-      students.sort(function(a,b){ return b.overall - a.overall; });
+      // Sort by attention first, then least recent activity.
+      students.sort(function(a,b){
+        var rank = { 'Needs help':0, 'Watch':1, 'No practice yet':2, 'On track':3 };
+        var ar = rank[attentionLabel(a).text], br = rank[attentionLabel(b).text];
+        if (ar !== br) return ar - br;
+        return a.lastPlayed - b.lastPlayed;
+      });
+      renderProgressInsights(students);
 
       var html = '<div class="progress-student-grid">';
       students.forEach(function(s, idx) {
         var firstName = (s.profile.name || 'Student').split(' ')[0];
+        var attention = attentionLabel(s);
+        var lastSeen = s.lastPlayed
+          ? new Date(s.lastPlayed).toLocaleDateString('en-US',{month:'short',day:'numeric'})
+          : 'No practice yet';
         var avatarHtml = s.profile.photo
           ? '<img class="ps-avatar" src="' + esc(s.profile.photo) + '" alt="' + esc(firstName) + '">'
           : '<div class="ps-avatar-ph">' + esc(firstName.charAt(0).toUpperCase()) + '</div>';
@@ -947,12 +1068,13 @@
         if (s.keys.length > 4) chipsHtml += '<span class="ps-lesson-chip badge-none">+' + (s.keys.length-4) + ' more</span>';
 
         html += '<div class="ps-card" id="psc'+idx+'" onclick="showStudentProgress('+idx+')">';
-        html += '<div class="ps-top">' + avatarHtml + '<div><div class="ps-name">' + esc(s.profile.name||'Student') + '</div><div class="ps-email">' + esc(s.profile.email||'') + '</div></div></div>';
+        html += '<div class="ps-top">' + avatarHtml + '<div><div class="ps-name">' + esc(s.profile.name||'Student') + '</div><div class="ps-email">' + esc(s.profile.email||'') + '</div><div class="ps-last-seen">Last: ' + esc(lastSeen) + '</div></div></div>';
         html += '<div class="ps-stats">';
         html += '<div><div class="ps-stat-val">' + s.keys.length + '</div>Topics</div>';
         html += '<div><div class="ps-stat-val">' + s.totAns + '</div>Answered</div>';
         html += '<div><div class="ps-stat-val">' + s.overall + '%</div>Overall</div>';
         html += '</div>';
+        html += '<span class="ps-attention ' + attention.cls + '">' + esc(attention.text) + '</span>';
         html += '<div class="ps-lessons">' + chipsHtml + '</div>';
         html += '</div>';
       });
@@ -973,25 +1095,36 @@
       if (card) { card.classList.add('active'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 
       var firstName = (s.profile.name || 'Student').split(' ')[0];
+      var attention = attentionLabel(s);
       var html = '<div class="pv-hdr"><h3>📊 ' + esc(s.profile.name||'Student') + '\'s Progress</h3>';
       html += '<button class="pv-close" onclick="document.getElementById(\'progressViewer\').classList.remove(\'show\')">✕</button></div>';
       html += '<div class="pv-body">';
+      html += '<div class="pv-summary">' +
+        '<div class="pv-sum"><b>' + s.overall + '%</b><span>Overall</span></div>' +
+        '<div class="pv-sum"><b>' + s.totAns + '</b><span>Answered</span></div>' +
+        '<div class="pv-sum"><b>' + s.sessions + '</b><span>Sessions</span></div>' +
+        '<div class="pv-sum"><b>' + s.mastered + '</b><span>Mastered</span></div>' +
+      '</div>';
+      if (attention.text !== 'On track') {
+        html += '<div class="pv-note">' + esc(firstName) + ' is marked "' + esc(attention.text) + '". Start with the lowest-scoring recent topic below.</div>';
+      }
 
       if (s.keys.length === 0) {
         html += '<div class="v-none">No lessons practiced yet.</div>';
       } else {
-        // Sort lessons by best score desc
-        var sorted = s.keys.slice().sort(function(a,b){ return (s.lessons[b].bestScore||0)-(s.lessons[a].bestScore||0); });
+        // Sort lessons by most helpful to review first.
+        var sorted = s.keys.slice().sort(function(a,b){ return (s.lessons[a].bestScore||0)-(s.lessons[b].bestScore||0); });
         sorted.forEach(function(k) {
           var l   = s.lessons[k];
           var pct = l.bestScore || 0;
           var color = pct >= 80 ? '#6bcb77' : pct >= 50 ? '#fbbf24' : '#f87171';
           var lastDate = l.lastPlayed ? new Date(l.lastPlayed).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+          var lastScore = l.lastScore !== undefined ? ' · last ' + l.lastScore + '%' : '';
           html += '<div class="pv-lesson-row">';
           html += '<div class="pv-lesson-title">' + esc(l.title||k) + '</div>';
           html += '<div class="pv-bar-wrap"><div class="pv-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
           html += '<div class="pv-pct" style="color:'+color+'">' + pct + '%</div>';
-          html += '<div class="pv-meta">'+esc(l.sessions||1)+' session'+(l.sessions!==1?'s':'')+' · '+lastDate+'</div>';
+          html += '<div class="pv-meta">'+esc(l.sessions||1)+' session'+(l.sessions!==1?'s':'')+' · '+lastDate+lastScore+'</div>';
           html += '</div>';
         });
       }

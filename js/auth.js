@@ -40,18 +40,26 @@ function saveSessionProgress(lessonId, lessonTitle, correct, total) {
 
   const pct = Math.round((correct / total) * 100);
   const uid = user.uid;
+  const now = new Date().toISOString();
 
   // Update student profile
   _db.ref('progress/' + uid + '/profile').set({
     name:     user.displayName || 'Student',
     email:    user.email       || '',
     photo:    user.photoURL    || '',
-    lastSeen: new Date().toISOString()
+    lastSeen: now
   });
 
   // Update lesson stats via transaction (safe accumulation)
   return _db.ref('progress/' + uid + '/lessons/' + lessonId).transaction(function(prev) {
     prev = prev || {};
+    var recentSessions = Array.isArray(prev.recentSessions) ? prev.recentSessions.slice(0, 7) : [];
+    recentSessions.unshift({
+      score: pct,
+      correct: correct,
+      total: total,
+      playedAt: now
+    });
     return {
       title:         lessonTitle,
       sessions:      (prev.sessions      || 0) + 1,
@@ -59,7 +67,8 @@ function saveSessionProgress(lessonId, lessonTitle, correct, total) {
       totalCorrect:  (prev.totalCorrect  || 0) + correct,
       bestScore:     Math.max(prev.bestScore || 0, pct),
       lastScore:     pct,
-      lastPlayed:    new Date().toISOString()
+      lastPlayed:    now,
+      recentSessions: recentSessions
     };
   });
 }
