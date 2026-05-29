@@ -19,7 +19,7 @@
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
-  <header>
+  <header data-section="home">
     <h1>MATHwzShima</h1>
     <p>Fun Math for 5th Graders with Mrs. Shimaa</p>
   </header>
@@ -27,6 +27,7 @@
   <nav>
     <ul>
       <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
       <li><a href="materials.html">Materials</a></li>
       <li><a href="practices.html">Practices</a></li>
       <li><a href="quizzes.html">Quizzes</a></li>
@@ -41,9 +42,26 @@
 
   <main id="main-content">
     <section class="hero">
-      <h2>Welcome to MATHwzShima!</h2>
-      <p>Your place for fun math materials, exciting quizzes, brain-teasing puzzles, and cool games. Let's make math awesome!</p>
-      <a href="quizzes.html" class="cta-btn">Try a Quiz</a>
+      <h2>Start today's math mission</h2>
+      <p>Practice a skill, test yourself, and finish with a game or puzzle. Small wins every day build big confidence.</p>
+      <div class="hero-actions">
+        <a href="practices.html" class="cta-btn">Start Practice</a>
+        <a href="games.html" class="cta-btn cta-secondary">Play a Game</a>
+      </div>
+    </section>
+
+    <section class="home-mission" aria-labelledby="mission-title">
+      <div class="home-mission-copy">
+        <span class="eyebrow">Student path</span>
+        <h2 id="mission-title">Practice, prove it, then play.</h2>
+        <p>Students get the most from the site when they follow a simple loop: learn from materials, practice with feedback, take a quiz, then reward their brain with a game or puzzle.</p>
+      </div>
+      <div class="mission-steps" aria-label="Suggested learning path">
+        <a href="materials.html" class="mission-step"><b>1</b><span>Learn</span></a>
+        <a href="practices.html" class="mission-step"><b>2</b><span>Practice</span></a>
+        <a href="quizzes.html" class="mission-step"><b>3</b><span>Quiz</span></a>
+        <a href="games.html" class="mission-step"><b>4</b><span>Play</span></a>
+      </div>
     </section>
 
     <div class="cards">
