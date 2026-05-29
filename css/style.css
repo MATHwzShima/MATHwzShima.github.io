@@ -214,19 +214,6 @@ main {
   color: #5a4bd1;
 }
 
-.home-mission {
-  background: #fff;
-  border-radius: 18px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 1.25rem;
-  align-items: center;
-  border: 2px solid #e8e5ff;
-}
-
 .eyebrow {
   display: inline-block;
   color: #6c5ce7;
@@ -235,55 +222,6 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.35rem;
-}
-
-.home-mission h2 {
-  color: #2d3436;
-  font-size: 1.55rem;
-  margin-bottom: 0.4rem;
-}
-
-.home-mission p {
-  color: #636e72;
-}
-
-.mission-steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.7rem;
-}
-
-.mission-step {
-  min-height: 92px;
-  background: #f8f9ff;
-  border: 2px solid #e8e5ff;
-  border-radius: 14px;
-  text-decoration: none;
-  color: #2d3436;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.35rem;
-  font-weight: 800;
-  transition: transform 0.2s, border-color 0.2s, background 0.2s;
-}
-
-.mission-step:hover {
-  transform: translateY(-2px);
-  border-color: #6c5ce7;
-  background: #f0edff;
-}
-
-.mission-step b {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #6c5ce7;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .cards {
@@ -984,7 +922,7 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .card, .lesson-card, .material-item, .game-input input, .practice-input-area input, .puzzle-input input, .mission-step {
+  .card, .lesson-card, .material-item, .game-input input, .practice-input-area input, .puzzle-input input {
     transition: none;
   }
   .scroll-top { transition: none; }
@@ -995,16 +933,4 @@ footer {
   .hero h2 { font-size: 1.6rem; }
   .cards { grid-template-columns: 1fr; }
   .game-numbers { font-size: 2.2rem; }
-}
-
-@media (max-width: 860px) {
-  .home-mission {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 560px) {
-  .mission-steps {
-    grid-template-columns: 1fr 1fr;
-  }
 }
