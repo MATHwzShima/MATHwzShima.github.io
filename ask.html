@@ -115,6 +115,27 @@
       resize: vertical;
       line-height: 1.6;
     }
+    .emoji-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .emoji-picker button {
+      width: 38px;
+      height: 38px;
+      border: 2px solid #ede9fe;
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 1.2em;
+      transition: transform .15s, border-color .15s, background .15s;
+    }
+    .emoji-picker button:hover {
+      transform: translateY(-1px);
+      border-color: #a855f7;
+      background: #faf5ff;
+    }
 
     /* ── Message type chips ── */
     .type-label {
@@ -423,6 +444,14 @@
         <div class="ask-field">
           <label><span>📝</span> Your Message</label>
           <textarea id="messageText" placeholder="Write your message here... Don't be shy! 😊" maxlength="1000"></textarea>
+          <div class="emoji-picker" aria-label="Add emoji to message">
+            <button type="button" onclick="insertEmoji('messageText','😊')" aria-label="Add smiling face">😊</button>
+            <button type="button" onclick="insertEmoji('messageText','💛')" aria-label="Add yellow heart">💛</button>
+            <button type="button" onclick="insertEmoji('messageText','👍')" aria-label="Add thumbs up">👍</button>
+            <button type="button" onclick="insertEmoji('messageText','🎉')" aria-label="Add party popper">🎉</button>
+            <button type="button" onclick="insertEmoji('messageText','🙏')" aria-label="Add thank you hands">🙏</button>
+            <button type="button" onclick="insertEmoji('messageText','⭐')" aria-label="Add star">⭐</button>
+          </div>
         </div>
 
         <div class="send-btn-wrap">
@@ -545,7 +574,7 @@
       // Save to Firebase
       fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages.json', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
         body:    JSON.stringify(payload)
       })
       .then(res => {
@@ -555,7 +584,7 @@
         if (FORMSPREE_URL && !FORMSPREE_URL.includes('YOUR_FORM_ID')) {
           fetch(FORMSPREE_URL, {
             method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            headers: { 'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'application/json' },
             body:    JSON.stringify({
               _subject: '💬 New Message from ' + name,
               student_name: name,
@@ -595,6 +624,17 @@
       document.getElementById('formCard').style.display    = 'block';
       document.getElementById('successCard').style.display = 'none';
       document.getElementById('secretCodeDisplay').textContent = '——';
+    }
+
+    function insertEmoji(targetId, emoji) {
+      const field = document.getElementById(targetId);
+      if (!field) return;
+      const start = field.selectionStart || field.value.length;
+      const end = field.selectionEnd || field.value.length;
+      field.value = field.value.slice(0, start) + emoji + field.value.slice(end);
+      field.focus();
+      const pos = start + emoji.length;
+      field.setSelectionRange(pos, pos);
     }
 
     function launchConfetti() {

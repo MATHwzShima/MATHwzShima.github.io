@@ -283,6 +283,19 @@
       transition: border-color .2s;
     }
     .reply-box textarea:focus { border-color: #667eea; }
+    .reply-emoji-picker {
+      display:flex; flex-wrap:wrap; gap:6px;
+    }
+    .reply-emoji-picker button {
+      width:34px; height:34px; border-radius:10px;
+      border:2px solid #e8eaff; background:#fff;
+      cursor:pointer; font-size:1.1em;
+      transition:all .15s;
+    }
+    .reply-emoji-picker button:hover {
+      border-color:#667eea; background:#f8f7ff;
+      transform:translateY(-1px);
+    }
     .reply-box-actions { display:flex; gap:8px; justify-content:flex-end; }
     .reply-send-btn {
       background: linear-gradient(135deg,#667eea,#764ba2);
@@ -889,6 +902,11 @@
         // Reply box (hidden by default)
         html += '<div class="reply-box" id="replybox-' + safeKey + '">';
         html += '<textarea id="replytxt-' + safeKey + '" placeholder="Type your reply to ' + esc(msg.studentName||'this student') + '…" rows="3">' + (hasReply ? esc(msg.reply) : '') + '</textarea>';
+        html += '<div class="reply-emoji-picker" aria-label="Add emoji to reply">';
+        ['😊','💛','👍','🎉','🙏','⭐'].forEach(function(emoji) {
+          html += '<button type="button" onclick="insertEmojiIntoReply(\'' + safeKey + '\',\'' + emoji + '\')" aria-label="Add emoji">' + emoji + '</button>';
+        });
+        html += '</div>';
         html += '<div class="reply-box-actions">';
         html += '<button class="reply-cancel-btn" onclick="toggleReplyBox(\'' + safeKey + '\')">Cancel</button>';
         html += '<button class="reply-send-btn" onclick="sendReply(\'' + safeKey + '\',\'' + esc(msg.studentName||'Anonymous') + '\')">📨 Send Reply</button>';
@@ -911,6 +929,17 @@
       }
     }
 
+    function insertEmojiIntoReply(key, emoji) {
+      var ta = document.getElementById('replytxt-' + key);
+      if (!ta) return;
+      var start = ta.selectionStart || ta.value.length;
+      var end = ta.selectionEnd || ta.value.length;
+      ta.value = ta.value.slice(0, start) + emoji + ta.value.slice(end);
+      ta.focus();
+      var pos = start + emoji.length;
+      ta.setSelectionRange(pos, pos);
+    }
+
     function sendReply(key, studentName) {
       var ta = document.getElementById('replytxt-' + key);
       if (!ta) return;
@@ -925,7 +954,7 @@
 
       fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/messages/' + key + '.json', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
         body: JSON.stringify(payload)
       })
       .then(function(res) {
